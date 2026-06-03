@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardSession"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    style="@style/Widget.PlayStation.Card">
+
+    <!-- Status color strip on the left edge -->
+    <View
+        android:id="@+id/viewStatusStrip"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="@color/status_active" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="12dp"
+        android:paddingVertical="14dp">
+
+        <!-- Status Dot -->
+        <View
+            android:id="@+id/viewStatusDot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/bg_circle"
+            android:backgroundTint="@color/status_active"
+            app:layout_constraintTop_toTopOf="@id/tvDeviceName"
+            app:layout_constraintBottom_toBottomOf="@id/tvDeviceName"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Device Name -->
+        <TextView
+            android:id="@+id/tvDeviceName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:fontFamily="sans-serif-medium"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="PS5 #1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/viewStatusDot"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Session mode badge -->
+        <TextView
+            android:id="@+id/tvSessionMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:background="@drawable/bg_mode_badge"
+            android:textSize="11sp"
+            android:textColor="@color/text_secondary"
+            tools:text="مفتوحة"
+            app:layout_constraintTop_toBottomOf="@id/tvDeviceName"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Status Label -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textSize="12sp"
+            android:textColor="@color/status_active"
+            android:fontFamily="sans-serif-medium"
+            tools:text="يعمل"
+            app:layout_constraintTop_toBottomOf="@id/tvSessionMode"
+            app:layout_constraintStart_toStartOf="@id/tvDeviceName" />
+
+        <!-- Timer -->
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="22sp"
+            android:textColor="@color/ps_blue_primary"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05"
+            tools:text="01:23:45"
+            app:layout_constraintTop_toBottomOf="@id/tvStatus"
+            app:layout_constraintStart_toStartOf="@id/tvDeviceName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors - PlayStation Blue -->
+    <color name="ps_blue_primary">#0070CC</color>
+    <color name="ps_blue_light">#3D9FFF</color>
+    <color name="ps_blue_dark">#004C99</color>
+
+    <!-- PlayStation Button Colors -->
+    <color name="ps_button_cross">#00A3E0</color>     <!-- X Button - Blue -->
+    <color name="ps_button_circle">#E74C3C</color>    <!-- O Button - Red -->
+    <color name="ps_button_square">#E91E63</color>    <!-- Square Button - Pink -->
+    <color name="ps_button_triangle">#00D9A3</color>  <!-- Triangle Button - Green -->
+
+    <!-- Background Colors - Dark Theme -->
+    <color name="background_dark">#0A0E27</color>
+    <color name="surface_dark">#151B3D</color>
+    <color name="card_dark">#1E2749</color>
+    <color name="card_elevated">#252D4F</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B8D4</color>
+    <color name="text_disabled">#6B7280</color>
+
+    <!-- Status Colors -->
+    <color name="status_active">#00E676</color>
+    <color name="status_paused">#FFC107</color>
+    <color name="status_ended">#78909C</color>
+    <color name="status_error">#FF5252</color>
+
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#0070CC</color>
+    <color name="gradient_end">#00D9A3</color>
+
+    <!-- Divider & Border -->
+    <color name="divider">#2C3454</color>
+    <color name="border">#3D4563</color>
+
+    <!-- Overlay -->
+    <color name="overlay_dark">#CC000000</color>
+    <color name="overlay_light">#33FFFFFF</color>
+
+    <!-- System Colors -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+</resources>

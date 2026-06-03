@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/sessionsFragment">
+
+    <!-- Sessions Fragment -->
+    <fragment
+        android:id="@+id/sessionsFragment"
+        android:name="com.mohamed.playstation.presentation.ui.sessions.SessionsFragment"
+        android:label="@string/sessions">
+        <action
+            android:id="@+id/action_sessionsFragment_to_sessionDetailsFragment"
+            app:destination="@id/sessionDetailsFragment" />
+    </fragment>
+
+    <!-- Session Details Fragment -->
+    <fragment
+        android:id="@+id/sessionDetailsFragment"
+        android:name="com.mohamed.playstation.presentation.ui.sessions.SessionDetailsFragment"
+        android:label="Session Details">
+        <argument
+            android:name="sessionId"
+            app:argType="long" />
+    </fragment>
+
+    <!-- Receipts Fragment -->
+    <fragment
+        android:id="@+id/receiptsFragment"
+        android:name="com.mohamed.playstation.presentation.ui.receipts.ReceiptsFragment"
+        android:label="@string/receipts" />
+
+    <!-- Settings Fragment -->
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mohamed.playstation.presentation.ui.settings.SettingsFragment"
+        android:label="@string/settings" />
+
+</navigation>

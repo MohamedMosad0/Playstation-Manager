@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">بلايستيشن</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_loading">جاري التحميل&#8230;</string>
+
+    <!-- Main Screen -->
+    <string name="main_title">بلايستيشن</string>
+    <string name="sessions">الجلسات</string>
+    <string name="receipts">الفواتير</string>
+    <string name="settings">الإعدادات</string>
+
+    <!-- Session Status -->
+    <string name="status_available">متاح</string>
+    <string name="status_running">يعمل</string>
+    <string name="status_paused">متوقف مؤقتاً</string>
+
+    <!-- Sessions -->
+    <string name="active_sessions">الجلسات النشطة</string>
+    <string name="new_session">جلسة جديدة</string>
+    <string name="start_session">بدء الجلسة</string>
+    <string name="end_session">إنهاء الجلسة</string>
+    <string name="pause_session">إيقاف مؤقت</string>
+    <string name="resume_session">استكمال</string>
+    <string name="no_active_sessions">لا توجد جلسات نشطة</string>
+    <string name="session_type">نوع الجلسة</string>
+    <string name="add_product">إضافة منتج</string>
+    <string name="products">المنتجات</string>
+    <string name="no_products_added">لا توجد منتجات مضافة</string>
+    <string name="product_name">اسم المنتج</string>
+    <string name="product_price">سعر المنتج</string>
+    <string name="quantity">الكمية</string>
+    <string name="required_field">هذا الحقل مطلوب</string>
+    <string name="invalid_price">أدخل سعراً صحيحاً أكبر من صفر</string>
+    <string name="invalid_quantity">أدخل كمية صحيحة أكبر من صفر</string>
+
+    <!-- Device Types -->
+    <string name="ps4_standard">بلايستيشن 4 عادي</string>
+    <string name="ps4_pro">بلايستيشن 4 برو</string>
+    <string name="ps5_standard">بلايستيشن 5 عادي</string>
+    <string name="ps5_digital">بلايستيشن 5 ديجيتال</string>
+
+    <!-- Session Types -->
+    <string name="single_player">لاعب واحد</string>
+    <string name="multiplayer">متعدد اللاعبين</string>
+    <string name="device_number">رقم الجهاز</string>
+    <string name="console_type">نوع الجهاز</string>
+    <string name="session_duration_minutes">مدة الجلسة (دقيقة)</string>
+    <string name="price_preview">معاينة السعر</string>
+    <string name="price_preview_hourly">%1$s / الساعة</string>
+    <string name="price_preview_fixed">%1$s (جلسة محددة)</string>
+    <string name="invalid_duration">أدخل مدة صحيحة أكبر من صفر</string>
+    <string name="device_session_exists">%1$s لديه جلسة نشطة أو متوقفة بالفعل</string>
+
+    <!-- Receipts -->
+    <string name="receipt_number">فاتورة رقم %s</string>
+    <string name="device">الجهاز</string>
+    <string name="started">بداية الجلسة</string>
+    <string name="ended">نهاية الجلسة</string>
+    <string name="duration">المدة</string>
+    <string name="elapsed_time">الوقت المنقضي</string>
+    <string name="time_remaining">الوقت المتبقي</string>
+    <string name="rate">السعر</string>
+    <string name="total">الإجمالي</string>
+    <string name="print">طباعة</string>
+    <string name="share">مشاركة</string>
+    <string name="save">حفظ</string>
+    <string name="close">إغلاق</string>
+    <string name="payment_method">طريقة الدفع</string>
+    <string name="cash">نقداً</string>
+    <string name="card">كارت</string>
+    <string name="today_revenue">إيرادات اليوم</string>
+    <string name="today">اليوم</string>
+    <string name="all">الكل</string>
+    <string name="no_receipts">لا توجد فواتير</string>
+    <string name="play_cost">تكلفة اللعب</string>
+    <string name="products_cost">تكلفة المنتجات</string>
+    <string name="session_products_cost">تكلفة المشروبات/المنتجات</string>
+    <string name="receipt_products_summary">المنتجات: %1$d • %2$s</string>
+    <string name="receipt_rate_per_hour">%1$s %2$s/ساعة</string>
+    <string name="receipt_type_label">النوع</string>
+    <string name="receipt_payment_method_label">طريقة الدفع</string>
+    <string name="pause_duration">مدة الإيقاف المؤقت</string>
+    <string name="print_receipt_title">طباعة الفاتورة</string>
+    <string name="print_receipt_message">سيتم إضافة ميزة الطباعة قريباً</string>
+
+    <!-- Settings -->
+    <string name="appearance">المظهر</string>
+    <string name="dark_mode">الوضع الداكن</string>
+    <string name="language">اللغة</string>
+    <string name="pricing">الأسعار</string>
+    <string name="currency">العملة</string>
+    <string name="single_player_price">سعر اللاعب الواحد</string>
+    <string name="multiplayer_price">سعر متعدد اللاعبين</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="alert_time">وقت التنبيه</string>
+    <string name="alert_sound">نغمة التنبيه</string>
+    <string name="backup">النسخ الاحتياطي</string>
+    <string name="backup_now">نسخ احتياطي الآن</string>
+    <string name="restore">استعادة</string>
+    <string name="per_hour">/ الساعة</string>
+    <string name="select_currency">اختر العملة</string>
+    <string name="settings_saved">تم حفظ الإعدادات</string>
+
+    <!-- Settings - PS4 Pricing -->
+    <string name="ps4_pricing">أسعار PS4</string>
+    <string name="ps4_hour_price">سعر الساعة</string>
+    <string name="ps4_half_hour_price">سعر نصف ساعة</string>
+    <string name="ps4_multi_extra">سعر الملتي الإضافي</string>
+
+    <!-- Settings - PS5 Pricing -->
+    <string name="ps5_pricing">أسعار PS5</string>
+    <string name="ps5_hour_price">سعر الساعة</string>
+    <string name="ps5_half_hour_price">سعر نصف ساعة</string>
+    <string name="ps5_multi_extra">سعر الملتي الإضافي</string>
+
+    <!-- Settings - Session Defaults -->
+    <string name="session_defaults">إعدادات الجلسة</string>
+    <string name="session_mode">نوع الجلسة</string>
+    <string name="session_mode_open">مفتوحة</string>
+    <string name="session_mode_fixed">محددة</string>
+    <string name="default_fixed_minutes">مدة الجلسة المحددة (دقيقة)</string>
+
+    <!-- Settings - Warning Settings -->
+    <string name="warning_settings">إعدادات التنبيهات</string>
+    <string name="warnings_enabled">تفعيل التنبيهات</string>
+    <string name="warning_sound">صوت التنبيه</string>
+    <string name="warning_notification">إشعار التنبيه</string>
+    <string name="warning_minutes">دقائق التنبيه قبل الانتهاء</string>
+    <string name="per_half_hour">/ نصف ساعة</string>
+    <string name="extra_per_player">إضافي / لاعب</string>
+
+    <!-- Currencies -->
+    <string name="currency_egp">جنيه مصري (EGP)</string>
+    <string name="currency_sar">ريال سعودي (SAR)</string>
+    <string name="currency_aed">درهم إماراتي (AED)</string>
+    <string name="currency_usd">دولار أمريكي (USD)</string>
+    <string name="currency_eur">يورو (EUR)</string>
+    <string name="currency_kwd">دينار كويتي (KWD)</string>
+    <string name="currency_bhd">دينار بحريني (BHD)</string>
+    <string name="currency_omr">ريال عماني (OMR)</string>
+    <string name="currency_qar">ريال قطري (QAR)</string>
+    <string name="currency_jod">دينار أردني (JOD)</string>
+    <string name="currency_iqd">دينار عراقي (IQD)</string>
+    <string name="currency_lbp">ليرة لبنانية (LBP)</string>
+    <string name="currency_mad">درهم مغربي (MAD)</string>
+    <string name="currency_tnd">دينار تونسي (TND)</string>
+    <string name="currency_dzd">دينار جزائري (DZD)</string>
+    <string name="currency_lyd">دينار ليبي (LYD)</string>
+
+    <!-- Currency Symbols -->
+    <string name="symbol_egp">ج.م</string>
+    <string name="symbol_sar">ر.س</string>
+    <string name="symbol_aed">د.إ</string>
+    <string name="symbol_usd">$</string>
+    <string name="symbol_eur">€</string>
+    <string name="symbol_kwd">د.ك</string>
+    <string name="symbol_bhd">د.ب</string>
+    <string name="symbol_omr">ر.ع</string>
+    <string name="symbol_qar">ر.ق</string>
+    <string name="symbol_jod">د.أ</string>
+    <string name="symbol_iqd">د.ع</string>
+    <string name="symbol_lbp">ل.ل</string>
+    <string name="symbol_mad">د.م</string>
+    <string name="symbol_tnd">د.ت</string>
+    <string name="symbol_dzd">د.ج</string>
+    <string name="symbol_lyd">د.ل</string>
+
+    <!-- Time -->
+    <string name="hours">ساعة</string>
+    <string name="minutes">دقيقة</string>
+    <string name="seconds">ثانية</string>
+
+    <!-- Common -->
+    <string name="ok">موافق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="delete">حذف</string>
+    <string name="edit">تعديل</string>
+    <string name="save_changes">حفظ التغييرات</string>
+    <string name="confirm">تأكيد</string>
+    <string name="loading">جاري التحميل&#8230;</string>
+    <string name="error">خطأ</string>
+    <string name="success">نجح</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_description">تنبيهات انتهاء الجلسات المحددة</string>
+    <string name="notification_channel_ongoing_description">عرض الجلسات النشطة في شريط الإشعارات</string>
+    <string name="notification_active_sessions_title">🎮 Active Sessions: %1$d</string>
+    <string name="notification_session_ending_warning">ستنتهي الجلسة خلال %1$d دقائق</string>
+    <string name="notification_session_ended_receipt">انتهت الجلسة وتم إنشاء الفاتورة</string>
+
+    <!-- Messages -->
+    <string name="session_started">تم بدء الجلسة بنجاح</string>
+    <string name="session_ended">انتهت الجلسة</string>
+    <string name="backup_success">تم إنشاء النسخة الاحتياطية بنجاح</string>
+    <string name="restore_success">تمت استعادة البيانات بنجاح</string>
+    <string name="error_occurred">حدث خطأ</string>
+</resources>
