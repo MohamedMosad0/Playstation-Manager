@@ -2,16 +2,23 @@ package com.mohamed.playstation.domain.usecase
 
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.core.utils.SessionPricing
+import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.data.repository.SessionRepository
 import com.mohamed.playstation.domain.model.Session
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.Date
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class SessionUseCases @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val receiptUseCases: ReceiptUseCases
 ) {
+
+    private val endSessionMutex = Mutex()
 
     suspend fun startSession(
         deviceType: String,
@@ -97,40 +104,70 @@ class SessionUseCases @Inject constructor(
         currencyCode: String,
         pricing: SessionPricing.PricingSettings,
         paymentMethod: String? = null
-    ): Long {
-        var finalStartTime = session.startTime
-        var finalTotalPausedMinutes = session.totalPausedMinutes
-
-        if (session.isPaused() && session.pausedAt != null) {
-            val exactPausedDurationMs = Date().time - session.pausedAt.time
-            val wholeMinutes = exactPausedDurationMs / 60000
-            val remainderMs = exactPausedDurationMs % 60000
-            finalTotalPausedMinutes = session.totalPausedMinutes + wholeMinutes
-            finalStartTime = Date(session.startTime.time + remainderMs)
+    ): Long = endSessionMutex.withLock {
+        val currentSession = sessionRepository.getSessionById(session.id) ?: session
+        val existingReceipt = receiptUseCases.getReceiptBySessionId(currentSession.id)
+        if (existingReceipt != null) {
+            return@withLock existingReceipt.id
         }
 
-        val livePricePerHour = SessionPricing.pricePerHour(
-            pricing, session.deviceType, session.isMultiPlayer
-        )
-        val pricePerHour = if (session.isOpen()) {
-            livePricePerHour
+        val endedSession = if (currentSession.isEnded()) {
+            currentSession
         } else {
-            session.pricePerHour
+            var finalStartTime = currentSession.startTime
+            var finalTotalPausedMinutes = currentSession.totalPausedMinutes
+
+            if (currentSession.isPaused() && currentSession.pausedAt != null) {
+                val exactPausedDurationMs = Date().time - currentSession.pausedAt.time
+                val wholeMinutes = exactPausedDurationMs / 60000
+                val remainderMs = exactPausedDurationMs % 60000
+                finalTotalPausedMinutes = currentSession.totalPausedMinutes + wholeMinutes
+                finalStartTime = Date(currentSession.startTime.time + remainderMs)
+            }
+
+            val livePricePerHour = SessionPricing.pricePerHour(
+                pricing, currentSession.deviceType, currentSession.isMultiPlayer
+            )
+            val pricePerHour = if (currentSession.isOpen()) {
+                livePricePerHour
+            } else {
+                currentSession.pricePerHour
+            }
+            val calculatedEndTime = if (currentSession.isFixed()) {
+                SessionTimer.getFixedEndTimeMs(currentSession)?.let(::Date)
+            } else {
+                Date()
+            }
+
+            val updatedSession = currentSession.copy(
+                status = AppConstants.SESSION_STATUS_ENDED,
+                endTime = calculatedEndTime ?: Date(),
+                pausedAt = null,
+                startTime = finalStartTime,
+                totalPausedMinutes = finalTotalPausedMinutes,
+                pricePerHour = pricePerHour,
+                updatedAt = Date()
+            )
+
+
+            sessionRepository.updateSession(updatedSession)
+            updatedSession
         }
 
-        val updatedSession = session.copy(
-            status = AppConstants.SESSION_STATUS_ENDED,
-            endTime = Date(),
-            pausedAt = null,
-            startTime = finalStartTime,
-            totalPausedMinutes = finalTotalPausedMinutes,
-            pricePerHour = pricePerHour,
-            updatedAt = Date()
-        )
-        sessionRepository.updateSession(updatedSession)
+        val pricePerHour = if (currentSession.isEnded()) {
+            endedSession.pricePerHour
+        } else if (currentSession.isOpen()) {
+            SessionPricing.pricePerHour(
+                pricing,
+                endedSession.deviceType,
+                endedSession.isMultiPlayer
+            )
+        } else {
+            endedSession.pricePerHour
+        }
 
-        return receiptUseCases.createReceiptFromSession(
-            session = updatedSession,
+        return@withLock receiptUseCases.createReceiptFromSession(
+            session = endedSession,
             currencyCode = currencyCode,
             pricePerHour = pricePerHour,
             paymentMethod = paymentMethod

@@ -5,6 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.utils.SessionPricing
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -246,11 +248,62 @@ class SettingsManager @Inject constructor(
         dataStore.edit { it[PreferencesKeys.WARNING_MINUTES] = minutes }
     }
 
+    suspend fun getWarningNotificationSettings(): WarningNotificationSettings {
+        val preferences = dataStore.data.first()
+        return WarningNotificationSettings(
+            warningsEnabled = preferences[PreferencesKeys.WARNINGS_ENABLED]
+                ?: AppConstants.DEFAULT_WARNINGS_ENABLED,
+            soundEnabled = preferences[PreferencesKeys.WARNING_SOUND_ENABLED]
+                ?: AppConstants.DEFAULT_WARNING_SOUND_ENABLED,
+            notificationEnabled = preferences[PreferencesKeys.WARNING_NOTIFICATION_ENABLED]
+                ?: AppConstants.DEFAULT_WARNING_NOTIFICATION_ENABLED,
+            warningMinutes = preferences[PreferencesKeys.WARNING_MINUTES]
+                ?: AppConstants.DEFAULT_WARNING_MINUTES
+        )
+    }
+
+    suspend fun getCurrencyCode(): String {
+        val preferences = dataStore.data.first()
+        return preferences[PreferencesKeys.CURRENCY] ?: AppConstants.DEFAULT_CURRENCY
+    }
+
+    suspend fun getPricingSettings(): SessionPricing.PricingSettings {
+        val preferences = dataStore.data.first()
+        return SessionPricing.PricingSettings(
+            ps4HourPrice = preferences[PreferencesKeys.PS4_HOUR_PRICE]
+                ?: AppConstants.DEFAULT_PS4_HOUR_PRICE,
+            ps4HalfHourPrice = preferences[PreferencesKeys.PS4_HALF_HOUR_PRICE]
+                ?: AppConstants.DEFAULT_PS4_HALF_HOUR_PRICE,
+            ps4MultiExtra = preferences[PreferencesKeys.PS4_MULTI_EXTRA]
+                ?: AppConstants.DEFAULT_PS4_MULTI_EXTRA,
+            ps5HourPrice = preferences[PreferencesKeys.PS5_HOUR_PRICE]
+                ?: AppConstants.DEFAULT_PS5_HOUR_PRICE,
+            ps5HalfHourPrice = preferences[PreferencesKeys.PS5_HALF_HOUR_PRICE]
+                ?: AppConstants.DEFAULT_PS5_HALF_HOUR_PRICE,
+            ps5MultiExtra = preferences[PreferencesKeys.PS5_MULTI_EXTRA]
+                ?: AppConstants.DEFAULT_PS5_MULTI_EXTRA,
+            legacySinglePrice = preferences[PreferencesKeys.SINGLE_PRICE]
+                ?: AppConstants.DEFAULT_SINGLE_PRICE,
+            legacyMultiPrice = preferences[PreferencesKeys.MULTI_PRICE]
+                ?: AppConstants.DEFAULT_MULTI_PRICE
+        )
+    }
+
     // ======================== Clear All ========================
 
     suspend fun clearAll() {
         dataStore.edit { preferences ->
             preferences.clear()
         }
+    }
+
+    data class WarningNotificationSettings(
+        val warningsEnabled: Boolean,
+        val soundEnabled: Boolean,
+        val notificationEnabled: Boolean,
+        val warningMinutes: Int
+    ) {
+        fun shouldScheduleWarning(): Boolean =
+            warningsEnabled && notificationEnabled && warningMinutes > 0
     }
 }

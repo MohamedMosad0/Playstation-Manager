@@ -91,15 +91,10 @@ object AppConstants {
     // Notification
     const val NOTIFICATION_CHANNEL_ID = "playstation_notifications"
     const val NOTIFICATION_CHANNEL_NAME = "PlayStation Notifications"
-    const val ONGOING_NOTIFICATION_CHANNEL_ID = "playstation_sessions_ongoing"
-    const val ONGOING_NOTIFICATION_CHANNEL_NAME = "Active Sessions"
-    const val SESSION_NOTIFICATION_ID = 1001
-    const val FOREGROUND_SESSION_NOTIFICATION_ID = 2001
     const val NOTIFICATION_REQUEST_CODE_OPEN_APP = 1001
-    const val NOTIFICATION_REQUEST_CODE_FOREGROUND = 2001
-
-    // WorkManager
-    const val WORK_TAG_SESSION_ALERT = "session_alert"
+    const val ACTION_SESSION_WARNING_ALARM = "com.mohamed.playstation.action.SESSION_WARNING_ALARM"
+    const val ACTION_SESSION_END_ALARM = "com.mohamed.playstation.action.SESSION_END_ALARM"
+    const val EXTRA_SESSION_ID = "extra_session_id"
 
     // Date Format
     const val DATE_FORMAT = "dd/MM/yyyy"

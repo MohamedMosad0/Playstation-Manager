@@ -10,6 +10,12 @@ import java.util.concurrent.TimeUnit
  */
 object SessionTimer {
 
+    fun getFixedEndTimeMs(session: Session): Long? {
+        val fixedMinutes = session.fixedDurationMinutes ?: return null
+        return session.startTime.time +
+            ((session.totalPausedMinutes + fixedMinutes.toLong()) * 60_000L)
+    }
+
     fun getElapsedMs(session: Session, nowMs: Long): Long {
         val endMs = session.endTime?.time ?: session.pausedAt?.time ?: nowMs
         val grossMs = endMs - session.startTime.time

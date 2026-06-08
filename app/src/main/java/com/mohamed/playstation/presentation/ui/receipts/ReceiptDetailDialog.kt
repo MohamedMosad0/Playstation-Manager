@@ -61,8 +61,10 @@ class ReceiptDetailDialog : DialogFragment() {
 
         lifecycleScope.launch {
             val loadedReceipt = receiptViewModel.getReceiptById(receiptId)
-            if (!isAdded || loadedReceipt == null) {
-                dismiss()
+            if (!isAdded) return@launch
+
+            if (loadedReceipt == null) {
+                dismissAllowingStateLoss()
                 return@launch
             }
 

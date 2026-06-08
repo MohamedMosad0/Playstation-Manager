@@ -28,7 +28,7 @@ data class Receipt(
      * تنسيق وقت البداية
      */
     fun getFormattedStartTime(): String {
-        val format = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val format = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
         return format.format(startTime)
     }
 
@@ -36,7 +36,7 @@ data class Receipt(
      * تنسيق وقت النهاية
      */
     fun getFormattedEndTime(): String {
-        val format = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        val format = SimpleDateFormat("hh:mm:ss a", Locale.getDefault())
         return format.format(endTime)
     }
 

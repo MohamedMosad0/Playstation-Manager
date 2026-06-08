@@ -3,10 +3,10 @@ package com.mohamed.playstation.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.notifications.SessionAlarmScheduler
 import com.mohamed.playstation.core.notifications.SessionNotificationHelper
 import com.mohamed.playstation.core.utils.SessionPricing
 import com.mohamed.playstation.core.utils.SessionTicker
-import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
@@ -25,6 +25,7 @@ class SessionViewModel @Inject constructor(
     private val productUseCases: ProductUseCases,
     private val settingsManager: SettingsManager,
     private val sessionNotificationHelper: SessionNotificationHelper,
+    private val sessionAlarmScheduler: SessionAlarmScheduler,
     sessionTicker: SessionTicker
 ) : ViewModel() {
 
@@ -72,29 +73,6 @@ class SessionViewModel @Inject constructor(
     val defaultSessionMode: StateFlow<String> = settingsManager.sessionModeFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_SESSION_MODE)
 
-    private val warningSettings: StateFlow<WarningSettings> = combine(
-        settingsManager.warningsEnabledFlow,
-        settingsManager.warningSoundEnabledFlow,
-        settingsManager.warningNotificationEnabledFlow,
-        settingsManager.warningMinutesFlow
-    ) { warningsEnabled, soundEnabled, notificationEnabled, minutes ->
-        WarningSettings(
-            warningsEnabled = warningsEnabled,
-            soundEnabled = soundEnabled,
-            notificationEnabled = notificationEnabled,
-            warningMinutes = minutes
-        )
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5_000),
-        WarningSettings(
-            warningsEnabled = AppConstants.DEFAULT_WARNINGS_ENABLED,
-            soundEnabled = AppConstants.DEFAULT_WARNING_SOUND_ENABLED,
-            notificationEnabled = AppConstants.DEFAULT_WARNING_NOTIFICATION_ENABLED,
-            warningMinutes = AppConstants.DEFAULT_WARNING_MINUTES
-        )
-    )
-
     val pricingSettings: StateFlow<SessionPricing.PricingSettings> = combine(
         singlePrice,
         multiPrice,
@@ -130,12 +108,6 @@ class SessionViewModel @Inject constructor(
         )
     )
 
-    /** Prevents duplicate auto-end calls for the same session. */
-    private val endingSessionIds = mutableSetOf<Long>()
-
-    /** Prevents repeated warning notifications for the same session. */
-    private val warnedSessionIds = mutableSetOf<Long>()
-
     init {
         loadActiveSessions()
         loadPausedSessions()
@@ -146,30 +118,19 @@ class SessionViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 sessionUseCases.getActiveSessions(),
-                tickerFlow,
-                pricingSettings,
-                currency,
-                warningSettings
-            ) { sessions, tick, pricing, currencyCode, warnings ->
-                SessionMonitorState(sessions, tick, pricing, currencyCode, warnings)
+                tickerFlow
+            ) { sessions, tick ->
+                sessions to tick
             }
                 .catch { e ->
                     Timber.e(e, "Error loading active sessions")
                     _activeSessions.value = UiState.Error(e.message ?: "Unknown error")
                 }
-                .collect { state ->
-                    checkFixedSessionWarnings(state.sessions, state.tick, state.warnings)
-                    checkFixedSessionsAutoEnd(
-                        state.sessions,
-                        state.tick,
-                        state.pricing,
-                        state.currencyCode,
-                        state.warnings
-                    )
-                    _activeSessions.value = if (state.sessions.isEmpty()) {
+                .collect { (sessions, tick) ->
+                    _activeSessions.value = if (sessions.isEmpty()) {
                         UiState.Empty
                     } else {
-                        UiState.Success(state.sessions to state.tick)
+                        UiState.Success(sessions to tick)
                     }
                 }
         }
@@ -179,17 +140,15 @@ class SessionViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 sessionUseCases.getPausedSessions(),
-                tickerFlow,
-                warningSettings
-            ) { sessions, tick, warnings ->
-                Triple(sessions, tick, warnings)
+                tickerFlow
+            ) { sessions, tick ->
+                sessions to tick
             }
                 .catch { e ->
                     Timber.e(e, "Error loading paused sessions")
                     _pausedSessions.value = UiState.Error(e.message ?: "Unknown error")
                 }
-                .collect { (sessions, tick, warnings) ->
-                    checkFixedSessionWarnings(sessions, tick, warnings)
+                .collect { (sessions, tick) ->
                     _pausedSessions.value = if (sessions.isEmpty()) {
                         UiState.Empty
                     } else {
@@ -197,57 +156,6 @@ class SessionViewModel @Inject constructor(
                     }
                 }
         }
-    }
-
-    /**
-     * Fires once per session when remaining time enters the warning window.
-     */
-    private fun checkFixedSessionWarnings(
-        sessions: List<Session>,
-        tick: Long,
-        warnings: WarningSettings
-    ) {
-        if (!warnings.shouldShowNotifications()) return
-
-        val thresholdMs = warnings.warningMinutes * 60_000L
-
-        sessions
-            .asSequence()
-            .filter { it.isFixed() && (it.isActive() || it.isPaused()) }
-            .filter { it.id !in warnedSessionIds }
-            .forEach { session ->
-                val remainingMs = SessionTimer.getRemainingMs(session, tick) ?: return@forEach
-                if (remainingMs in 1..thresholdMs) {
-                    warnedSessionIds.add(session.id)
-                    sessionNotificationHelper.showSessionEndingWarning(
-                        session = session,
-                        warningMinutes = warnings.warningMinutes,
-                        soundEnabled = warnings.soundEnabled
-                    )
-                    Timber.d("Warning notification sent for session ${session.id}")
-                }
-            }
-    }
-
-    private fun checkFixedSessionsAutoEnd(
-        sessions: List<Session>,
-        tick: Long,
-        pricing: SessionPricing.PricingSettings,
-        currencyCode: String,
-        warnings: WarningSettings
-    ) {
-        sessions
-            .filter { SessionTimer.isFixedExpired(it, tick) && it.id !in endingSessionIds }
-            .forEach { session ->
-                endingSessionIds.add(session.id)
-                endSession(
-                    session = session,
-                    pricing = pricing,
-                    currencyCode = currencyCode,
-                    warnings = warnings,
-                    isAutoEnd = true
-                )
-            }
     }
 
     private fun loadActiveSessionsCount() {
@@ -265,7 +173,7 @@ class SessionViewModel @Inject constructor(
         isMultiPlayer: Boolean,
         fixedDurationMinutes: Int?
     ): Long {
-        return sessionUseCases.startSession(
+        val sessionId = sessionUseCases.startSession(
             deviceType = deviceType,
             deviceNumber = deviceNumber,
             sessionMode = sessionMode,
@@ -273,12 +181,15 @@ class SessionViewModel @Inject constructor(
             fixedDurationMinutes = fixedDurationMinutes,
             pricing = pricingSettings.value
         )
+        sessionAlarmScheduler.syncSession(sessionId)
+        return sessionId
     }
 
     fun pauseSession(session: Session) {
         viewModelScope.launch {
             try {
                 sessionUseCases.pauseSession(session)
+                sessionAlarmScheduler.cancelSessionAlarms(session.id)
                 Timber.d("Session paused: ${session.id}")
             } catch (e: Exception) {
                 Timber.e(e, "Error pausing session")
@@ -290,6 +201,7 @@ class SessionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 sessionUseCases.resumeSession(session)
+                sessionAlarmScheduler.syncSession(session.id)
                 Timber.d("Session resumed: ${session.id}")
             } catch (e: Exception) {
                 Timber.e(e, "Error resuming session")
@@ -301,48 +213,19 @@ class SessionViewModel @Inject constructor(
         session: Session,
         onReceiptCreated: (Long) -> Unit = {}
     ) {
-        endSession(
-            session = session,
-            pricing = pricingSettings.value,
-            currencyCode = currency.value,
-            warnings = warningSettings.value,
-            isAutoEnd = false,
-            onReceiptCreated = onReceiptCreated
-        )
-    }
-
-    private fun endSession(
-        session: Session,
-        pricing: SessionPricing.PricingSettings,
-        currencyCode: String,
-        warnings: WarningSettings,
-        isAutoEnd: Boolean,
-        onReceiptCreated: (Long) -> Unit = {}
-    ) {
         viewModelScope.launch {
             try {
                 val receiptId = sessionUseCases.endSessionAndCreateReceipt(
                     session = session,
-                    currencyCode = currencyCode,
-                    pricing = pricing
+                    currencyCode = currency.value,
+                    pricing = pricingSettings.value
                 )
-                endingSessionIds.remove(session.id)
-                warnedSessionIds.remove(session.id)
+                sessionAlarmScheduler.cancelSessionAlarms(session.id)
                 sessionNotificationHelper.cancelSessionNotifications(session.id)
-
-                if (isAutoEnd && session.isFixed() && warnings.shouldShowNotifications()) {
-                    sessionNotificationHelper.showSessionEnded(
-                        session = session,
-                        receiptId = receiptId,
-                        soundEnabled = warnings.soundEnabled
-                    )
-                    Timber.d("End notification sent for session ${session.id}")
-                }
 
                 Timber.d("Session ended and receipt created: $receiptId")
                 onReceiptCreated(receiptId)
             } catch (e: Exception) {
-                endingSessionIds.remove(session.id)
                 Timber.e(e, "Error ending session")
             }
         }
@@ -352,8 +235,7 @@ class SessionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 sessionUseCases.deleteSession(session)
-                warnedSessionIds.remove(session.id)
-                endingSessionIds.remove(session.id)
+                sessionAlarmScheduler.cancelSessionAlarms(session.id)
                 sessionNotificationHelper.cancelSessionNotifications(session.id)
                 Timber.d("Session deleted: ${session.id}")
             } catch (e: Exception) {
@@ -405,21 +287,4 @@ class SessionViewModel @Inject constructor(
         }
     }
 
-    private data class WarningSettings(
-        val warningsEnabled: Boolean,
-        val soundEnabled: Boolean,
-        val notificationEnabled: Boolean,
-        val warningMinutes: Int
-    ) {
-        fun shouldShowNotifications(): Boolean =
-            warningsEnabled && notificationEnabled
-    }
-
-    private data class SessionMonitorState(
-        val sessions: List<Session>,
-        val tick: Long,
-        val pricing: SessionPricing.PricingSettings,
-        val currencyCode: String,
-        val warnings: WarningSettings
-    )
 }

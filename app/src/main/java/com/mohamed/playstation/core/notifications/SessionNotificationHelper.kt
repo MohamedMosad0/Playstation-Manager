@@ -9,7 +9,6 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
-import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.presentation.ui.main.MainActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -39,17 +38,6 @@ class SessionNotificationHelper @Inject constructor(
             enableVibration(true)
         }
         notificationManager.createNotificationChannel(alertChannel)
-
-        val ongoingChannel = NotificationChannel(
-            AppConstants.ONGOING_NOTIFICATION_CHANNEL_ID,
-            AppConstants.ONGOING_NOTIFICATION_CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_LOW
-        ).apply {
-            description = context.getString(R.string.notification_channel_ongoing_description)
-            setSound(null, null)
-            enableVibration(false)
-        }
-        notificationManager.createNotificationChannel(ongoingChannel)
     }
 
     /** @deprecated Use [createNotificationChannels]. */
@@ -105,61 +93,6 @@ class SessionNotificationHelper @Inject constructor(
     fun cancelSessionNotifications(sessionId: Long) {
         notificationManager.cancel(warningNotificationId(sessionId))
         notificationManager.cancel(endedNotificationId(sessionId))
-    }
-
-    fun buildForegroundPlaceholderNotification(): android.app.Notification {
-        return buildForegroundNotification(
-            title = context.getString(R.string.notification_active_sessions_title, 0),
-            lines = emptyList()
-        )
-    }
-
-    fun buildForegroundSessionsNotification(
-        sessions: List<Session>,
-        nowMs: Long
-    ): android.app.Notification {
-        val sorted = sessions.sortedWith(
-            compareBy<Session> { it.deviceType }.thenBy { it.deviceNumber }
-        )
-        val lines = sorted.map { session ->
-            "${session.deviceType} #${session.deviceNumber} - ${SessionTimer.formatForSession(session, nowMs)}"
-        }
-        val title = context.getString(R.string.notification_active_sessions_title, sorted.size)
-        return buildForegroundNotification(title = title, lines = lines)
-    }
-
-    private fun buildForegroundNotification(
-        title: String,
-        lines: List<String>
-    ): android.app.Notification {
-        val openAppIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            AppConstants.NOTIFICATION_REQUEST_CODE_FOREGROUND,
-            openAppIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val style = NotificationCompat.InboxStyle()
-            .setBigContentTitle(title)
-        lines.forEach { style.addLine(it) }
-
-        val summary = lines.joinToString("\n")
-
-        return NotificationCompat.Builder(context, AppConstants.ONGOING_NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_ps_logo)
-            .setContentTitle(title)
-            .setContentText(summary.ifEmpty { title })
-            .setStyle(style)
-            .setContentIntent(pendingIntent)
-            .setOngoing(true)
-            .setOnlyAlertOnce(true)
-            .setSilent(true)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .build()
     }
 
     private fun buildNotification(
