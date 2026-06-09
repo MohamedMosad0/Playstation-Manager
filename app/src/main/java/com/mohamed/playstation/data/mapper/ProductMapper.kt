@@ -15,6 +15,7 @@ object ProductMapper {
             name = entity.name,
             price = entity.price,
             quantity = entity.quantity,
+            minimumQuantity = entity.minimumQuantity,
             createdAt = entity.createdAt
         )
     }
@@ -26,6 +27,7 @@ object ProductMapper {
             name = model.name,
             price = model.price,
             quantity = model.quantity,
+            minimumQuantity = model.minimumQuantity,
             createdAt = model.createdAt
         )
     }

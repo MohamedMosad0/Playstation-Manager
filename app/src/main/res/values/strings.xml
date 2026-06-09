@@ -10,6 +10,7 @@
     <string name="main_title">بلايستيشن</string>
     <string name="sessions">الجلسات</string>
     <string name="receipts">الفواتير</string>
+    <string name="inventory">المخزون</string>
     <string name="settings">الإعدادات</string>
 
     <!-- Session Status -->
@@ -35,6 +36,10 @@
     <string name="required_field">هذا الحقل مطلوب</string>
     <string name="invalid_price">أدخل سعراً صحيحاً أكبر من صفر</string>
     <string name="invalid_quantity">أدخل كمية صحيحة أكبر من صفر</string>
+    <string name="minimum_quantity">الحد الأدنى للكمية</string>
+    <string name="new_product">منتج جديد</string>
+    <string name="product_exists">هذا المنتج موجود بالفعل. استخدم التعديل أو زيادة المخزون.</string>
+    <string name="product_exists_rename">يوجد منتج آخر بهذا الاسم بالفعل.</string>
 
     <!-- Device Types -->
     <string name="ps4_standard">بلايستيشن 4 عادي</string>

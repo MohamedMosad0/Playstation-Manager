@@ -20,9 +20,10 @@ import com.mohamed.playstation.data.local.converter.DateConverter
     entities = [
         SessionEntity::class,
         ProductEntity::class,
-        ReceiptEntity::class
+        ReceiptEntity::class,
+        com.mohamed.playstation.data.local.entity.StockMovementEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)
@@ -31,6 +32,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun productDao(): ProductDao
     abstract fun receiptDao(): ReceiptDao
+    abstract fun stockMovementDao(): com.mohamed.playstation.data.local.dao.StockMovementDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -67,6 +69,32 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 database.execSQL(
                     "UPDATE `sessions` SET `isMultiPlayer` = 1 WHERE `sessionType` = 'multi'"
+                )
+            }
+        }
+
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Add minimumQuantity column with default 0 for existing rows
+                database.execSQL(
+                    "ALTER TABLE `products` ADD COLUMN `minimumQuantity` INTEGER NOT NULL DEFAULT 0"
+                )
+
+                // Create stock_movements table for tracking stock changes
+                database.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `stock_movements` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `productId` INTEGER NOT NULL,
+                        `quantityChange` INTEGER NOT NULL,
+                        `movementType` TEXT NOT NULL,
+                        `timestamp` INTEGER NOT NULL,
+                        FOREIGN KEY(`productId`) REFERENCES `products`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE
+                    )
+                    """.trimIndent()
+                )
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_stock_movements_productId` ON `stock_movements` (`productId`)"
                 )
             }
         }

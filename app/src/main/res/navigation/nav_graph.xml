@@ -24,6 +24,12 @@
             app:argType="long" />
     </fragment>
 
+    <!-- Inventory Fragment -->
+    <fragment
+        android:id="@+id/inventoryFragment"
+        android:name="com.mohamed.playstation.presentation.ui.inventory.InventoryFragment"
+        android:label="@string/inventory" />
+
     <!-- Receipts Fragment -->
     <fragment
         android:id="@+id/receiptsFragment"

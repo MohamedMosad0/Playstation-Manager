@@ -21,12 +21,42 @@ class ProductRepository @Inject constructor(
         return productDao.insert(ProductMapper.toEntity(product))
     }
 
+    suspend fun updateProduct(product: SessionProduct) {
+        val entity = ProductMapper.toEntity(product)
+        productDao.update(entity)
+    }
+
     fun getProductsBySessionId(sessionId: Long): Flow<List<SessionProduct>> {
         return productDao.getProductsBySessionId(sessionId).map(ProductMapper::toModelList)
     }
 
     suspend fun getProductsBySessionIdOnce(sessionId: Long): List<SessionProduct> {
         return ProductMapper.toModelList(productDao.getProductsBySessionIdOnce(sessionId))
+    }
+
+    suspend fun getProductById(productId: Long): SessionProduct? {
+        val entity = productDao.getProductById(productId)
+        return entity?.let { ProductMapper.toModel(it) }
+    }
+
+    suspend fun increaseStock(productId: Long, delta: Int): Long? {
+        val existing = productDao.getProductById(productId) ?: return null
+        val updated = existing.copy(quantity = existing.quantity + delta)
+        return productDao.insert(updated)
+    }
+
+    suspend fun deleteProductById(productId: Long) {
+        productDao.deleteById(productId)
+    }
+
+    suspend fun getProductByNameInSession(sessionId: Long, name: String): SessionProduct? {
+        val entity = productDao.getProductByNameInSession(sessionId, name)
+        return entity?.let { ProductMapper.toModel(it) }
+    }
+
+    suspend fun getProductByNameInSessionExcluding(sessionId: Long, name: String, excludeId: Long): SessionProduct? {
+        val entity = productDao.getProductByNameInSessionExcluding(sessionId, name, excludeId)
+        return entity?.let { ProductMapper.toModel(it) }
     }
 
     fun getAllSessionProductSummaries(): Flow<List<SessionProductSummary>> {

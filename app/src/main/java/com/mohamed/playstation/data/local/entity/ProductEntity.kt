@@ -27,6 +27,7 @@ data class ProductEntity(
     val sessionId: Long,
     val name: String,
     val price: Double,
-    val quantity: Int,
+    val quantity: Int = 0,
+    val minimumQuantity: Int = 0,
     val createdAt: Date = Date()
 )
