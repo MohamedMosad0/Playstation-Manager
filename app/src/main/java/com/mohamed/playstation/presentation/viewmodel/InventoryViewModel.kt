@@ -33,9 +33,7 @@ class InventoryViewModel @Inject constructor(
     private val _currentSessionId = MutableStateFlow<Long?>(null)
     val currentSessionId: StateFlow<Long?> = _currentSessionId.asStateFlow()
 
-    val products: StateFlow<List<SessionProduct>> = currentSessionId
-        .filterNotNull()
-        .flatMapLatest { sessionId -> productRepository.getProductsBySessionId(sessionId) }
+    val products: StateFlow<List<SessionProduct>> = productRepository.getAllProducts()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     private val _movementsWithNames = MutableStateFlow<List<StockMovementView>>(emptyList())
@@ -148,7 +146,7 @@ class InventoryViewModel @Inject constructor(
 
     suspend fun checkProductExists(sessionId: Long, name: String): Boolean {
         return try {
-            productRepository.getProductByNameInSession(sessionId, name) != null
+            productRepository.getProductByName(name) != null
         } catch (_: Exception) {
             false
         }
@@ -156,7 +154,7 @@ class InventoryViewModel @Inject constructor(
 
     suspend fun checkProductExistsExcluding(sessionId: Long, name: String, excludeId: Long): Boolean {
         return try {
-            productRepository.getProductByNameInSessionExcluding(sessionId, name, excludeId) != null
+            productRepository.getProductByNameExcluding(name, excludeId) != null
         } catch (_: Exception) {
             false
         }

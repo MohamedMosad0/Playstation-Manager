@@ -26,6 +26,10 @@ class ProductRepository @Inject constructor(
         productDao.update(entity)
     }
 
+    fun getAllProducts(): Flow<List<SessionProduct>> {
+        return productDao.getAllProducts().map(ProductMapper::toModelList)
+    }
+
     fun getProductsBySessionId(sessionId: Long): Flow<List<SessionProduct>> {
         return productDao.getProductsBySessionId(sessionId).map(ProductMapper::toModelList)
     }
@@ -47,6 +51,16 @@ class ProductRepository @Inject constructor(
 
     suspend fun deleteProductById(productId: Long) {
         productDao.deleteById(productId)
+    }
+
+    suspend fun getProductByName(name: String): SessionProduct? {
+        val entity = productDao.getProductByName(name)
+        return entity?.let { ProductMapper.toModel(it) }
+    }
+
+    suspend fun getProductByNameExcluding(name: String, excludeId: Long): SessionProduct? {
+        val entity = productDao.getProductByNameExcluding(name, excludeId)
+        return entity?.let { ProductMapper.toModel(it) }
     }
 
     suspend fun getProductByNameInSession(sessionId: Long, name: String): SessionProduct? {

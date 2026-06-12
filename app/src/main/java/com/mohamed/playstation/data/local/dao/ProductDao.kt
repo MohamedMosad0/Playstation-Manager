@@ -20,6 +20,9 @@ interface ProductDao {
     @Update
     suspend fun update(product: ProductEntity)
 
+    @Query("SELECT * FROM products ORDER BY createdAt DESC, id DESC")
+    fun getAllProducts(): Flow<List<ProductEntity>>
+
     @Query("SELECT * FROM products WHERE sessionId = :sessionId ORDER BY createdAt DESC, id DESC")
     fun getProductsBySessionId(sessionId: Long): Flow<List<ProductEntity>>
 
@@ -43,6 +46,12 @@ interface ProductDao {
 
     @Query("DELETE FROM products WHERE id = :productId")
     suspend fun deleteById(productId: Long)
+
+    @Query("SELECT * FROM products WHERE LOWER(TRIM(name)) = LOWER(TRIM(:name)) LIMIT 1")
+    suspend fun getProductByName(name: String): ProductEntity?
+
+    @Query("SELECT * FROM products WHERE LOWER(TRIM(name)) = LOWER(TRIM(:name)) AND id != :excludeId LIMIT 1")
+    suspend fun getProductByNameExcluding(name: String, excludeId: Long): ProductEntity?
 
     @Query("SELECT * FROM products WHERE sessionId = :sessionId AND LOWER(TRIM(name)) = LOWER(TRIM(:name)) LIMIT 1")
     suspend fun getProductByNameInSession(sessionId: Long, name: String): ProductEntity?
