@@ -17,6 +17,11 @@
         android:title="@string/receipts" />
 
     <item
+        android:id="@+id/expensesFragment"
+        android:icon="@drawable/ic_expenses"
+        android:title="@string/expenses" />
+
+    <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"
         android:title="@string/settings" />

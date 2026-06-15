@@ -33,11 +33,47 @@ class InventoryViewModel @Inject constructor(
     private val _currentSessionId = MutableStateFlow<Long?>(null)
     val currentSessionId: StateFlow<Long?> = _currentSessionId.asStateFlow()
 
-    val products: StateFlow<List<SessionProduct>> = productRepository.getAllProducts()
+    private val _searchQuery = MutableStateFlow("")
+    private val _movementSearchQuery = MutableStateFlow("")
+
+    val products: StateFlow<List<SessionProduct>> = productRepository.getInventoryProducts()
+        .combine(_searchQuery) { list, query ->
+            if (query.isBlank()) list
+            else list.filter { it.name.contains(query, ignoreCase = true) }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    private val _movementsWithNames = MutableStateFlow<List<StockMovementView>>(emptyList())
-    val movementsWithNames = _movementsWithNames.asStateFlow()
+    private val allResolvedMovements: StateFlow<List<StockMovementView>> = stockMovementRepository.getAllMovements()
+        .map { list ->
+            list.map { m ->
+                val product = try { productRepository.getProductById(m.productId) } catch (e: Exception) { null }
+                StockMovementView(
+                    id = m.id,
+                    productId = m.productId,
+                    productName = product?.name ?: "[Deleted Product]",
+                    quantityChange = m.quantityChange,
+                    movementType = m.movementType,
+                    timestamp = m.timestamp
+                )
+            }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val movementsWithNames: StateFlow<List<StockMovementView>> = combine(
+        allResolvedMovements,
+        _movementSearchQuery
+    ) { resolvedList, query ->
+        if (query.isBlank()) resolvedList
+        else resolvedList.filter { it.productName.contains(query, ignoreCase = true) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    fun setSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+
+    fun setMovementSearchQuery(query: String) {
+        _movementSearchQuery.value = query
+    }
 
     init {
         // load current session id
@@ -45,24 +81,6 @@ class InventoryViewModel @Inject constructor(
             sessionRepository.getAllSessions()
                 .map { sessions -> sessions.firstOrNull()?.id }
                 .collect { id -> _currentSessionId.value = id }
-        }
-
-        // resolve movement names whenever movements change
-        viewModelScope.launch {
-            stockMovementRepository.getAllMovements().collect { list ->
-                val resolved = list.map { m ->
-                    val product = try { productRepository.getProductById(m.productId) } catch (e: Exception) { null }
-                    StockMovementView(
-                        id = m.id,
-                        productId = m.productId,
-                        productName = product?.name ?: "[Deleted Product]",
-                        quantityChange = m.quantityChange,
-                        movementType = m.movementType,
-                        timestamp = m.timestamp
-                    )
-                }
-                _movementsWithNames.value = resolved
-            }
         }
     }
 
@@ -146,7 +164,7 @@ class InventoryViewModel @Inject constructor(
 
     suspend fun checkProductExists(sessionId: Long, name: String): Boolean {
         return try {
-            productRepository.getProductByName(name) != null
+            productRepository.getInventoryProductByName(name) != null
         } catch (_: Exception) {
             false
         }
@@ -154,7 +172,7 @@ class InventoryViewModel @Inject constructor(
 
     suspend fun checkProductExistsExcluding(sessionId: Long, name: String, excludeId: Long): Boolean {
         return try {
-            productRepository.getProductByNameExcluding(name, excludeId) != null
+            productRepository.getInventoryProductByNameExcluding(name, excludeId) != null
         } catch (_: Exception) {
             false
         }

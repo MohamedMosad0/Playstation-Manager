@@ -118,9 +118,9 @@ class ReceiptDetailDialog : DialogFragment() {
             tvProductsCost.text = CurrencyUtils.formatAmount(productsAmount, currentReceipt.currencyCode)
             tvTotal.text = "${String.format(Locale.getDefault(), "%.2f", currentReceipt.totalAmount)} $currencySymbol"
             tvProductsList.text = currentProducts.joinToString("\n") { product ->
-                "${product.name} x${product.quantity} = ${
-                    CurrencyUtils.formatAmount(product.getLineTotal(), currentReceipt.currencyCode)
-                }"
+                val unitPrice = CurrencyUtils.formatAmount(product.price, currentReceipt.currencyCode)
+                val lineTotal = CurrencyUtils.formatAmount(product.getLineTotal(), currentReceipt.currencyCode)
+                "${product.name} ($unitPrice × ${product.quantity} = $lineTotal)"
             }
             tvProductsList.isVisible = currentProducts.isNotEmpty()
             tvNoProducts.isVisible = currentProducts.isEmpty()
@@ -231,11 +231,9 @@ class ReceiptDetailDialog : DialogFragment() {
             if (currentProducts.isNotEmpty()) {
                 appendLine(getString(R.string.products))
                 currentProducts.forEach { product ->
-                    appendLine(
-                        "- ${product.name} x${product.quantity} = ${
-                            CurrencyUtils.formatAmount(product.getLineTotal(), receipt.currencyCode)
-                        }"
-                    )
+                    val unitPrice = CurrencyUtils.formatAmount(product.price, receipt.currencyCode)
+                    val lineTotal = CurrencyUtils.formatAmount(product.getLineTotal(), receipt.currencyCode)
+                    appendLine("- ${product.name}: $unitPrice × ${product.quantity} = $lineTotal")
                 }
             }
             appendLine(

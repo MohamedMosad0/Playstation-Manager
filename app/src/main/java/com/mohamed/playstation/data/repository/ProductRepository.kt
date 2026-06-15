@@ -1,5 +1,7 @@
 package com.mohamed.playstation.data.repository
 
+import androidx.room.withTransaction
+import com.mohamed.playstation.data.local.AppDatabase
 import com.mohamed.playstation.data.local.dao.ProductDao
 import com.mohamed.playstation.data.mapper.ProductMapper
 import com.mohamed.playstation.domain.model.SessionProduct
@@ -14,8 +16,13 @@ import javax.inject.Singleton
  */
 @Singleton
 class ProductRepository @Inject constructor(
-    private val productDao: ProductDao
+    private val productDao: ProductDao,
+    private val database: AppDatabase
 ) {
+
+    suspend fun <T> withTransaction(block: suspend () -> T): T {
+        return database.withTransaction(block)
+    }
 
     suspend fun insertProduct(product: SessionProduct): Long {
         return productDao.insert(ProductMapper.toEntity(product))
@@ -30,6 +37,10 @@ class ProductRepository @Inject constructor(
         return productDao.getAllProducts().map(ProductMapper::toModelList)
     }
 
+    fun getInventoryProducts(): Flow<List<SessionProduct>> {
+        return productDao.getInventoryProducts().map(ProductMapper::toModelList)
+    }
+
     fun getProductsBySessionId(sessionId: Long): Flow<List<SessionProduct>> {
         return productDao.getProductsBySessionId(sessionId).map(ProductMapper::toModelList)
     }
@@ -41,6 +52,15 @@ class ProductRepository @Inject constructor(
     suspend fun getProductById(productId: Long): SessionProduct? {
         val entity = productDao.getProductById(productId)
         return entity?.let { ProductMapper.toModel(it) }
+    }
+
+    suspend fun getInventoryProductById(productId: Long): SessionProduct? {
+        val entity = productDao.getInventoryProductById(productId)
+        return entity?.let { ProductMapper.toModel(it) }
+    }
+
+    suspend fun decreaseInventoryStockIfAvailable(productId: Long, delta: Int): Boolean {
+        return productDao.decreaseInventoryStockIfAvailable(productId, delta) > 0
     }
 
     suspend fun increaseStock(productId: Long, delta: Int): Long? {
@@ -60,6 +80,16 @@ class ProductRepository @Inject constructor(
 
     suspend fun getProductByNameExcluding(name: String, excludeId: Long): SessionProduct? {
         val entity = productDao.getProductByNameExcluding(name, excludeId)
+        return entity?.let { ProductMapper.toModel(it) }
+    }
+
+    suspend fun getInventoryProductByName(name: String): SessionProduct? {
+        val entity = productDao.getInventoryProductByName(name)
+        return entity?.let { ProductMapper.toModel(it) }
+    }
+
+    suspend fun getInventoryProductByNameExcluding(name: String, excludeId: Long): SessionProduct? {
+        val entity = productDao.getInventoryProductByNameExcluding(name, excludeId)
         return entity?.let { ProductMapper.toModel(it) }
     }
 

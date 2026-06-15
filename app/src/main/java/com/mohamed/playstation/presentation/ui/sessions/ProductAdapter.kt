@@ -38,8 +38,10 @@ class ProductAdapter(
 
         fun bind(product: SessionProduct) {
             binding.tvProductName.text = product.name
-            binding.tvProductQuantity.text = "x${product.quantity}"
-            binding.tvProductPrice.text = CurrencyUtils.formatAmount(product.getLineTotal(), currencyCode)
+            val unitPrice = CurrencyUtils.formatAmount(product.price, currencyCode)
+            val lineTotal = CurrencyUtils.formatAmount(product.getLineTotal(), currencyCode)
+            binding.tvProductQuantity.text = "$unitPrice × ${product.quantity}"
+            binding.tvProductPrice.text = lineTotal
         }
     }
 

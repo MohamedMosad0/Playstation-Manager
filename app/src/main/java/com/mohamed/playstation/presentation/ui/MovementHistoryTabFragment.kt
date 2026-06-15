@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -47,6 +49,10 @@ class MovementHistoryTabFragment : Fragment() {
         binding.rvMovements.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMovements.adapter = adapter
 
+        binding.etSearch.doAfterTextChanged { text ->
+            viewModel.setMovementSearchQuery(text?.toString() ?: "")
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.movementsWithNames.collect { list ->
@@ -83,6 +89,15 @@ class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmo
                 append(sign)
                 append(kotlin.math.abs(item.quantityChange))
             }
+            
+            // Color Coding based on movement type
+            val color = if (item.quantityChange >= 0) {
+                ContextCompat.getColor(itemView.context, R.color.status_active)
+            } else {
+                ContextCompat.getColor(itemView.context, R.color.status_error)
+            }
+            tvChange.setTextColor(color)
+
             tvProduct.text = item.productName
             tvTime.text = android.text.format.DateFormat.format("yyyy-MM-dd HH:mm", item.timestamp).toString()
         }

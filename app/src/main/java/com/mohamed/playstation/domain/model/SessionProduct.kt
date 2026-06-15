@@ -15,4 +15,6 @@ data class SessionProduct(
     val createdAt: Date = Date()
 ) {
     fun getLineTotal(): Double = price * quantity
+
+    val isLowStock: Boolean get() = quantity <= minimumQuantity
 }

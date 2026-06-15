@@ -40,6 +40,9 @@ class SessionViewModel @Inject constructor(
     private val _activeSessionsCount = MutableStateFlow(0)
     val activeSessionsCount: StateFlow<Int> = _activeSessionsCount.asStateFlow()
 
+    val inventoryProducts: StateFlow<List<SessionProduct>> = productUseCases.getInventoryProducts()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val singlePrice: StateFlow<Double> = settingsManager.singlePriceFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_SINGLE_PRICE)
 
@@ -261,6 +264,29 @@ class SessionViewModel @Inject constructor(
                 Timber.d("Product added to session: $sessionId")
             } catch (e: Exception) {
                 Timber.e(e, "Error adding product to session")
+            }
+        }
+    }
+
+    fun addInventoryProductToSession(
+        sessionId: Long,
+        inventoryProductId: Long,
+        quantity: Int,
+        onSuccess: () -> Unit = {},
+        onError: (Throwable) -> Unit = {}
+    ) {
+        viewModelScope.launch {
+            try {
+                productUseCases.addInventoryProductToSession(
+                    sessionId = sessionId,
+                    inventoryProductId = inventoryProductId,
+                    quantity = quantity
+                )
+                Timber.d("Inventory product added to session: $sessionId")
+                onSuccess()
+            } catch (e: Exception) {
+                Timber.e(e, "Error adding inventory product to session")
+                onError(e)
             }
         }
     }

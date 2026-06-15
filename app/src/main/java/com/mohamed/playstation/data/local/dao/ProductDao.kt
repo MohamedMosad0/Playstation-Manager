@@ -23,14 +23,73 @@ interface ProductDao {
     @Query("SELECT * FROM products ORDER BY createdAt DESC, id DESC")
     fun getAllProducts(): Flow<List<ProductEntity>>
 
-    @Query("SELECT * FROM products WHERE sessionId = :sessionId ORDER BY createdAt DESC, id DESC")
+    @Query(
+        """
+        SELECT * FROM products
+        WHERE EXISTS (
+            SELECT 1 FROM stock_movements
+            WHERE stock_movements.productId = products.id
+        )
+        ORDER BY createdAt DESC, id DESC
+        """
+    )
+    fun getInventoryProducts(): Flow<List<ProductEntity>>
+
+    @Query(
+        """
+        SELECT * FROM products
+        WHERE sessionId = :sessionId
+          AND NOT EXISTS (
+              SELECT 1 FROM stock_movements
+              WHERE stock_movements.productId = products.id
+          )
+        ORDER BY createdAt DESC, id DESC
+        """
+    )
     fun getProductsBySessionId(sessionId: Long): Flow<List<ProductEntity>>
 
-    @Query("SELECT * FROM products WHERE sessionId = :sessionId ORDER BY createdAt DESC, id DESC")
+    @Query(
+        """
+        SELECT * FROM products
+        WHERE sessionId = :sessionId
+          AND NOT EXISTS (
+              SELECT 1 FROM stock_movements
+              WHERE stock_movements.productId = products.id
+          )
+        ORDER BY createdAt DESC, id DESC
+        """
+    )
     suspend fun getProductsBySessionIdOnce(sessionId: Long): List<ProductEntity>
 
     @Query("SELECT * FROM products WHERE id = :productId LIMIT 1")
     suspend fun getProductById(productId: Long): ProductEntity?
+
+    @Query(
+        """
+        SELECT * FROM products
+        WHERE id = :productId
+          AND EXISTS (
+              SELECT 1 FROM stock_movements
+              WHERE stock_movements.productId = products.id
+          )
+        LIMIT 1
+        """
+    )
+    suspend fun getInventoryProductById(productId: Long): ProductEntity?
+
+    @Query(
+        """
+        UPDATE products
+        SET quantity = quantity - :delta
+        WHERE id = :productId
+          AND quantity >= :delta
+          AND EXISTS (
+              SELECT 1 FROM stock_movements
+              WHERE stock_movements.productId = products.id
+          )
+        """
+    )
+    suspend fun decreaseInventoryStockIfAvailable(productId: Long, delta: Int): Int
 
     @Query(
         """
@@ -39,6 +98,10 @@ interface ProductDao {
             COALESCE(SUM(quantity), 0) AS totalQuantity,
             COALESCE(SUM(price * quantity), 0) AS totalAmount
         FROM products
+        WHERE NOT EXISTS (
+            SELECT 1 FROM stock_movements
+            WHERE stock_movements.productId = products.id
+        )
         GROUP BY sessionId
         """
     )
@@ -52,6 +115,33 @@ interface ProductDao {
 
     @Query("SELECT * FROM products WHERE LOWER(TRIM(name)) = LOWER(TRIM(:name)) AND id != :excludeId LIMIT 1")
     suspend fun getProductByNameExcluding(name: String, excludeId: Long): ProductEntity?
+
+    @Query(
+        """
+        SELECT * FROM products
+        WHERE LOWER(TRIM(name)) = LOWER(TRIM(:name))
+          AND EXISTS (
+              SELECT 1 FROM stock_movements
+              WHERE stock_movements.productId = products.id
+          )
+        LIMIT 1
+        """
+    )
+    suspend fun getInventoryProductByName(name: String): ProductEntity?
+
+    @Query(
+        """
+        SELECT * FROM products
+        WHERE LOWER(TRIM(name)) = LOWER(TRIM(:name))
+          AND id != :excludeId
+          AND EXISTS (
+              SELECT 1 FROM stock_movements
+              WHERE stock_movements.productId = products.id
+          )
+        LIMIT 1
+        """
+    )
+    suspend fun getInventoryProductByNameExcluding(name: String, excludeId: Long): ProductEntity?
 
     @Query("SELECT * FROM products WHERE sessionId = :sessionId AND LOWER(TRIM(name)) = LOWER(TRIM(:name)) LIMIT 1")
     suspend fun getProductByNameInSession(sessionId: Long, name: String): ProductEntity?

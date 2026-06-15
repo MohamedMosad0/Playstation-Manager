@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -54,6 +56,10 @@ class ProductsTabFragment : Fragment() {
 
         binding.rvProducts.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProducts.adapter = adapter
+
+        binding.etSearch.doAfterTextChanged { text ->
+            viewModel.setSearchQuery(text?.toString() ?: "")
+        }
 
         binding.btnNewProduct.setOnClickListener {
             showNewProductDialog()
@@ -230,6 +236,14 @@ class ProductsAdapter(
             tvPrice.text = item.price.toString()
             tvQuantity.text = item.quantity.toString()
             tvMin.text = item.minimumQuantity.toString()
+
+            // Low Stock Warning UI Logic
+            val color = if (item.isLowStock) {
+                ContextCompat.getColor(itemView.context, R.color.status_error)
+            } else {
+                ContextCompat.getColor(itemView.context, R.color.text_primary)
+            }
+            tvQuantity.setTextColor(color)
 
             btnEdit.setOnClickListener { onEdit(item) }
             btnDelete.setOnClickListener { onDelete(item) }

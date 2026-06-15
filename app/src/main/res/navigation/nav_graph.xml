@@ -42,4 +42,10 @@
         android:name="com.mohamed.playstation.presentation.ui.settings.SettingsFragment"
         android:label="@string/settings" />
 
+    <!-- Expenses Fragment -->
+    <fragment
+        android:id="@+id/expensesFragment"
+        android:name="com.mohamed.playstation.presentation.ui.expenses.ExpensesFragment"
+        android:label="@string/expenses" />
+
 </navigation>

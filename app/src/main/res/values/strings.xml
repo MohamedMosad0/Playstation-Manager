@@ -41,6 +41,12 @@
     <string name="product_exists">هذا المنتج موجود بالفعل. استخدم التعديل أو زيادة المخزون.</string>
     <string name="product_exists_rename">يوجد منتج آخر بهذا الاسم بالفعل.</string>
 
+    <string name="select_inventory_product">Select an inventory product</string>
+    <string name="available_quantity">Available stock</string>
+    <string name="requested_quantity">Requested quantity</string>
+    <string name="insufficient_stock">Requested quantity exceeds available stock</string>
+    <string name="no_inventory_products">No inventory products available</string>
+
     <!-- Device Types -->
     <string name="ps4_standard">بلايستيشن 4 عادي</string>
     <string name="ps4_pro">بلايستيشن 4 برو</string>
@@ -195,6 +201,25 @@
     <string name="notification_active_sessions_title">🎮 Active Sessions: %1$d</string>
     <string name="notification_session_ending_warning">ستنتهي الجلسة خلال %1$d دقائق</string>
     <string name="notification_session_ended_receipt">انتهت الجلسة وتم إنشاء الفاتورة</string>
+
+    <!-- Expenses -->
+    <string name="expenses">المصروفات</string>
+    <string name="total_expenses">إجمالي المصروفات</string>
+    <string name="expense_count">عدد العمليات</string>
+    <string name="no_expenses">لا توجد مصروفات</string>
+    <string name="add_expense">إضافة مصروف</string>
+    <string name="expense_added">تم إضافة المصروف بنجاح</string>
+    <string name="expense_deleted">تم حذف المصروف</string>
+    <string name="amount">المبلغ</string>
+    <string name="category">التصنيف</string>
+    <string name="notes">ملاحظات</string>
+    <string name="date">التاريخ</string>
+    <string name="category_electricity">كهرباء</string>
+    <string name="category_internet">إنترنت</string>
+    <string name="category_maintenance">صيانة</string>
+    <string name="category_purchases">مشتريات</string>
+    <string name="category_water">مياه</string>
+    <string name="category_other">أخرى</string>
 
     <!-- Messages -->
     <string name="session_started">تم بدء الجلسة بنجاح</string>

@@ -8,6 +8,7 @@ import com.mohamed.playstation.data.local.dao.ProductDao
 import com.mohamed.playstation.data.local.dao.SessionDao
 import com.mohamed.playstation.data.local.dao.ReceiptDao
 import com.mohamed.playstation.data.local.dao.StockMovementDao
+import com.mohamed.playstation.data.local.dao.ExpenseDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,7 +39,8 @@ object DatabaseModule {
             .addMigrations(
                 AppDatabase.MIGRATION_1_2,
                 AppDatabase.MIGRATION_2_3,
-                AppDatabase.MIGRATION_3_4
+                AppDatabase.MIGRATION_3_4,
+                AppDatabase.MIGRATION_4_5
             )
             .build()
     }
@@ -77,5 +79,14 @@ object DatabaseModule {
     @Singleton
     fun provideStockMovementDao(database: AppDatabase): StockMovementDao {
         return database.stockMovementDao()
+    }
+
+    /**
+     * توفير ExpenseDao
+     */
+    @Provides
+    @Singleton
+    fun provideExpenseDao(database: AppDatabase): ExpenseDao {
+        return database.expenseDao()
     }
 }

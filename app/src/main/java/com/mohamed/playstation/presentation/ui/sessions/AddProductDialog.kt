@@ -2,24 +2,34 @@ package com.mohamed.playstation.presentation.ui.sessions
 
 import android.app.Dialog
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.R
-import com.mohamed.playstation.databinding.DialogAddProductBinding
+import com.mohamed.playstation.databinding.DialogAddSessionProductBinding
+import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddProductDialog : DialogFragment() {
 
-    private var _binding: DialogAddProductBinding? = null
+    private var _binding: DialogAddSessionProductBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: SessionViewModel by viewModels({ requireParentFragment() })
 
     private var sessionId: Long = 0L
+    private var inventoryProducts: List<SessionProduct> = emptyList()
+    private var selectedProduct: SessionProduct? = null
+    private lateinit var productAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +37,10 @@ class AddProductDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = DialogAddProductBinding.inflate(layoutInflater)
+        _binding = DialogAddSessionProductBinding.inflate(layoutInflater)
+        setupProductDropdown()
         clearErrorsOnInput()
+        observeInventoryProducts()
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.add_product)
@@ -39,54 +51,129 @@ class AddProductDialog : DialogFragment() {
 
         dialog.setOnShowListener {
             dialog.getButton(Dialog.BUTTON_POSITIVE).setOnClickListener {
-                if (saveProduct()) {
-                    dismiss()
-                }
+                submitProduct(dialog)
             }
         }
 
         return dialog
     }
 
-    private fun clearErrorsOnInput() {
-        binding.etProductName.doAfterTextChanged { binding.tilProductName.error = null }
-        binding.etProductPrice.doAfterTextChanged { binding.tilProductPrice.error = null }
-        binding.etQuantity.doAfterTextChanged { binding.tilQuantity.error = null }
+    private fun setupProductDropdown() {
+        productAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            mutableListOf()
+        )
+        binding.actInventoryProduct.setAdapter(productAdapter)
+        binding.actInventoryProduct.setOnClickListener {
+            binding.actInventoryProduct.showDropDown()
+        }
+        binding.actInventoryProduct.setOnItemClickListener { _, _, position, _ ->
+            selectedProduct = inventoryProducts.getOrNull(position)
+            selectedProduct?.let(::showSelectedProduct)
+        }
     }
 
-    private fun saveProduct(): Boolean {
-        if (sessionId <= 0L) return false
+    private fun observeInventoryProducts() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.inventoryProducts.collect { products ->
+                    updateInventoryProducts(products)
+                }
+            }
+        }
+    }
 
-        val name = binding.etProductName.text?.toString()?.trim().orEmpty()
-        val price = binding.etProductPrice.text?.toString()?.toDoubleOrNull()
-        val quantity = binding.etQuantity.text?.toString()?.toIntOrNull()
+    private fun updateInventoryProducts(products: List<SessionProduct>) {
+        inventoryProducts = products
+        productAdapter.clear()
+        productAdapter.addAll(products.map { it.name })
+        productAdapter.notifyDataSetChanged()
+
+        val selectedId = selectedProduct?.id ?: return
+        val updatedSelection = products.firstOrNull { it.id == selectedId }
+        selectedProduct = updatedSelection
+        if (updatedSelection != null) {
+            showSelectedProduct(updatedSelection, updateName = false)
+        } else {
+            clearSelectedProduct()
+        }
+    }
+
+    private fun showSelectedProduct(product: SessionProduct, updateName: Boolean = true) {
+        if (updateName) {
+            binding.actInventoryProduct.setText(product.name, false)
+        }
+        binding.etProductPrice.setText(product.price.toString())
+        binding.etAvailableQuantity.setText(product.quantity.toString())
+        binding.tilInventoryProduct.error = null
+        binding.tilRequestedQuantity.error = null
+    }
+
+    private fun clearSelectedProduct() {
+        binding.actInventoryProduct.setText("", false)
+        binding.etProductPrice.setText("")
+        binding.etAvailableQuantity.setText("")
+        selectedProduct = null
+    }
+
+    private fun clearErrorsOnInput() {
+        binding.actInventoryProduct.doAfterTextChanged {
+            binding.tilInventoryProduct.error = null
+        }
+        binding.etRequestedQuantity.doAfterTextChanged {
+            binding.tilRequestedQuantity.error = null
+        }
+    }
+
+    private fun submitProduct(dialog: AlertDialog) {
+        if (sessionId <= 0L) return
+
+        val product = selectedProduct
+        val quantity = binding.etRequestedQuantity.text?.toString()?.toIntOrNull()
 
         var isValid = true
 
-        if (name.isBlank()) {
-            binding.tilProductName.error = getString(R.string.required_field)
-            isValid = false
-        }
-
-        if (price == null || price <= 0) {
-            binding.tilProductPrice.error = getString(R.string.invalid_price)
+        if (product == null) {
+            binding.tilInventoryProduct.error = getString(R.string.select_inventory_product)
             isValid = false
         }
 
         if (quantity == null || quantity <= 0) {
-            binding.tilQuantity.error = getString(R.string.invalid_quantity)
+            binding.tilRequestedQuantity.error = getString(R.string.invalid_quantity)
+            isValid = false
+        } else if (product != null && quantity > product.quantity) {
+            binding.tilRequestedQuantity.error = getString(R.string.insufficient_stock)
             isValid = false
         }
 
-        if (!isValid) return false
+        if (!isValid || product == null || quantity == null) return
 
-        viewModel.addProduct(
+        dialog.getButton(Dialog.BUTTON_POSITIVE).isEnabled = false
+        viewModel.addInventoryProductToSession(
             sessionId = sessionId,
-            name = name,
-            price = price!!,
-            quantity = quantity!!
+            inventoryProductId = product.id,
+            quantity = quantity,
+            onSuccess = {
+                if (isAdded) {
+                    dismiss()
+                }
+            },
+            onError = { error ->
+                val currentBinding = _binding
+                if (currentBinding != null) {
+                    dialog.getButton(Dialog.BUTTON_POSITIVE).isEnabled = true
+                    val message = error.message.orEmpty()
+                    if (message.contains("stock", ignoreCase = true)) {
+                        currentBinding.tilRequestedQuantity.error =
+                            getString(R.string.insufficient_stock)
+                    } else {
+                        currentBinding.tilInventoryProduct.error =
+                            error.message ?: getString(R.string.error_occurred)
+                    }
+                }
+            }
         )
-        return true
     }
 
     override fun onDestroy() {

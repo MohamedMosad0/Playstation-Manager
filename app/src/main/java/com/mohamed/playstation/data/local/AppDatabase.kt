@@ -8,9 +8,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.mohamed.playstation.data.local.dao.SessionDao
 import com.mohamed.playstation.data.local.dao.ProductDao
 import com.mohamed.playstation.data.local.dao.ReceiptDao
+import com.mohamed.playstation.data.local.dao.ExpenseDao
 import com.mohamed.playstation.data.local.entity.SessionEntity
 import com.mohamed.playstation.data.local.entity.ProductEntity
 import com.mohamed.playstation.data.local.entity.ReceiptEntity
+import com.mohamed.playstation.data.local.entity.ExpenseEntity
 import com.mohamed.playstation.data.local.converter.DateConverter
 
 /**
@@ -21,9 +23,10 @@ import com.mohamed.playstation.data.local.converter.DateConverter
         SessionEntity::class,
         ProductEntity::class,
         ReceiptEntity::class,
-        com.mohamed.playstation.data.local.entity.StockMovementEntity::class
+        com.mohamed.playstation.data.local.entity.StockMovementEntity::class,
+        ExpenseEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class)
@@ -33,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun productDao(): ProductDao
     abstract fun receiptDao(): ReceiptDao
     abstract fun stockMovementDao(): com.mohamed.playstation.data.local.dao.StockMovementDao
+    abstract fun expenseDao(): ExpenseDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -95,6 +99,26 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 database.execSQL(
                     "CREATE INDEX IF NOT EXISTS `index_stock_movements_productId` ON `stock_movements` (`productId`)"
+                )
+            }
+        }
+
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `expenses` (
+                        `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        `amount` REAL NOT NULL,
+                        `category` TEXT NOT NULL,
+                        `description` TEXT,
+                        `expenseDate` INTEGER NOT NULL,
+                        `createdAt` INTEGER NOT NULL
+                    )
+                    """.trimIndent()
+                )
+                database.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_expenses_expenseDate` ON `expenses` (`expenseDate`)"
                 )
             }
         }
