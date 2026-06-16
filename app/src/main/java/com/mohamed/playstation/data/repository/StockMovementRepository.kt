@@ -25,6 +25,10 @@ class StockMovementRepository @Inject constructor(
         return stockMovementDao.getAllMovements().map(StockMovementMapper::toModelList)
     }
 
+    fun getAllMovementsWithNames(): Flow<List<StockMovementDao.StockMovementWithName>> {
+        return stockMovementDao.getAllMovementsWithNames()
+    }
+
     suspend fun deleteByProductId(productId: Long) {
         stockMovementDao.deleteByProductId(productId)
     }

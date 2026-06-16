@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SessionViewModel @Inject constructor(
-    internal val sessionUseCases: SessionUseCases,
+    private val sessionUseCases: SessionUseCases,
     private val productUseCases: ProductUseCases,
     private val settingsManager: SettingsManager,
     private val sessionNotificationHelper: SessionNotificationHelper,
@@ -245,6 +245,10 @@ class SessionViewModel @Inject constructor(
                 Timber.e(e, "Error deleting session")
             }
         }
+    }
+
+    suspend fun getSessionById(sessionId: Long): Session? {
+        return sessionUseCases.getSessionById(sessionId)
     }
 
     fun addProduct(

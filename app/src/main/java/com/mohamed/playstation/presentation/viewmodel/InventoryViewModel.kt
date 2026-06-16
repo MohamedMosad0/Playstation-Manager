@@ -43,21 +43,27 @@ class InventoryViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    private val allResolvedMovements: StateFlow<List<StockMovementView>> = stockMovementRepository.getAllMovements()
-        .map { list ->
-            list.map { m ->
-                val product = try { productRepository.getProductById(m.productId) } catch (e: Exception) { null }
-                StockMovementView(
-                    id = m.id,
-                    productId = m.productId,
-                    productName = product?.name ?: "[Deleted Product]",
-                    quantityChange = m.quantityChange,
-                    movementType = m.movementType,
-                    timestamp = m.timestamp
-                )
+    private val allResolvedMovements: StateFlow<List<StockMovementView>> =
+        stockMovementRepository.getAllMovementsWithNames()
+            .map { list ->
+                list.map { row ->
+                    val movementType = try {
+                        MovementType.valueOf(row.movementType)
+                    } catch (e: Exception) {
+                        MovementType.STOCK_IN
+                    }
+                    StockMovementView(
+                        id = row.id,
+                        productId = row.productId,
+                        productName = row.productName ?: "[Deleted Product]",
+                        quantityChange = row.quantityChange,
+                        movementType = movementType,
+                        timestamp = row.timestamp
+                    )
+                }
             }
-        }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
 
     val movementsWithNames: StateFlow<List<StockMovementView>> = combine(
         allResolvedMovements,

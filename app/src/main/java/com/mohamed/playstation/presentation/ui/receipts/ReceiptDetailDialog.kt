@@ -68,7 +68,7 @@ class ReceiptDetailDialog : DialogFragment() {
                 return@launch
             }
 
-            val loadedSession = sessionViewModel.sessionUseCases.getSessionById(loadedReceipt.sessionId)
+            val loadedSession = sessionViewModel.getSessionById(loadedReceipt.sessionId)
             val loadedProducts = receiptViewModel.getProductsBySessionId(loadedReceipt.sessionId)
 
             receipt = loadedReceipt

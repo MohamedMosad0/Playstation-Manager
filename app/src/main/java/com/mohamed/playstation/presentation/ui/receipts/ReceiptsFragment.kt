@@ -18,7 +18,9 @@ import com.mohamed.playstation.domain.model.SessionProductSummary
 import com.mohamed.playstation.presentation.ui.UiState
 import com.mohamed.playstation.presentation.viewmodel.ReceiptViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -31,7 +33,7 @@ class ReceiptsFragment : Fragment() {
     private val viewModel: ReceiptViewModel by viewModels()
     private lateinit var receiptAdapter: ReceiptAdapter
 
-    private var currentTab = 0 // 0 = Today, 1 = All
+    private val _selectedTab = MutableStateFlow(0)
     private var latestProductSummaries: Map<Long, SessionProductSummary> = emptyMap()
 
     override fun onCreateView(
@@ -63,8 +65,7 @@ class ReceiptsFragment : Fragment() {
     private fun setupTabs() {
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                currentTab = tab?.position ?: 0
-                updateReceiptsList()
+                _selectedTab.value = tab?.position ?: 0
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -98,34 +99,15 @@ class ReceiptsFragment : Fragment() {
                     }
                 }
 
-                // Receipts list
+                // Single reactive collector — switches source on tab change via flatMapLatest
                 launch {
-                    val flow = if (currentTab == 0) {
-                        viewModel.todayReceipts
-                    } else {
-                        viewModel.allReceipts
-                    }
-                    flow.collect { state ->
-                        handleUiState(state)
-                    }
-                }
-            }
-        }
-
-        updateReceiptsList()
-    }
-
-    private fun updateReceiptsList() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                val flow = if (currentTab == 0) {
-                    viewModel.todayReceipts
-                } else {
-                    viewModel.allReceipts
-                }
-
-                flow.collect { state ->
-                    handleUiState(state)
+                    _selectedTab
+                        .flatMapLatest { tab ->
+                            if (tab == 0) viewModel.todayReceipts else viewModel.allReceipts
+                        }
+                        .collect { state ->
+                            handleUiState(state)
+                        }
                 }
             }
         }

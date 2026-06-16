@@ -39,18 +39,20 @@ class EndSessionDialog : DialogFragment() {
     }
 
     private fun endSession() {
-        val fm = parentFragmentManager
         lifecycleScope.launch {
-            val session = viewModel.sessionUseCases.getSessionById(sessionId)
-
+            val session = viewModel.getSessionById(sessionId)
             if (session != null) {
                 viewModel.endSession(session) { receiptId ->
-                    val dialog = ReceiptDetailDialog.newInstance(receiptId)
-                    dialog.show(fm, "ReceiptDetailDialog")
+                    dismiss()
+                    if (isAdded) {
+                        ReceiptDetailDialog.newInstance(receiptId)
+                            .show(parentFragmentManager, "ReceiptDetailDialog")
+                    }
                 }
+            } else {
+                dismiss()
             }
         }
-        dismiss()
     }
 
     companion object {

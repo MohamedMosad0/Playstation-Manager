@@ -66,7 +66,8 @@ class ProductRepository @Inject constructor(
     suspend fun increaseStock(productId: Long, delta: Int): Long? {
         val existing = productDao.getProductById(productId) ?: return null
         val updated = existing.copy(quantity = existing.quantity + delta)
-        return productDao.insert(updated)
+        productDao.update(updated)
+        return updated.id
     }
 
     suspend fun deleteProductById(productId: Long) {
