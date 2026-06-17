@@ -8,10 +8,20 @@
 
     <!-- Main Screen -->
     <string name="main_title">بلايستيشن</string>
+    <string name="dashboard">لوحة التحكم</string>
     <string name="sessions">الجلسات</string>
     <string name="receipts">الفواتير</string>
     <string name="inventory">المخزون</string>
     <string name="settings">الإعدادات</string>
+
+    <!-- Dashboard -->
+    <string name="revenue">الإيرادات</string>
+    <string name="net_profit">صافي الربح</string>
+    <string name="low_stock">نواقص المخزون</string>
+    <string name="quick_actions">إجراءات سريعة</string>
+    <string name="recent_sessions">أحدث الجلسات</string>
+    <string name="recent_expenses">أحدث المصروفات</string>
+    <string name="no_data">لا توجد بيانات</string>
 
     <!-- Session Status -->
     <string name="status_available">متاح</string>

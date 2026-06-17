@@ -85,6 +85,15 @@ class ReceiptRepository @Inject constructor(
     }
 
     /**
+     * الحصول على فواتير في فترة زمنية محددة
+     */
+    fun getReceiptsInRange(startTime: Long, endTime: Long): Flow<List<Receipt>> {
+        return receiptDao.getReceiptsInRange(startTime, endTime).map { entities ->
+            ReceiptMapper.toModelList(entities)
+        }
+    }
+
+    /**
      * الحصول على إجمالي الإيرادات اليوم
      */
     fun getTodayTotalRevenue(): Flow<Double> {

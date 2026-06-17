@@ -64,6 +64,12 @@ interface ReceiptDao {
     fun getTodayReceipts(): Flow<List<ReceiptEntity>>
 
     /**
+     * الحصول على فواتير في فترة زمنية
+     */
+    @Query("SELECT * FROM receipts WHERE createdAt >= :startTime AND createdAt <= :endTime ORDER BY createdAt ASC")
+    fun getReceiptsInRange(startTime: Long, endTime: Long): Flow<List<ReceiptEntity>>
+
+    /**
      * الحصول على إجمالي الإيرادات اليوم
      */
     @Query("""
