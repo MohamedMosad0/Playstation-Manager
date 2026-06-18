@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base Application Theme -->
-    <style name="Base.Theme.PlayStation" parent="Theme.Material3.Dark.NoActionBar">
+    <!-- Base Application Theme — DayNight, responds to MODE_NIGHT_YES/NO/FOLLOW_SYSTEM -->
+    <style name="Base.Theme.PlayStation" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary Colors -->
         <item name="colorPrimary">@color/ps_blue_primary</item>
         <item name="colorPrimaryVariant">@color/ps_blue_dark</item>
@@ -12,21 +12,23 @@
         <item name="colorSecondaryVariant">@color/ps_button_square</item>
         <item name="colorOnSecondary">@color/white</item>
 
-        <!-- Background Colors -->
+        <!-- Background / Surface (resolved from values/ or values-night/ at runtime) -->
         <item name="android:colorBackground">@color/background_dark</item>
         <item name="colorSurface">@color/surface_dark</item>
         <item name="colorOnBackground">@color/text_primary</item>
         <item name="colorOnSurface">@color/text_primary</item>
 
-        <!-- Status Bar -->
+        <!-- Status / Navigation Bar -->
         <item name="android:statusBarColor">@color/background_dark</item>
         <item name="android:navigationBarColor">@color/background_dark</item>
-        <item name="android:windowLightStatusBar">false</item>
 
         <!-- Text Appearance -->
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
+
+        <!-- Error Color -->
+        <item name="colorError">@color/error</item>
     </style>
 
     <!-- Main Application Theme -->
@@ -44,7 +46,7 @@
     <!-- Card Style -->
     <style name="Widget.PlayStation.Card" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@color/card_dark</item>
-        <item name="cardElevation">8dp</item>
+        <item name="cardElevation">4dp</item>
         <item name="cardCornerRadius">16dp</item>
     </style>
 
@@ -79,7 +81,8 @@
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">14sp</item>
     </style>
-    <style name="Theme.PlayStation.Dialog.FullScreen" parent="Theme.Material3.Dark.Dialog">
+
+    <style name="Theme.PlayStation.Dialog.FullScreen" parent="Theme.Material3.DayNight.Dialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">@color/background_dark</item>
         <item name="android:statusBarColor">@color/background_dark</item>

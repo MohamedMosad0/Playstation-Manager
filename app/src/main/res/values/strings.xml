@@ -13,6 +13,11 @@
     <string name="receipts">الفواتير</string>
     <string name="inventory">المخزون</string>
     <string name="settings">الإعدادات</string>
+    <string name="nav_settings">الإعدادات</string>
+    <string name="reports">التقارير</string>
+    <string name="coming_soon">قريباً</string>
+    <string name="revenue_report">الإيرادات</string>
+    <string name="profit_report">الأرباح</string>
 
     <!-- Dashboard -->
     <string name="revenue">الإيرادات</string>
@@ -27,6 +32,11 @@
     <string name="status_available">متاح</string>
     <string name="status_running">يعمل</string>
     <string name="status_paused">متوقف مؤقتاً</string>
+    <string name="status_completed">مكتملة ✓</string>
+    <string name="tab_running">جارية</string>
+    <string name="tab_completed">مكتملة</string>
+    <string name="no_completed_sessions">لا توجد جلسات مكتملة</string>
+    <string name="no_completed_sessions_hint">ابدأ وأنهِ جلسة لترى سجل الجلسات هنا</string>
 
     <!-- Sessions -->
     <string name="active_sessions">الجلسات النشطة</string>
@@ -124,6 +134,30 @@
     <string name="per_hour">/ الساعة</string>
     <string name="select_currency">اختر العملة</string>
     <string name="settings_saved">تم حفظ الإعدادات</string>
+    <string name="settings_general">عام</string>
+    <string name="settings_dark_mode">الوضع الداكن</string>
+    <string name="settings_notifications">الإشعارات</string>
+    <string name="settings_currency">العملة</string>
+    <string name="settings_language">اللغة</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_english">English</string>
+    <string name="settings_hour_price">سعر الساعة</string>
+    <string name="settings_multi_hour_price">سعر الساعة (متعدد اللاعبين)</string>
+    <string name="settings_alerts">التنبيهات</string>
+    <string name="settings_reminder_minutes">دقائق التنبيه قبل الانتهاء</string>
+    <string name="settings_reminder_helper">عدد الدقائق قبل انتهاء وقت الجلسة</string>
+    <string name="error_invalid_price">يجب أن يكون أكبر من صفر</string>
+    <string name="error_empty_price">لا يمكن أن يكون فارغاً</string>
+    <string name="settings_data">البيانات</string>
+    <string name="settings_backup">نسخ احتياطي</string>
+    <string name="settings_restore">استعادة</string>
+    <string name="settings_about">حول التطبيق</string>
+    <string name="settings_reset">إعادة ضبط الإعدادات</string>
+    <string name="settings_reset_confirm_title">إعادة ضبط الإعدادات؟</string>
+    <string name="settings_reset_confirm_message">هل أنت متأكد من إعادة ضبط جميع الإعدادات لقيمها الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="settings_reset_success">تمت إعادة ضبط الإعدادات بنجاح</string>
+    <string name="settings_version">الإصدار: %1$s</string>
+    <string name="settings_developer">المطور: %1$s</string>
 
     <!-- Settings - PS4 Pricing -->
     <string name="ps4_pricing">أسعار PS4</string>

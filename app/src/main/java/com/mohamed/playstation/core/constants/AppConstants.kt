@@ -22,11 +22,13 @@ object AppConstants {
     const val KEY_PS4_HOUR_PRICE = "ps4_hour_price"
     const val KEY_PS4_HALF_HOUR_PRICE = "ps4_half_hour_price"
     const val KEY_PS4_MULTI_EXTRA = "ps4_multiplayer_extra"
+    const val KEY_PS4_MULTI_HOUR_PRICE = "ps4_multi_hour_price"
 
     // Preferences Keys — PS5 Pricing
     const val KEY_PS5_HOUR_PRICE = "ps5_hour_price"
     const val KEY_PS5_HALF_HOUR_PRICE = "ps5_half_hour_price"
     const val KEY_PS5_MULTI_EXTRA = "ps5_multiplayer_extra"
+    const val KEY_PS5_MULTI_HOUR_PRICE = "ps5_multi_hour_price"
 
     // Preferences Keys — Session Defaults
     const val KEY_SESSION_MODE = "session_mode"
@@ -50,11 +52,13 @@ object AppConstants {
     const val DEFAULT_PS4_HOUR_PRICE = 30.0
     const val DEFAULT_PS4_HALF_HOUR_PRICE = 20.0
     const val DEFAULT_PS4_MULTI_EXTRA = 10.0
+    const val DEFAULT_PS4_MULTI_HOUR_PRICE = 40.0
 
     // Default Values — PS5 Pricing
     const val DEFAULT_PS5_HOUR_PRICE = 50.0
     const val DEFAULT_PS5_HALF_HOUR_PRICE = 30.0
     const val DEFAULT_PS5_MULTI_EXTRA = 15.0
+    const val DEFAULT_PS5_MULTI_HOUR_PRICE = 65.0
 
     // Default Values — Session Defaults
     const val DEFAULT_SESSION_MODE = "open"
@@ -106,18 +110,17 @@ object AppConstants {
     const val BACKUP_FILE_PREFIX = "playstation_backup_"
     const val BACKUP_FILE_EXTENSION = ".db"
 
-    // Session Status
-    const val SESSION_STATUS_ACTIVE = "active"
-    const val SESSION_STATUS_PAUSED = "paused"
-    const val SESSION_STATUS_ENDED = "ended"
+    // About
+    const val DEVELOPER_NAME = "Mohamed"
 
     // Device Types
     const val DEVICE_PS4 = "PS4"
     const val DEVICE_PS5 = "PS5"
-    const val DEVICE_PS4_STANDARD = "PS4 Standard"
-    const val DEVICE_PS4_PRO = "PS4 Pro"
-    const val DEVICE_PS5_STANDARD = "PS5 Standard"
-    const val DEVICE_PS5_DIGITAL = "PS5 Digital"
+
+    // Session Status
+    const val SESSION_STATUS_ACTIVE = "active"
+    const val SESSION_STATUS_PAUSED = "paused"
+    const val SESSION_STATUS_ENDED = "ended"
 
     // Session Types
     const val SESSION_TYPE_SINGLE = "single"

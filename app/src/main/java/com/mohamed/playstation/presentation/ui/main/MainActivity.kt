@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var settingsManager: SettingsManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        android.util.Log.d("SettingsAudit", "MainActivity.onCreate: savedInstanceState is ${if (savedInstanceState == null) "null" else "NOT null"}")
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -33,33 +34,30 @@ class MainActivity : AppCompatActivity() {
         NotificationPermissionHelper.registerAndRequest(this)
 
         setupNavigation()
-        applyDarkMode()
 
         Timber.d("Main Activity Started")
     }
 
-    /**
-     * إعداد Navigation Component
-     */
+    override fun onStart() {
+        android.util.Log.d("SettingsAudit", "MainActivity.onStart")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        android.util.Log.d("SettingsAudit", "MainActivity.onResume")
+        super.onResume()
+    }
+
+    override fun onDestroy() {
+        android.util.Log.d("SettingsAudit", "MainActivity.onDestroy")
+        super.onDestroy()
+    }
+
     private fun setupNavigation() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.navHostFragment) as NavHostFragment
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
-    }
-
-    /**
-     * تطبيق الوضع الداكن المحفوظ عند بدء التطبيق
-     */
-    private fun applyDarkMode() {
-        lifecycleScope.launch {
-            settingsManager.darkModeFlow.collect { isDark ->
-                AppCompatDelegate.setDefaultNightMode(
-                    if (isDark) AppCompatDelegate.MODE_NIGHT_YES
-                    else AppCompatDelegate.MODE_NIGHT_NO
-                )
-            }
-        }
     }
 }

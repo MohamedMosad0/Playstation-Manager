@@ -3,81 +3,57 @@ package com.mohamed.playstation.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mohamed.playstation.core.constants.AppConstants
-import com.mohamed.playstation.data.local.SettingsManager
+import com.mohamed.playstation.domain.usecase.settings.GetSettingsFlowsUseCase
+import com.mohamed.playstation.domain.usecase.settings.UpdateSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * ViewModel للإعدادات — Phase 1
- */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val settingsManager: SettingsManager
+    private val getSettingsFlowsUseCase: GetSettingsFlowsUseCase,
+    private val updateSettingsUseCase: UpdateSettingsUseCase
 ) : ViewModel() {
 
-    // ======================== Existing StateFlows ========================
-
-    val darkMode: StateFlow<Boolean> = settingsManager.darkModeFlow
+    val darkMode: StateFlow<Boolean> = getSettingsFlowsUseCase.darkModeFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_DARK_MODE)
 
-    val singlePrice: StateFlow<Double> = settingsManager.singlePriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_SINGLE_PRICE)
+    val language: StateFlow<String> = getSettingsFlowsUseCase.languageFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_LANGUAGE)
 
-    val multiPrice: StateFlow<Double> = settingsManager.multiPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_MULTI_PRICE)
-
-    val currency: StateFlow<String> = settingsManager.currencyFlow
+    val currency: StateFlow<String> = getSettingsFlowsUseCase.currencyFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_CURRENCY)
 
-    // ======================== PS4 Pricing ========================
-
-    val ps4HourPrice: StateFlow<Double> = settingsManager.ps4HourPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_HOUR_PRICE)
-
-    val ps4HalfHourPrice: StateFlow<Double> = settingsManager.ps4HalfHourPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_HALF_HOUR_PRICE)
-
-    val ps4MultiExtra: StateFlow<Double> = settingsManager.ps4MultiExtraFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_MULTI_EXTRA)
-
-    // ======================== PS5 Pricing ========================
-
-    val ps5HourPrice: StateFlow<Double> = settingsManager.ps5HourPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_HOUR_PRICE)
-
-    val ps5HalfHourPrice: StateFlow<Double> = settingsManager.ps5HalfHourPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_HALF_HOUR_PRICE)
-
-    val ps5MultiExtra: StateFlow<Double> = settingsManager.ps5MultiExtraFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_MULTI_EXTRA)
-
-    // ======================== Session Defaults ========================
-
-    val sessionMode: StateFlow<String> = settingsManager.sessionModeFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_SESSION_MODE)
-
-    val defaultFixedMinutes: StateFlow<Int> = settingsManager.defaultFixedMinutesFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_FIXED_MINUTES)
-
-    // ======================== Warning Settings ========================
-
-    val warningsEnabled: StateFlow<Boolean> = settingsManager.warningsEnabledFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_WARNINGS_ENABLED)
-
-    val warningSoundEnabled: StateFlow<Boolean> = settingsManager.warningSoundEnabledFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_WARNING_SOUND_ENABLED)
-
-    val warningNotificationEnabled: StateFlow<Boolean> = settingsManager.warningNotificationEnabledFlow
+    val notificationsEnabled: StateFlow<Boolean> = getSettingsFlowsUseCase.notificationsEnabledFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_WARNING_NOTIFICATION_ENABLED)
 
-    val warningMinutes: StateFlow<Int> = settingsManager.warningMinutesFlow
+    val reminderMinutes: StateFlow<Int> = getSettingsFlowsUseCase.reminderMinutesFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_WARNING_MINUTES)
 
-    // ======================== Currency List ========================
+    val ps4HourPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps4HourPriceFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_HOUR_PRICE)
+
+    val ps4MultiplayerPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps4MultiplayerPriceFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_MULTI_HOUR_PRICE)
+
+    val ps5HourPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps5HourPriceFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_HOUR_PRICE)
+
+    val ps5MultiplayerPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps5MultiplayerPriceFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_MULTI_HOUR_PRICE)
+
+    // Validation State
+    data class ValidationErrors(
+        val ps4HourError: Int? = null,
+        val ps4MultiError: Int? = null,
+        val ps5HourError: Int? = null,
+        val ps5MultiError: Int? = null,
+        val reminderError: Int? = null
+    )
+
+    private val _validationErrors = MutableStateFlow(ValidationErrors())
+    val validationErrors: StateFlow<ValidationErrors> = _validationErrors.asStateFlow()
 
     data class CurrencyItem(val code: String, val displayResName: String)
 
@@ -100,77 +76,77 @@ class SettingsViewModel @Inject constructor(
         CurrencyItem(AppConstants.CURRENCY_LYD, "currency_lyd")
     )
 
-    // ======================== Existing Setters ========================
+    data class LanguageItem(val code: String, val nameResId: Int)
+    val languageList = listOf(
+        LanguageItem("ar", com.mohamed.playstation.R.string.language_arabic),
+        LanguageItem("en", com.mohamed.playstation.R.string.language_english)
+    )
 
     fun setDarkMode(enabled: Boolean) {
-        viewModelScope.launch { settingsManager.setDarkMode(enabled) }
+        viewModelScope.launch { updateSettingsUseCase.setDarkMode(enabled) }
     }
 
-    fun setSinglePrice(price: Double) {
-        viewModelScope.launch { settingsManager.setSinglePrice(price) }
-    }
-
-    fun setMultiPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setMultiPrice(price) }
+    fun setLanguage(languageCode: String) {
+        viewModelScope.launch { updateSettingsUseCase.setLanguage(languageCode) }
     }
 
     fun setCurrency(code: String) {
-        viewModelScope.launch { settingsManager.setCurrency(code) }
+        viewModelScope.launch { updateSettingsUseCase.setCurrency(code) }
     }
 
-    // ======================== PS4 Pricing Setters ========================
-
-    fun setPs4HourPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setPs4HourPrice(price) }
+    fun setNotificationsEnabled(enabled: Boolean) {
+        viewModelScope.launch { updateSettingsUseCase.setNotificationsEnabled(enabled) }
     }
 
-    fun setPs4HalfHourPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setPs4HalfHourPrice(price) }
+    fun setReminderMinutes(minutes: Int) {
+        if (minutes <= 0) {
+            _validationErrors.update { it.copy(reminderError = com.mohamed.playstation.R.string.error_invalid_price) }
+        } else {
+            _validationErrors.update { it.copy(reminderError = null) }
+            viewModelScope.launch { updateSettingsUseCase.setReminderMinutes(minutes) }
+        }
     }
 
-    fun setPs4MultiExtra(price: Double) {
-        viewModelScope.launch { settingsManager.setPs4MultiExtra(price) }
+    fun setPs4HourPrice(price: Double?) {
+        validateAndSavePrice(price, { err -> _validationErrors.update { it.copy(ps4HourError = err) } }) {
+            viewModelScope.launch { updateSettingsUseCase.setPs4HourPrice(it) }
+        }
     }
 
-    // ======================== PS5 Pricing Setters ========================
-
-    fun setPs5HourPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setPs5HourPrice(price) }
+    fun setPs4MultiplayerPrice(price: Double?) {
+        validateAndSavePrice(price, { err -> _validationErrors.update { it.copy(ps4MultiError = err) } }) {
+            viewModelScope.launch { updateSettingsUseCase.setPs4MultiplayerPrice(it) }
+        }
     }
 
-    fun setPs5HalfHourPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setPs5HalfHourPrice(price) }
+    fun setPs5HourPrice(price: Double?) {
+        validateAndSavePrice(price, { err -> _validationErrors.update { it.copy(ps5HourError = err) } }) {
+            viewModelScope.launch { updateSettingsUseCase.setPs5HourPrice(it) }
+        }
     }
 
-    fun setPs5MultiExtra(price: Double) {
-        viewModelScope.launch { settingsManager.setPs5MultiExtra(price) }
+    fun setPs5MultiplayerPrice(price: Double?) {
+        validateAndSavePrice(price, { err -> _validationErrors.update { it.copy(ps5MultiError = err) } }) {
+            viewModelScope.launch { updateSettingsUseCase.setPs5MultiplayerPrice(it) }
+        }
     }
 
-    // ======================== Session Defaults Setters ========================
-
-    fun setSessionMode(mode: String) {
-        viewModelScope.launch { settingsManager.setSessionMode(mode) }
+    private fun validateAndSavePrice(price: Double?, errorSetter: (Int?) -> Unit, onSave: (Double) -> Unit) {
+        when {
+            price == null -> {
+                errorSetter(com.mohamed.playstation.R.string.error_empty_price)
+            }
+            price <= 0 -> {
+                errorSetter(com.mohamed.playstation.R.string.error_invalid_price)
+            }
+            else -> {
+                errorSetter(null)
+                onSave(price)
+            }
+        }
     }
 
-    fun setDefaultFixedMinutes(minutes: Int) {
-        viewModelScope.launch { settingsManager.setDefaultFixedMinutes(minutes) }
-    }
-
-    // ======================== Warning Settings Setters ========================
-
-    fun setWarningsEnabled(enabled: Boolean) {
-        viewModelScope.launch { settingsManager.setWarningsEnabled(enabled) }
-    }
-
-    fun setWarningSoundEnabled(enabled: Boolean) {
-        viewModelScope.launch { settingsManager.setWarningSoundEnabled(enabled) }
-    }
-
-    fun setWarningNotificationEnabled(enabled: Boolean) {
-        viewModelScope.launch { settingsManager.setWarningNotificationEnabled(enabled) }
-    }
-
-    fun setWarningMinutes(minutes: Int) {
-        viewModelScope.launch { settingsManager.setWarningMinutes(minutes) }
+    fun resetSettings() {
+        viewModelScope.launch { updateSettingsUseCase.resetSettings() }
     }
 }

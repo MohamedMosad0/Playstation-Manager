@@ -40,6 +40,10 @@ class SessionViewModel @Inject constructor(
     private val _activeSessionsCount = MutableStateFlow(0)
     val activeSessionsCount: StateFlow<Int> = _activeSessionsCount.asStateFlow()
 
+    /** Completed sessions — reuses existing getEndedSessions() flow. No new architecture. */
+    val completedSessions: StateFlow<List<Session>> = sessionUseCases.getEndedSessions()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
     val inventoryProducts: StateFlow<List<SessionProduct>> = productUseCases.getInventoryProducts()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 

@@ -12,7 +12,9 @@ import com.mohamed.playstation.domain.model.Session
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class DashboardSessionAdapter : ListAdapter<Session, DashboardSessionAdapter.ViewHolder>(DiffCallback()) {
+class DashboardSessionAdapter(
+    private val onItemClick: (Session) -> Unit
+) : ListAdapter<Session, DashboardSessionAdapter.ViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemSessionCardBinding.inflate(
@@ -32,10 +34,14 @@ class DashboardSessionAdapter : ListAdapter<Session, DashboardSessionAdapter.Vie
 
         fun bind(session: Session) {
             with(binding) {
-                // Remove interactive clicks for dashboard
-                root.setOnClickListener(null)
-                root.isClickable = false
-                root.isFocusable = false
+                root.setOnClickListener {
+                    val pos = bindingAdapterPosition
+                    if (pos != RecyclerView.NO_POSITION) {
+                        onItemClick(getItem(pos))
+                    }
+                }
+                root.isClickable = true
+                root.isFocusable = true
 
                 tvDeviceName.text = buildString {
                     append(session.deviceType)

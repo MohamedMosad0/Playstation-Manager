@@ -1,7 +1,9 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Playstation" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-    </style>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Night-mode theme overrides.
+        The color resources (background_dark, card_dark, text_primary, etc.)
+        are overridden in values-night/colors.xml, so no extra style overrides
+        are needed here. The DayNight theme engine picks them up automatically.
+    -->
 </resources>

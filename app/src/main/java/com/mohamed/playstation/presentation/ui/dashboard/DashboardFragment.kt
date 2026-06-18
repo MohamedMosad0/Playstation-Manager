@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -58,7 +59,11 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        sessionAdapter = DashboardSessionAdapter()
+        sessionAdapter = DashboardSessionAdapter(
+            onItemClick = { _ ->
+                findNavController().navigate(R.id.action_dashboardFragment_to_sessionsFragment)
+            }
+        )
         binding.rvRecentSessions.layoutManager = LinearLayoutManager(requireContext())
         binding.rvRecentSessions.adapter = sessionAdapter
 
@@ -115,10 +120,10 @@ class DashboardFragment : Fragment() {
             AddExpenseDialog.newInstance().show(childFragmentManager, "AddExpenseDialog")
         }
         binding.btnInventory.setOnClickListener {
-            // Phase 3: No navigation required yet
+            findNavController().navigate(R.id.action_dashboardFragment_to_inventoryFragment)
         }
         binding.btnReceipts.setOnClickListener {
-            // Phase 3: No navigation required yet
+            findNavController().navigate(R.id.action_dashboardFragment_to_receiptsFragment)
         }
     }
 

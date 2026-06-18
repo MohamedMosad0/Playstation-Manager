@@ -43,11 +43,13 @@ class SettingsManager @Inject constructor(
         val PS4_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS4_HOUR_PRICE)
         val PS4_HALF_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS4_HALF_HOUR_PRICE)
         val PS4_MULTI_EXTRA = doublePreferencesKey(AppConstants.KEY_PS4_MULTI_EXTRA)
+        val PS4_MULTI_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS4_MULTI_HOUR_PRICE)
 
         // PS5 Pricing
         val PS5_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS5_HOUR_PRICE)
         val PS5_HALF_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS5_HALF_HOUR_PRICE)
         val PS5_MULTI_EXTRA = doublePreferencesKey(AppConstants.KEY_PS5_MULTI_EXTRA)
+        val PS5_MULTI_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS5_MULTI_HOUR_PRICE)
 
         // Session Defaults
         val SESSION_MODE = stringPreferencesKey(AppConstants.KEY_SESSION_MODE)
@@ -147,7 +149,7 @@ class SettingsManager @Inject constructor(
     // ======================== PS4 Pricing ========================
 
     val ps4HourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.PS4_HOUR_PRICE] ?: AppConstants.DEFAULT_PS4_HOUR_PRICE
+        preferences[PreferencesKeys.PS4_HOUR_PRICE] ?: (preferences[PreferencesKeys.SINGLE_PRICE] ?: AppConstants.DEFAULT_PS4_HOUR_PRICE)
     }
 
     suspend fun setPs4HourPrice(price: Double) {
@@ -170,10 +172,18 @@ class SettingsManager @Inject constructor(
         dataStore.edit { it[PreferencesKeys.PS4_MULTI_EXTRA] = price }
     }
 
+    val ps4MultiHourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.PS4_MULTI_HOUR_PRICE] ?: (preferences[PreferencesKeys.MULTI_PRICE] ?: AppConstants.DEFAULT_PS4_MULTI_HOUR_PRICE)
+    }
+
+    suspend fun setPs4MultiHourPrice(price: Double) {
+        dataStore.edit { it[PreferencesKeys.PS4_MULTI_HOUR_PRICE] = price }
+    }
+
     // ======================== PS5 Pricing ========================
 
     val ps5HourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.PS5_HOUR_PRICE] ?: AppConstants.DEFAULT_PS5_HOUR_PRICE
+        preferences[PreferencesKeys.PS5_HOUR_PRICE] ?: (preferences[PreferencesKeys.SINGLE_PRICE] ?: AppConstants.DEFAULT_PS5_HOUR_PRICE)
     }
 
     suspend fun setPs5HourPrice(price: Double) {
@@ -194,6 +204,14 @@ class SettingsManager @Inject constructor(
 
     suspend fun setPs5MultiExtra(price: Double) {
         dataStore.edit { it[PreferencesKeys.PS5_MULTI_EXTRA] = price }
+    }
+
+    val ps5MultiHourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.PS5_MULTI_HOUR_PRICE] ?: (preferences[PreferencesKeys.MULTI_PRICE] ?: AppConstants.DEFAULT_PS5_MULTI_HOUR_PRICE)
+    }
+
+    suspend fun setPs5MultiHourPrice(price: Double) {
+        dataStore.edit { it[PreferencesKeys.PS5_MULTI_HOUR_PRICE] = price }
     }
 
     // ======================== Session Defaults ========================
