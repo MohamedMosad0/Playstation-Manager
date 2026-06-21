@@ -40,6 +40,9 @@ object AppConstants {
     const val KEY_WARNING_NOTIFICATION_ENABLED = "warning_notification_enabled"
     const val KEY_WARNING_MINUTES = "warning_minutes"
 
+    // System / App State
+    const val KEY_EXACT_ALARM_PROMPT_DISMISSED = "exact_alarm_prompt_dismissed"
+
     // Default Values — existing (kept for backward compatibility)
     const val DEFAULT_SINGLE_PRICE = 30.0  // EGP
     const val DEFAULT_MULTI_PRICE = 20.0   // EGP

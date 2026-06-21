@@ -6,11 +6,8 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.Date
 
-/**
- * جدول المنتجات المرتبطة بالجلسة
- */
 @Entity(
-    tableName = "products",
+    tableName = "session_products",
     foreignKeys = [
         ForeignKey(
             entity = SessionEntity::class,
@@ -18,16 +15,23 @@ import java.util.Date
             childColumns = ["sessionId"],
             onDelete = ForeignKey.CASCADE
         )
+        // Note: No ForeignKey for inventoryItemId to allow soft references.
     ],
-    indices = [Index("sessionId")]
+    indices = [
+        Index("sessionId"),
+        Index("inventoryItemId")
+    ]
 )
-data class ProductEntity(
+data class SessionProductEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val sessionId: Long,
-    val name: String,
-    val price: Double,
-    val quantity: Int = 0,
-    val minimumQuantity: Int = 0,
+    val inventoryItemId: Long, // NOT NULL, soft reference
+    val nameSnapshot: String,
+    val sellPriceSnapshot: Double,
+    val costSnapshot: Double,
+    val unitLabelSnapshot: String,
+    val isPreparedSnapshot: Boolean,
+    val quantitySold: Int,
     val createdAt: Date = Date()
 )

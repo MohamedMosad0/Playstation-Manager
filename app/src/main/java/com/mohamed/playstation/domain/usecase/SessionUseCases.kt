@@ -8,6 +8,7 @@ import com.mohamed.playstation.domain.model.Session
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import timber.log.Timber
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -80,20 +81,24 @@ class SessionUseCases @Inject constructor(
     }
 
     suspend fun resumeSession(session: Session) {
-        val exactPausedDurationMs = if (session.pausedAt != null) {
-            Date().time - session.pausedAt.time
-        } else {
-            0L
+        val currentSession = sessionRepository.getSessionById(session.id) ?: session
+
+        if (currentSession.isEnded()) {
+            Timber.w("Attempted to resume an already ended session: ${session.id}")
+            return
         }
 
+        if (!currentSession.isPaused() || currentSession.pausedAt == null) return
+
+        val exactPausedDurationMs = Date().time - currentSession.pausedAt.time
         val wholeMinutes = exactPausedDurationMs / 60000
         val remainderMs = exactPausedDurationMs % 60000
 
-        val updatedSession = session.copy(
+        val updatedSession = currentSession.copy(
             status = AppConstants.SESSION_STATUS_ACTIVE,
             pausedAt = null,
-            startTime = Date(session.startTime.time + remainderMs),
-            totalPausedMinutes = session.totalPausedMinutes + wholeMinutes,
+            startTime = Date(currentSession.startTime.time + remainderMs),
+            totalPausedMinutes = currentSession.totalPausedMinutes + wholeMinutes,
             updatedAt = Date()
         )
         sessionRepository.updateSession(updatedSession)
@@ -121,6 +126,7 @@ class SessionUseCases @Inject constructor(
                 val exactPausedDurationMs = Date().time - currentSession.pausedAt.time
                 val wholeMinutes = exactPausedDurationMs / 60000
                 val remainderMs = exactPausedDurationMs % 60000
+                
                 finalTotalPausedMinutes = currentSession.totalPausedMinutes + wholeMinutes
                 finalStartTime = Date(currentSession.startTime.time + remainderMs)
             }

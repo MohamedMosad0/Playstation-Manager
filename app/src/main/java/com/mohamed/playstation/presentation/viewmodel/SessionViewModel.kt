@@ -8,9 +8,11 @@ import com.mohamed.playstation.core.notifications.SessionNotificationHelper
 import com.mohamed.playstation.core.utils.SessionPricing
 import com.mohamed.playstation.core.utils.SessionTicker
 import com.mohamed.playstation.data.local.SettingsManager
+import com.mohamed.playstation.domain.model.InventoryItem
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
-import com.mohamed.playstation.domain.usecase.ProductUseCases
+import com.mohamed.playstation.domain.usecase.InventoryUseCases
+import com.mohamed.playstation.domain.usecase.SessionProductUseCases
 import com.mohamed.playstation.domain.usecase.SessionUseCases
 import com.mohamed.playstation.presentation.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SessionViewModel @Inject constructor(
     private val sessionUseCases: SessionUseCases,
-    private val productUseCases: ProductUseCases,
+    private val sessionProductUseCases: SessionProductUseCases,
+    private val inventoryUseCases: InventoryUseCases,
     private val settingsManager: SettingsManager,
     private val sessionNotificationHelper: SessionNotificationHelper,
     private val sessionAlarmScheduler: SessionAlarmScheduler,
@@ -44,7 +47,7 @@ class SessionViewModel @Inject constructor(
     val completedSessions: StateFlow<List<Session>> = sessionUseCases.getEndedSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val inventoryProducts: StateFlow<List<SessionProduct>> = productUseCases.getInventoryProducts()
+    val inventoryProducts: StateFlow<List<InventoryItem>> = inventoryUseCases.getAllActiveItems()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val singlePrice: StateFlow<Double> = settingsManager.singlePriceFlow
@@ -255,27 +258,6 @@ class SessionViewModel @Inject constructor(
         return sessionUseCases.getSessionById(sessionId)
     }
 
-    fun addProduct(
-        sessionId: Long,
-        name: String,
-        price: Double,
-        quantity: Int
-    ) {
-        viewModelScope.launch {
-            try {
-                productUseCases.addProductToSession(
-                    sessionId = sessionId,
-                    name = name,
-                    price = price,
-                    quantity = quantity
-                )
-                Timber.d("Product added to session: $sessionId")
-            } catch (e: Exception) {
-                Timber.e(e, "Error adding product to session")
-            }
-        }
-    }
-
     fun addInventoryProductToSession(
         sessionId: Long,
         inventoryProductId: Long,
@@ -285,9 +267,9 @@ class SessionViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                productUseCases.addInventoryProductToSession(
+                sessionProductUseCases.addInventoryProductToSession(
                     sessionId = sessionId,
-                    inventoryProductId = inventoryProductId,
+                    inventoryItemId = inventoryProductId,
                     quantity = quantity
                 )
                 Timber.d("Inventory product added to session: $sessionId")
@@ -300,7 +282,17 @@ class SessionViewModel @Inject constructor(
     }
 
     fun getProductsForSession(sessionId: Long): Flow<List<SessionProduct>> {
-        return productUseCases.getProductsBySessionId(sessionId)
+        return sessionProductUseCases.getProductsBySessionId(sessionId)
+    }
+
+    fun removeSessionProduct(sessionProductId: Long) {
+        viewModelScope.launch {
+            try {
+                sessionProductUseCases.removeSessionProductAndRestoreStock(sessionProductId)
+            } catch (e: Exception) {
+                Timber.e(e, "Error removing session product")
+            }
+        }
     }
 
     fun playCostForSession(session: Session, tick: Long, pricing: SessionPricing.PricingSettings): Double {

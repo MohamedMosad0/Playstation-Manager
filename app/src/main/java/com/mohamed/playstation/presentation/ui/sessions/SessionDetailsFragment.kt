@@ -20,6 +20,7 @@ import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.presentation.ui.UiState
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -32,12 +33,12 @@ class SessionDetailsFragment : Fragment() {
 
     private val viewModel: SessionViewModel by viewModels()
 
-    private var sessionId: Long = 0L
+    private var sessionId: Long = -1L
     private lateinit var productAdapter: ProductAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sessionId = arguments?.getLong("sessionId") ?: 0L
+        sessionId = requireArguments().getLong("sessionId")
     }
 
     override fun onCreateView(
@@ -147,31 +148,51 @@ class SessionDetailsFragment : Fragment() {
             )
         }
 
-        when {
-            session.isActive() -> {
-                binding.tvStatus.text = getString(R.string.status_running)
-                binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_active))
-                binding.viewStatusDot.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(
-                        requireContext().getColor(R.color.status_active)
+        val remaining = SessionTimer.getRemainingMs(session, data.currentTick) ?: 0L
+        val isAutoEnding = session.isActive() && session.isFixed() && remaining <= 0L
+
+        if (isAutoEnding) {
+            binding.tvStatus.text = "جاري الإنهاء..."
+            binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_paused))
+            binding.tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                androidx.core.graphics.ColorUtils.setAlphaComponent(requireContext().getColor(R.color.status_paused), 38)
+            )
+            binding.btnPauseResume.isEnabled = false
+            binding.btnEndSession.isEnabled = false
+            binding.btnAddProduct.isEnabled = false
+            binding.progressAutoEnd.isVisible = true
+        } else {
+            binding.btnPauseResume.isEnabled = true
+            binding.btnEndSession.isEnabled = true
+            binding.btnAddProduct.isEnabled = true
+            binding.progressAutoEnd.isVisible = false
+
+            when {
+                session.isActive() -> {
+                    binding.tvStatus.text = getString(R.string.status_running)
+                    binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_active))
+                    binding.tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                        androidx.core.graphics.ColorUtils.setAlphaComponent(requireContext().getColor(R.color.status_active), 38)
                     )
-                binding.btnPauseResume.text = getString(R.string.pause_session)
-                binding.btnPauseResume.setIconResource(R.drawable.ic_pause)
-                binding.btnPauseResume.setOnClickListener { viewModel.pauseSession(session) }
-            }
-            session.isPaused() -> {
-                binding.tvStatus.text = getString(R.string.status_paused)
-                binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_paused))
-                binding.viewStatusDot.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(
-                        requireContext().getColor(R.color.status_paused)
+                    binding.btnPauseResume.isVisible = true
+                    binding.btnPauseResume.text = getString(R.string.pause_session)
+                    binding.btnPauseResume.setIconResource(R.drawable.ic_pause)
+                    binding.btnPauseResume.setOnClickListener { viewModel.pauseSession(session) }
+                }
+                session.isPaused() -> {
+                    binding.tvStatus.text = getString(R.string.status_paused)
+                    binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_paused))
+                    binding.tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                        androidx.core.graphics.ColorUtils.setAlphaComponent(requireContext().getColor(R.color.status_paused), 38)
                     )
-                binding.btnPauseResume.text = getString(R.string.resume_session)
-                binding.btnPauseResume.setIconResource(R.drawable.ic_play)
-                binding.btnPauseResume.setOnClickListener { viewModel.resumeSession(session) }
-            }
-            else -> {
-                binding.btnPauseResume.visibility = View.GONE
+                    binding.btnPauseResume.isVisible = true
+                    binding.btnPauseResume.text = getString(R.string.resume_session)
+                    binding.btnPauseResume.setIconResource(R.drawable.ic_play)
+                    binding.btnPauseResume.setOnClickListener { viewModel.resumeSession(session) }
+                }
+                else -> {
+                    binding.btnPauseResume.isVisible = false
+                }
             }
         }
 
@@ -196,23 +217,30 @@ class SessionDetailsFragment : Fragment() {
     }
 
     private fun updateTimer(session: Session, currentTick: Long) {
-        binding.tvLargeTimer.text = SessionTimer.formatForSession(session, currentTick)
+        val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
+        val isAutoEnding = session.isActive() && session.isFixed() && remaining <= 0L
 
-        if (session.isFixed()) {
-            binding.tvTimerLabel.text = getString(R.string.time_remaining)
-            val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
-            binding.tvLargeTimer.setTextColor(
-                requireContext().getColor(
-                    if (remaining <= 5 * 60_000 && session.isActive()) {
-                        R.color.status_paused
-                    } else {
-                        R.color.ps_blue_primary
-                    }
-                )
-            )
+        if (isAutoEnding) {
+            binding.tvLargeTimer.text = "00:00:00"
+            binding.tvTimerLabel.text = "جاري إنهاء الجلسة..."
+            binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.status_paused))
         } else {
-            binding.tvTimerLabel.text = getString(R.string.elapsed_time)
-            binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.ps_blue_primary))
+            binding.tvLargeTimer.text = SessionTimer.formatForSession(session, currentTick)
+            if (session.isFixed()) {
+                binding.tvTimerLabel.text = getString(R.string.time_remaining)
+                binding.tvLargeTimer.setTextColor(
+                    requireContext().getColor(
+                        if (remaining <= 5 * 60_000 && session.isActive()) {
+                            R.color.status_paused
+                        } else {
+                            R.color.ps_blue_primary
+                        }
+                    )
+                )
+            } else {
+                binding.tvTimerLabel.text = getString(R.string.elapsed_time)
+                binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.ps_blue_primary))
+            }
         }
     }
 

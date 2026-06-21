@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.mohamed.playstation.databinding.FragmentInventoryNewStockBinding
 import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
+import com.mohamed.playstation.core.utils.UnitFormatUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -61,8 +62,31 @@ class NewStockTabFragment : Fragment() {
             val match = viewModel.products.value.firstOrNull { it.name == name }
             selectedProductId = match?.id
             if (match != null) {
-                binding.etPrice.setText(match.price.toString())
+                binding.etPrice.setText(match.sellPrice.toString())
                 binding.etMinQty.setText(match.minimumQuantity.toString())
+                
+                binding.tvCurrentAvailable.visibility = View.VISIBLE
+                val unitName = match.unitLabel
+                val pluralUnit = UnitFormatUtils.getPluralUnit(unitName)
+                val definitePlural = UnitFormatUtils.getDefinitePluralUnit(unitName)
+                
+                if (match.isPrepared) {
+                    val icon = if (unitName == "علبة") "🍜" else "☕"
+                    binding.tvCurrentAvailable.text = "$icon المتاح حالياً: ${match.quantity} $pluralUnit"
+                    binding.etInitialQty.hint = "عدد $definitePlural الجديدة"
+                    binding.btnSave.text = "إضافة"
+                    binding.etMinQty.visibility = View.GONE
+                } else {
+                    binding.tvCurrentAvailable.text = "📦 المتاح حالياً: ${match.quantity} $pluralUnit"
+                    binding.etInitialQty.hint = "عدد $definitePlural الجديدة"
+                    binding.btnSave.text = "إضافة"
+                    binding.etMinQty.visibility = View.VISIBLE
+                }
+            } else {
+                binding.tvCurrentAvailable.visibility = View.GONE
+                binding.etInitialQty.hint = "Quantity to add"
+                binding.btnSave.text = "Save"
+                binding.etMinQty.visibility = View.VISIBLE
             }
         }
 
@@ -72,10 +96,6 @@ class NewStockTabFragment : Fragment() {
             val price = binding.etPrice.text.toString().toDoubleOrNull() ?: 0.0
             val minQty = binding.etMinQty.text.toString().toIntOrNull() ?: 0
             val qty = binding.etInitialQty.text.toString().toIntOrNull() ?: 0
-
-            val sessionId = viewModel.currentSessionId.value ?: return@setOnClickListener
-
-            // Validation
             if (selectedProductId == null) {
                 // creating new product: validate name, price, minQty, qty
                 if (name.isBlank()) {
@@ -111,28 +131,19 @@ class NewStockTabFragment : Fragment() {
                     return@setOnClickListener
                 }
 
-                // Check for duplicate product
-                viewLifecycleOwner.lifecycleScope.launch {
-                    val exists = viewModel.checkProductExists(sessionId, name)
-                    if (exists) {
-                        android.widget.Toast.makeText(
-                            requireContext(),
-                            getString(com.mohamed.playstation.R.string.product_exists),
-                            android.widget.Toast.LENGTH_SHORT
-                        ).show()
-                        return@launch
-                    }
+                // create new product and add initial stock
+                viewModel.addNewProduct(name, price, 0.0, qty, minQty, false, "قطعة")
 
-                    // create new product and add initial stock
-                    viewModel.addNewProduct(sessionId, name, price, minQty, qty)
-
-                    // clear fields
-                    binding.actProductSearch.setText("")
-                    binding.etPrice.setText("")
-                    binding.etMinQty.setText("")
-                    binding.etInitialQty.setText("")
-                    selectedProductId = null
-                }
+                // clear fields
+                binding.actProductSearch.setText("")
+                binding.etPrice.setText("")
+                binding.etMinQty.setText("")
+                binding.etInitialQty.setText("")
+                binding.tvCurrentAvailable.visibility = View.GONE
+                binding.etInitialQty.hint = "Quantity to add"
+                binding.btnSave.text = "Save"
+                binding.etMinQty.visibility = View.VISIBLE
+                selectedProductId = null
 
             } else {
                 // existing product: increase stock, validate qty
@@ -151,6 +162,10 @@ class NewStockTabFragment : Fragment() {
                 binding.etPrice.setText("")
                 binding.etMinQty.setText("")
                 binding.etInitialQty.setText("")
+                binding.tvCurrentAvailable.visibility = View.GONE
+                binding.etInitialQty.hint = "Quantity to add"
+                binding.btnSave.text = "Save"
+                binding.etMinQty.visibility = View.VISIBLE
                 selectedProductId = null
             }
         }

@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         NotificationPermissionHelper.registerAndRequest(this)
+        checkExactAlarmPermission()
 
         setupNavigation()
 
@@ -54,10 +55,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNavigation() {
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.navHostFragment) as NavHostFragment
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            Timber.d(
+                "DESTINATION = ${resources.getResourceEntryName(destination.id)}"
+            )
+        }
+    }
+
+    private fun checkExactAlarmPermission() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            val alarmManager = getSystemService(android.app.AlarmManager::class.java)
+            if (!alarmManager.canScheduleExactAlarms()) {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle("إذن الإنذار الدقيق")
+                    .setMessage("للحصول على إنهاء دقيق للجلسات في وقتها بالثانية، يُفضل تفعيل الإنذارات الدقيقة.")
+                    .setPositiveButton("تفعيل") { _, _ ->
+                        val intent = android.content.Intent(
+                            android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                        )
+                        startActivity(intent)
+                    }
+                    .setNegativeButton("لاحقاً", null)
+                    .show()
+            }
+        }
     }
 }

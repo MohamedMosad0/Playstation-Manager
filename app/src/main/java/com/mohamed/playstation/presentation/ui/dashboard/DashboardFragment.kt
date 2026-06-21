@@ -61,7 +61,7 @@ class DashboardFragment : Fragment() {
     private fun setupRecyclerViews() {
         sessionAdapter = DashboardSessionAdapter(
             onItemClick = { _ ->
-                findNavController().navigate(R.id.action_dashboardFragment_to_sessionsFragment)
+                requireActivity().findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigationView).selectedItemId = R.id.sessionsFragment
             }
         )
         binding.rvRecentSessions.layoutManager = LinearLayoutManager(requireContext())
@@ -120,7 +120,7 @@ class DashboardFragment : Fragment() {
             AddExpenseDialog.newInstance().show(childFragmentManager, "AddExpenseDialog")
         }
         binding.btnInventory.setOnClickListener {
-            findNavController().navigate(R.id.action_dashboardFragment_to_inventoryFragment)
+            requireActivity().findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigationView).selectedItemId = R.id.inventoryFragment
         }
         binding.btnReceipts.setOnClickListener {
             findNavController().navigate(R.id.action_dashboardFragment_to_receiptsFragment)

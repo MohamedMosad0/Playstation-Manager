@@ -20,6 +20,7 @@ import com.mohamed.playstation.databinding.DialogNewSessionBinding
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -29,6 +30,9 @@ class NewSessionDialog : DialogFragment() {
     private val binding get() = _binding!!
 
     private val viewModel: SessionViewModel by viewModels({ requireParentFragment() })
+
+    @javax.inject.Inject
+    lateinit var settingsManager: com.mohamed.playstation.data.local.SettingsManager
 
     private var isModeUpdating = false
     private var isConsoleUpdating = false
@@ -52,7 +56,7 @@ class NewSessionDialog : DialogFragment() {
                 lifecycleScope.launch {
                     try {
                         if (startSession()) {
-                            dialog.dismiss()
+                            checkExactAlarmAndDismiss(dialog)
                         }
                     } catch (duplicateSession: DuplicateDeviceSessionException) {
                         Snackbar.make(
@@ -74,6 +78,41 @@ class NewSessionDialog : DialogFragment() {
             }
         }
         return dialog
+    }
+    private fun checkExactAlarmAndDismiss(parentDialog: Dialog) {
+        val sessionMode = getSelectedSessionMode()
+        if (sessionMode != AppConstants.SESSION_MODE_FIXED || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
+            parentDialog.dismiss()
+            return
+        }
+
+        lifecycleScope.launch {
+            val isDismissed = settingsManager.exactAlarmPromptDismissedFlow.first()
+            val alarmManager = requireContext().getSystemService(android.app.AlarmManager::class.java)
+
+            if (!isDismissed && !alarmManager.canScheduleExactAlarms()) {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("إذن الإنذار الدقيق")
+                    .setMessage("للحصول على إنهاء دقيق للجلسات في وقتها بالثانية، يُفضل تفعيل الإنذارات الدقيقة.")
+                    .setPositiveButton("تفعيل") { _, _ ->
+                        val intent = android.content.Intent(
+                            android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                        )
+                        startActivity(intent)
+                        parentDialog.dismiss()
+                    }
+                    .setNegativeButton("لاحقاً") { _, _ ->
+                        lifecycleScope.launch {
+                            settingsManager.setExactAlarmPromptDismissed(true)
+                            parentDialog.dismiss()
+                        }
+                    }
+                    .setCancelable(false)
+                    .show()
+            } else {
+                parentDialog.dismiss()
+            }
+        }
     }
 
     private fun setupDeviceNumberSpinner() {

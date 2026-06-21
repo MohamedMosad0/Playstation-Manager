@@ -14,32 +14,31 @@ interface StockMovementDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movement: StockMovementEntity): Long
 
-    @Query("SELECT * FROM stock_movements WHERE productId = :productId ORDER BY timestamp DESC, id DESC")
-    fun getMovementsByProductId(productId: Long): Flow<List<StockMovementEntity>>
+    @Query("SELECT * FROM stock_movements WHERE inventoryItemId = :inventoryItemId ORDER BY timestamp DESC, id DESC")
+    fun getMovementsByInventoryItemId(inventoryItemId: Long): Flow<List<StockMovementEntity>>
 
     @Query("SELECT * FROM stock_movements ORDER BY timestamp DESC, id DESC")
     fun getAllMovements(): Flow<List<StockMovementEntity>>
 
     @Query("""
         SELECT sm.id,
-               sm.productId,
+               sm.inventoryItemId,
                p.name    AS productName,
                sm.quantityChange,
                sm.movementType,
                sm.timestamp
         FROM stock_movements sm
-        LEFT JOIN products p ON sm.productId = p.id
+        LEFT JOIN inventory_items p ON sm.inventoryItemId = p.id
         ORDER BY sm.timestamp DESC, sm.id DESC
     """)
     fun getAllMovementsWithNames(): Flow<List<StockMovementWithName>>
 
-    @Query("DELETE FROM stock_movements WHERE productId = :productId")
-    suspend fun deleteByProductId(productId: Long)
+    @Query("DELETE FROM stock_movements WHERE inventoryItemId = :inventoryItemId")
+    suspend fun deleteByInventoryItemId(inventoryItemId: Long)
 
-    /** Result type for the LEFT JOIN query — mirrors the ProductDao.ProductSummaryRow pattern. */
     data class StockMovementWithName(
         val id: Long,
-        val productId: Long,
+        val inventoryItemId: Long,
         val productName: String?,
         val quantityChange: Int,
         val movementType: String,

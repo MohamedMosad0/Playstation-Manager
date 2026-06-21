@@ -48,6 +48,12 @@ class MovementHistoryTabFragment : Fragment() {
         adapter = MovementsAdapter()
         binding.rvMovements.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMovements.adapter = adapter
+        
+        binding.emptyState.visibility = View.GONE
+        binding.rvMovements.visibility = View.VISIBLE
+        
+        val controller = android.view.animation.AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.layout_animation_slide_up)
+        binding.rvMovements.layoutAnimation = controller
 
         binding.etSearch.doAfterTextChanged { text ->
             viewModel.setMovementSearchQuery(text?.toString() ?: "")
@@ -56,7 +62,16 @@ class MovementHistoryTabFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.movementsWithNames.collect { list ->
-                    adapter.submitList(list)
+                    adapter.submitList(list) {
+                        if (list.isEmpty()) {
+                            binding.emptyState.visibility = View.VISIBLE
+                            binding.rvMovements.visibility = View.GONE
+                        } else {
+                            binding.emptyState.visibility = View.GONE
+                            binding.rvMovements.visibility = View.VISIBLE
+                            binding.rvMovements.scheduleLayoutAnimation()
+                        }
+                    }
                 }
             }
         }
@@ -79,27 +94,37 @@ class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmo
     }
 
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
-        private val tvChange: TextView = view.findViewById(R.id.tvChange)
         private val tvProduct: TextView = view.findViewById(R.id.tvProductName)
+        private val tvMovementDetail: TextView = view.findViewById(R.id.tvMovementDetail)
         private val tvTime: TextView = view.findViewById(R.id.tvTimestamp)
 
         fun bind(item: com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView) {
-            val sign = if (item.quantityChange >= 0) "+" else "-"
-            tvChange.text = buildString {
-                append(sign)
-                append(kotlin.math.abs(item.quantityChange))
-            }
+            val sign = if (item.quantityChange > 0) "+" else ""
             
-            // Color Coding based on movement type
-            val color = if (item.quantityChange >= 0) {
-                ContextCompat.getColor(itemView.context, R.color.status_active)
+            // Movement Types
+            val typeText: String
+            val colorRes: Int
+            if (item.quantityChange > 0) {
+                typeText = "إضافة"
+                colorRes = R.color.status_active
+            } else if (item.quantityChange < 0) {
+                if (item.productName.contains("مبيعات") || item.productName.contains("طلب")) {
+                    typeText = "مبيعات"
+                    colorRes = R.color.status_paused
+                } else {
+                    typeText = "سحب / بيع"
+                    colorRes = R.color.status_error
+                }
             } else {
-                ContextCompat.getColor(itemView.context, R.color.status_error)
+                typeText = "تسوية"
+                colorRes = R.color.ps_blue_primary
             }
-            tvChange.setTextColor(color)
+
+            tvMovementDetail.text = "$typeText • $sign${item.quantityChange}"
+            tvMovementDetail.setTextColor(ContextCompat.getColor(itemView.context, colorRes))
 
             tvProduct.text = item.productName
-            tvTime.text = android.text.format.DateFormat.format("yyyy-MM-dd HH:mm", item.timestamp).toString()
+            tvTime.text = android.text.format.DateFormat.format("dd MMM yyyy • HH:mm", item.timestamp).toString()
         }
     }
 

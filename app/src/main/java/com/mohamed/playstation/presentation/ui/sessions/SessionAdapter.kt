@@ -60,57 +60,70 @@ class SessionAdapter(
                     append(session.deviceNumber)
                 }
 
-                tvSessionMode.text = if (session.isFixed()) {
+                val modeText = if (session.isFixed()) {
                     root.context.getString(R.string.session_mode_fixed)
                 } else {
                     root.context.getString(R.string.session_mode_open)
                 }
+                
+                val playerText = if (session.isMultiPlayer) root.context.getString(R.string.multiplayer) else root.context.getString(R.string.single_player)
+                tvSessionMode.text = "$modeText • $playerText"
 
                 when {
                     session.isActive() -> {
-                        tvStatus.text = root.context.getString(R.string.status_running)
-                        tvStatus.setTextColor(root.context.getColor(R.color.status_active))
-                        viewStatusStrip.setBackgroundColor(root.context.getColor(R.color.status_active))
-                        viewStatusDot.backgroundTintList =
-                            android.content.res.ColorStateList.valueOf(
-                                root.context.getColor(R.color.status_active)
+                        val isAutoEnding = session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
+                        if (isAutoEnding) {
+                            tvStatus.text = "جاري الإنهاء..."
+                            tvStatus.setTextColor(root.context.getColor(R.color.status_paused))
+                            tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                                androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.status_paused), 38) // ~15% alpha
                             )
-                        tvTimer.visibility = View.VISIBLE
+                            tvTimer.visibility = View.VISIBLE
+                        } else {
+                            tvStatus.text = root.context.getString(R.string.status_running)
+                            tvStatus.setTextColor(root.context.getColor(R.color.status_active))
+                            tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                                androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.status_active), 38)
+                            )
+                            tvTimer.visibility = View.VISIBLE
+                        }
                     }
                     session.isPaused() -> {
                         tvStatus.text = root.context.getString(R.string.status_paused)
                         tvStatus.setTextColor(root.context.getColor(R.color.status_paused))
-                        viewStatusStrip.setBackgroundColor(root.context.getColor(R.color.status_paused))
-                        viewStatusDot.backgroundTintList =
-                            android.content.res.ColorStateList.valueOf(
-                                root.context.getColor(R.color.status_paused)
-                            )
+                        tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                            androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.status_paused), 38)
+                        )
                         tvTimer.visibility = View.VISIBLE
                     }
                     else -> {
                         tvStatus.text = root.context.getString(R.string.status_available)
                         tvStatus.setTextColor(root.context.getColor(R.color.text_secondary))
-                        viewStatusStrip.setBackgroundColor(root.context.getColor(R.color.divider))
-                        viewStatusDot.backgroundTintList =
-                            android.content.res.ColorStateList.valueOf(
-                                root.context.getColor(R.color.divider)
-                            )
+                        tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                            androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.text_secondary), 25)
+                        )
                         tvTimer.visibility = View.GONE
                     }
                 }
 
                 if (tvTimer.visibility == View.VISIBLE) {
-                    tvTimer.text = SessionTimer.formatForSession(session, currentTick)
-                    if (session.isFixed() && session.isActive()) {
-                        val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
-                        tvTimer.setTextColor(
-                            root.context.getColor(
-                                if (remaining <= 5 * 60_000) R.color.status_paused
-                                else R.color.ps_blue_primary
-                            )
-                        )
+                    val isAutoEnding = session.isActive() && session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
+                    if (isAutoEnding) {
+                        tvTimer.text = "00:00:00"
+                        tvTimer.setTextColor(root.context.getColor(R.color.status_paused))
                     } else {
-                        tvTimer.setTextColor(root.context.getColor(R.color.ps_blue_primary))
+                        tvTimer.text = SessionTimer.formatForSession(session, currentTick)
+                        if (session.isFixed() && session.isActive()) {
+                            val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
+                            tvTimer.setTextColor(
+                                root.context.getColor(
+                                    if (remaining <= 5 * 60_000) R.color.status_paused
+                                    else R.color.ps_blue_primary
+                                )
+                            )
+                        } else {
+                            tvTimer.setTextColor(root.context.getColor(R.color.ps_blue_primary))
+                        }
                     }
                 }
             }

@@ -9,6 +9,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.R
 import com.mohamed.playstation.presentation.ui.receipts.ReceiptDetailDialog
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -20,11 +21,11 @@ class EndSessionDialog : DialogFragment() {
 
     private val viewModel: SessionViewModel by viewModels({ requireParentFragment() })
 
-    private var sessionId: Long = 0
+    private var sessionId: Long = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sessionId = arguments?.getLong(ARG_SESSION_ID) ?: 0
+        sessionId = requireArguments().getLong(ARG_SESSION_ID)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

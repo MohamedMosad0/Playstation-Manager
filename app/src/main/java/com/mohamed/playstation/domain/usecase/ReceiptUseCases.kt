@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 class ReceiptUseCases @Inject constructor(
     private val receiptRepository: ReceiptRepository,
-    private val productUseCases: ProductUseCases
+    private val sessionProductUseCases: SessionProductUseCases
 ) {
 
     /**
@@ -32,7 +32,7 @@ class ReceiptUseCases @Inject constructor(
         val durationMinutes = session.getDurationMinutes()
         val hours = durationMinutes / 60.0
         val playAmount = hours * pricePerHour
-        val productsAmount = productUseCases.getProductsBySessionIdOnce(session.id)
+        val productsAmount = sessionProductUseCases.getProductsBySessionIdOnce(session.id)
             .sumOf { it.getLineTotal() }
         val totalAmount = playAmount + productsAmount
 

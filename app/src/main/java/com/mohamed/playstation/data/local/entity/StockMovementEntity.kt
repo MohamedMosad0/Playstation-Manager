@@ -10,18 +10,18 @@ import java.util.Date
     tableName = "stock_movements",
     foreignKeys = [
         ForeignKey(
-            entity = ProductEntity::class,
+            entity = InventoryItemEntity::class,
             parentColumns = ["id"],
-            childColumns = ["productId"],
+            childColumns = ["inventoryItemId"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("productId")]
+    indices = [Index("inventoryItemId")]
 )
 data class StockMovementEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val productId: Long,
+    val inventoryItemId: Long,
     val quantityChange: Int,
     val movementType: String,
     val timestamp: Date = Date()

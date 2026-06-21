@@ -15,7 +15,7 @@ object StockMovementMapper {
 
         return StockMovement(
             id = entity.id,
-            productId = entity.productId,
+            inventoryItemId = entity.inventoryItemId,
             quantityChange = entity.quantityChange,
             movementType = type,
             timestamp = entity.timestamp
@@ -25,7 +25,7 @@ object StockMovementMapper {
     fun toEntity(model: StockMovement): StockMovementEntity {
         return StockMovementEntity(
             id = model.id,
-            productId = model.productId,
+            inventoryItemId = model.inventoryItemId,
             quantityChange = model.quantityChange,
             movementType = model.movementType.name,
             timestamp = model.timestamp

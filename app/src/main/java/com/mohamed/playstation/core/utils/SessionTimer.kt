@@ -32,7 +32,10 @@ object SessionTimer {
     fun isFixedExpired(session: Session, nowMs: Long): Boolean {
         if (!session.isFixed() || !session.isActive()) return false
         val remaining = getRemainingMs(session, nowMs) ?: return false
-        return remaining <= 0L
+        
+        // Safety buffer: only consider expired if remaining time is practically zero or negative.
+        // This prevents early termination due to minor clock drift or scheduling jitter.
+        return remaining < 100L
     }
 
     fun formatDurationMs(durationMs: Long): String {

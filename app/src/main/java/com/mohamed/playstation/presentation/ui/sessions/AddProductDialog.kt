@@ -13,8 +13,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.R
 import com.mohamed.playstation.databinding.DialogAddSessionProductBinding
-import com.mohamed.playstation.domain.model.SessionProduct
+import com.mohamed.playstation.domain.model.InventoryItem
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,14 +27,14 @@ class AddProductDialog : DialogFragment() {
 
     private val viewModel: SessionViewModel by viewModels({ requireParentFragment() })
 
-    private var sessionId: Long = 0L
-    private var inventoryProducts: List<SessionProduct> = emptyList()
-    private var selectedProduct: SessionProduct? = null
+    private var sessionId: Long = -1L
+    private var inventoryProducts: List<InventoryItem> = emptyList()
+    private var selectedProduct: InventoryItem? = null
     private lateinit var productAdapter: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sessionId = arguments?.getLong(ARG_SESSION_ID) ?: 0L
+        sessionId = requireArguments().getLong(ARG_SESSION_ID)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -84,7 +85,7 @@ class AddProductDialog : DialogFragment() {
         }
     }
 
-    private fun updateInventoryProducts(products: List<SessionProduct>) {
+    private fun updateInventoryProducts(products: List<InventoryItem>) {
         inventoryProducts = products
         productAdapter.clear()
         productAdapter.addAll(products.map { it.name })
@@ -100,11 +101,11 @@ class AddProductDialog : DialogFragment() {
         }
     }
 
-    private fun showSelectedProduct(product: SessionProduct, updateName: Boolean = true) {
+    private fun showSelectedProduct(product: InventoryItem, updateName: Boolean = true) {
         if (updateName) {
             binding.actInventoryProduct.setText(product.name, false)
         }
-        binding.etProductPrice.setText(product.price.toString())
+        binding.etProductPrice.setText(product.sellPrice.toString())
         binding.etAvailableQuantity.setText(product.quantity.toString())
         binding.tilInventoryProduct.error = null
         binding.tilRequestedQuantity.error = null
@@ -127,7 +128,6 @@ class AddProductDialog : DialogFragment() {
     }
 
     private fun submitProduct(dialog: AlertDialog) {
-        if (sessionId <= 0L) return
 
         val product = selectedProduct
         val quantity = binding.etRequestedQuantity.text?.toString()?.toIntOrNull()

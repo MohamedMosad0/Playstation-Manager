@@ -60,13 +60,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:textSize="20sp"
+                        android:textSize="28sp"
                         android:textStyle="bold"
-                        tools:text="1500 EGP"/>
+                        android:textColor="?attr/colorPrimary"
+                        tools:text="1,905.83 ج.م"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/today"
+                        android:text="اليوم"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -104,7 +105,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/today"
+                        android:text="مصروف"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -142,7 +143,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/today"
+                        android:text="اليوم"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -180,7 +181,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Running"
+                        android:text="نشطة"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -218,7 +219,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Products"
+                        android:text="منتج"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -257,7 +258,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Items"
+                        android:text="عنصر"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -419,10 +420,11 @@
                     android:alpha="0.7" />
                     
                 <TextView
+                    android:id="@+id/tvEmptySessionsText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/no_active_sessions"
+                    android:text="🎮 لا توجد جلسات نشطة"
                     android:textColor="?android:textColorSecondary"
                     android:textSize="14sp"/>
             </LinearLayout>
@@ -463,10 +465,11 @@
                     android:alpha="0.7" />
                     
                 <TextView
+                    android:id="@+id/tvEmptyExpensesText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/no_expenses"
+                    android:text="💸 لا توجد مصروفات اليوم"
                     android:textColor="?android:textColorSecondary"
                     android:textSize="14sp"/>
             </LinearLayout>

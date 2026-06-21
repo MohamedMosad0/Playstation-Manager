@@ -7,8 +7,8 @@ import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.domain.model.SessionProductSummary
-import com.mohamed.playstation.domain.usecase.ProductUseCases
 import com.mohamed.playstation.domain.usecase.ReceiptUseCases
+import com.mohamed.playstation.domain.usecase.SessionProductUseCases
 import com.mohamed.playstation.presentation.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ReceiptViewModel @Inject constructor(
     private val receiptUseCases: ReceiptUseCases,
-    private val productUseCases: ProductUseCases,
+    private val sessionProductUseCases: SessionProductUseCases,
     private val settingsManager: SettingsManager
 ) : ViewModel() {
 
@@ -38,7 +38,7 @@ class ReceiptViewModel @Inject constructor(
     private val _todayRevenue = MutableStateFlow(0.0)
     val todayRevenue: StateFlow<Double> = _todayRevenue.asStateFlow()
 
-    val productSummaries: StateFlow<Map<Long, SessionProductSummary>> = productUseCases
+    val productSummaries: StateFlow<Map<Long, SessionProductSummary>> = sessionProductUseCases
         .getAllSessionProductSummaries()
         .map { summaries -> summaries.associateBy { it.sessionId } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
@@ -155,7 +155,7 @@ class ReceiptViewModel @Inject constructor(
 
     suspend fun getProductsBySessionId(sessionId: Long): List<SessionProduct> {
         return try {
-            productUseCases.getProductsBySessionIdOnce(sessionId)
+            sessionProductUseCases.getProductsBySessionIdOnce(sessionId)
         } catch (e: Exception) {
             Timber.e(e, "Error fetching products for session id: $sessionId")
             emptyList()

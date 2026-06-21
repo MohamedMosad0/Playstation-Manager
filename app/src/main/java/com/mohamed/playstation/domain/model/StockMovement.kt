@@ -7,7 +7,7 @@ import java.util.Date
  */
 data class StockMovement(
     val id: Long = 0,
-    val productId: Long,
+    val inventoryItemId: Long,
     val quantityChange: Int,
     val movementType: MovementType,
     val timestamp: Date = Date()
@@ -15,5 +15,8 @@ data class StockMovement(
 
 enum class MovementType {
     STOCK_IN,
-    STOCK_OUT
+    STOCK_OUT,
+    INITIAL,
+    SALE,
+    SALE_REVERT
 }

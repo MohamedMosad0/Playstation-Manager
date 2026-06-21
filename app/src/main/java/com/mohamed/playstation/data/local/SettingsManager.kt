@@ -60,6 +60,19 @@ class SettingsManager @Inject constructor(
         val WARNING_SOUND_ENABLED = booleanPreferencesKey(AppConstants.KEY_WARNING_SOUND_ENABLED)
         val WARNING_NOTIFICATION_ENABLED = booleanPreferencesKey(AppConstants.KEY_WARNING_NOTIFICATION_ENABLED)
         val WARNING_MINUTES = intPreferencesKey(AppConstants.KEY_WARNING_MINUTES)
+        
+        // System / App State
+        val EXACT_ALARM_PROMPT_DISMISSED = booleanPreferencesKey(AppConstants.KEY_EXACT_ALARM_PROMPT_DISMISSED)
+    }
+
+    // ======================== System / App State ========================
+
+    val exactAlarmPromptDismissedFlow: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.EXACT_ALARM_PROMPT_DISMISSED] ?: false
+    }
+
+    suspend fun setExactAlarmPromptDismissed(dismissed: Boolean) {
+        dataStore.edit { it[PreferencesKeys.EXACT_ALARM_PROMPT_DISMISSED] = dismissed }
     }
 
     // ======================== Dark Mode ========================

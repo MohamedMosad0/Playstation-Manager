@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.data.local.AppDatabase
-import com.mohamed.playstation.data.local.dao.ProductDao
 import com.mohamed.playstation.data.local.dao.SessionDao
+import com.mohamed.playstation.data.local.dao.InventoryItemDao
+import com.mohamed.playstation.data.local.dao.SessionProductDao
 import com.mohamed.playstation.data.local.dao.ReceiptDao
 import com.mohamed.playstation.data.local.dao.StockMovementDao
 import com.mohamed.playstation.data.local.dao.ExpenseDao
@@ -36,12 +37,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             AppConstants.DATABASE_NAME
         )
-            .addMigrations(
-                AppDatabase.MIGRATION_1_2,
-                AppDatabase.MIGRATION_2_3,
-                AppDatabase.MIGRATION_3_4,
-                AppDatabase.MIGRATION_4_5
-            )
+            .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6)
             .build()
     }
 
@@ -55,12 +51,21 @@ object DatabaseModule {
     }
 
     /**
-     * توفير ProductDao
+     * توفير InventoryItemDao
      */
     @Provides
     @Singleton
-    fun provideProductDao(database: AppDatabase): ProductDao {
-        return database.productDao()
+    fun provideInventoryItemDao(database: AppDatabase): InventoryItemDao {
+        return database.inventoryItemDao()
+    }
+
+    /**
+     * توفير SessionProductDao
+     */
+    @Provides
+    @Singleton
+    fun provideSessionProductDao(database: AppDatabase): SessionProductDao {
+        return database.sessionProductDao()
     }
 
     /**

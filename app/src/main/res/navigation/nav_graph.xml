@@ -10,14 +10,8 @@
         android:name="com.mohamed.playstation.presentation.ui.dashboard.DashboardFragment"
         android:label="@string/dashboard">
         <action
-            android:id="@+id/action_dashboardFragment_to_inventoryFragment"
-            app:destination="@id/inventoryFragment" />
-        <action
             android:id="@+id/action_dashboardFragment_to_receiptsFragment"
             app:destination="@id/receiptsFragment" />
-        <action
-            android:id="@+id/action_dashboardFragment_to_sessionsFragment"
-            app:destination="@id/sessionsFragment" />
     </fragment>
 
     <!-- Sessions Fragment -->

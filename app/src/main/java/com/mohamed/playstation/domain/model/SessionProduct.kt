@@ -3,18 +3,21 @@ package com.mohamed.playstation.domain.model
 import java.util.Date
 
 /**
- * Domain Model لمنتج مرتبط بجلسة
+ * Domain Model لمنتج مرتبط بجلسة (مبيعات الجلسة)
  */
 data class SessionProduct(
     val id: Long = 0,
     val sessionId: Long,
-    val name: String,
-    val price: Double,
-    val quantity: Int = 0,
-    val minimumQuantity: Int = 0,
+    val inventoryItemId: Long,
+    val nameSnapshot: String,
+    val sellPriceSnapshot: Double,
+    val costSnapshot: Double,
+    val unitLabelSnapshot: String,
+    val isPreparedSnapshot: Boolean,
+    val quantitySold: Int,
     val createdAt: Date = Date()
 ) {
-    fun getLineTotal(): Double = price * quantity
-
-    val isLowStock: Boolean get() = quantity <= minimumQuantity
+    fun getLineTotal(): Double = sellPriceSnapshot * quantitySold
+    fun getLineCost(): Double = costSnapshot * quantitySold
+    fun getLineProfit(): Double = getLineTotal() - getLineCost()
 }

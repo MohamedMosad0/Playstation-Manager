@@ -2,7 +2,7 @@ package com.mohamed.playstation.data.repository.dashboard
 
 import com.mohamed.playstation.core.utils.DateUtils
 import com.mohamed.playstation.data.repository.ExpenseRepository
-import com.mohamed.playstation.data.repository.ProductRepository
+import com.mohamed.playstation.data.repository.InventoryRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionRepository
 import com.mohamed.playstation.domain.model.Expense
@@ -22,7 +22,7 @@ class DashboardRepositoryImpl @Inject constructor(
     private val receiptRepository: ReceiptRepository,
     private val expenseRepository: ExpenseRepository,
     private val sessionRepository: SessionRepository,
-    private val productRepository: ProductRepository
+    private val inventoryRepository: InventoryRepository
 ) : DashboardRepository {
 
     override fun getDashboardData(): Flow<DashboardData> {
@@ -33,7 +33,7 @@ class DashboardRepositoryImpl @Inject constructor(
             receiptRepository.getTodayTotalRevenue(),
             expenseRepository.getTotalExpensesInRange(startOfDay, endOfDay),
             sessionRepository.getTodaySessions(),
-            productRepository.getInventoryProducts()
+            inventoryRepository.getAllActiveItems()
         ) { todayRevenue, todayExpenses, todaySessions, inventoryProducts ->
             DailyMetrics(todayRevenue, todayExpenses ?: 0.0, todaySessions, inventoryProducts)
         }
@@ -97,7 +97,7 @@ class DashboardRepositoryImpl @Inject constructor(
         val todayRevenue: Double,
         val todayExpenses: Double,
         val todaySessions: List<com.mohamed.playstation.domain.model.Session>,
-        val inventoryProducts: List<com.mohamed.playstation.domain.model.SessionProduct>
+        val inventoryProducts: List<com.mohamed.playstation.domain.model.InventoryItem>
     )
 
     private data class ChartMetrics(

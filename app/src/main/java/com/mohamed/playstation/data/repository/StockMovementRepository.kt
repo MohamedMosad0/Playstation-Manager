@@ -12,13 +12,13 @@ import javax.inject.Singleton
 class StockMovementRepository @Inject constructor(
     private val stockMovementDao: StockMovementDao
 ) {
-
     suspend fun insertMovement(movement: StockMovement): Long {
-        return stockMovementDao.insert(StockMovementMapper.toEntity(movement))
+        val entity = StockMovementMapper.toEntity(movement)
+        return stockMovementDao.insert(entity)
     }
 
-    fun getMovementsByProductId(productId: Long): Flow<List<StockMovement>> {
-        return stockMovementDao.getMovementsByProductId(productId).map(StockMovementMapper::toModelList)
+    fun getMovementsByInventoryItemId(inventoryItemId: Long): Flow<List<StockMovement>> {
+        return stockMovementDao.getMovementsByInventoryItemId(inventoryItemId).map(StockMovementMapper::toModelList)
     }
 
     fun getAllMovements(): Flow<List<StockMovement>> {
@@ -29,7 +29,7 @@ class StockMovementRepository @Inject constructor(
         return stockMovementDao.getAllMovementsWithNames()
     }
 
-    suspend fun deleteByProductId(productId: Long) {
-        stockMovementDao.deleteByProductId(productId)
+    suspend fun deleteByInventoryItemId(inventoryItemId: Long) {
+        stockMovementDao.deleteByInventoryItemId(inventoryItemId)
     }
 }
