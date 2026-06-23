@@ -34,7 +34,7 @@ class SessionProductUseCases @Inject constructor(
     }
 
     suspend fun addInventoryProductToSession(sessionId: Long, inventoryItemId: Long, quantity: Int) {
-        if (quantity <= 0) throw IllegalArgumentException("الكمية يجب أن تكون أكبر من صفر")
+        if (quantity <= 0) throw IllegalArgumentException("INVALID_QUANTITY")
         sessionProductRepository.addInventoryProductToSession(sessionId, inventoryItemId, quantity)
     }
 

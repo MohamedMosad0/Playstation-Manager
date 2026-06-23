@@ -64,7 +64,7 @@ class InventoryViewModel @Inject constructor(
             StockMovementView(
                 id = row.id,
                 inventoryItemId = row.inventoryItemId,
-                productName = row.productName ?: "[محذوف/أرشيف]",
+                productName = row.productName ?: "deleted_archived",
                 quantityChange = row.quantityChange,
                 movementType = movementType,
                 timestamp = row.timestamp
@@ -77,6 +77,16 @@ class InventoryViewModel @Inject constructor(
     fun setSearchQuery(query: String) { _searchQuery.value = query }
     fun setMovementSearchQuery(query: String) { _movementSearchQuery.value = query }
     fun toggleShowArchived() { _showArchived.value = !_showArchived.value }
+
+    private fun mapExceptionToUiText(e: Exception): com.mohamed.playstation.core.utils.UiText {
+        return when (e.message) {
+            "DUPLICATE_PRODUCT_NAME" -> com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_duplicate_product_name)
+            "INSUFFICIENT_STOCK" -> com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.insufficient_stock)
+            "PRODUCT_NOT_FOUND" -> com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.product_not_found)
+            "INVALID_QUANTITY" -> com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.invalid_quantity)
+            else -> e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred)
+        }
+    }
 
     fun resetUiState() {
         _addEditUiState.value = UiState.Idle
@@ -98,7 +108,7 @@ class InventoryViewModel @Inject constructor(
                 inventoryUseCases.insertItem(item)
                 _addEditUiState.value = UiState.Success(Unit)
             } catch (e: Exception) {
-                _addEditUiState.value = UiState.Error(e.message ?: "حدث خطأ غير معروف")
+                _addEditUiState.value = UiState.Error(mapExceptionToUiText(e))
             }
         }
     }
@@ -110,7 +120,7 @@ class InventoryViewModel @Inject constructor(
                 inventoryUseCases.updateItem(item)
                 _addEditUiState.value = UiState.Success(Unit)
             } catch (e: Exception) {
-                _addEditUiState.value = UiState.Error(e.message ?: "حدث خطأ غير معروف")
+                _addEditUiState.value = UiState.Error(mapExceptionToUiText(e))
             }
         }
     }
@@ -120,6 +130,7 @@ class InventoryViewModel @Inject constructor(
             try {
                 inventoryUseCases.archiveItem(id)
             } catch (e: Exception) {
+                _addEditUiState.value = UiState.Error(mapExceptionToUiText(e))
             }
         }
     }
@@ -129,6 +140,7 @@ class InventoryViewModel @Inject constructor(
             try {
                 inventoryUseCases.restoreItem(id)
             } catch (e: Exception) {
+                _addEditUiState.value = UiState.Error(mapExceptionToUiText(e))
             }
         }
     }
@@ -138,6 +150,7 @@ class InventoryViewModel @Inject constructor(
             try {
                 inventoryUseCases.adjustStock(id, delta, "STOCK_IN")
             } catch (e: Exception) {
+                _addEditUiState.value = UiState.Error(mapExceptionToUiText(e))
             }
         }
     }
@@ -147,6 +160,7 @@ class InventoryViewModel @Inject constructor(
             try {
                 inventoryUseCases.adjustStock(id, -delta, "STOCK_OUT")
             } catch (e: Exception) {
+                _addEditUiState.value = UiState.Error(mapExceptionToUiText(e))
             }
         }
     }

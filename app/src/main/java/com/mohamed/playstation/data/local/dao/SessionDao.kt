@@ -59,11 +59,11 @@ interface SessionDao {
     @Query(
         """
         SELECT * FROM sessions
-        WHERE DATE(startTime/1000, 'unixepoch') = DATE('now')
+        WHERE startTime >= :startMs AND startTime < :endMs
         ORDER BY startTime DESC
         """
     )
-    fun getTodaySessions(): Flow<List<SessionEntity>>
+    fun getTodaySessions(startMs: Long, endMs: Long): Flow<List<SessionEntity>>
 
     @Query("DELETE FROM sessions")
     suspend fun deleteAll()

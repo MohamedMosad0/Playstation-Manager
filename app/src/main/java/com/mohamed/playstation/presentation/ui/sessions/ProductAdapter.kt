@@ -38,9 +38,9 @@ class ProductAdapter(
 
         fun bind(product: SessionProduct) {
             binding.tvProductName.text = product.nameSnapshot
-            val unitPrice = CurrencyUtils.formatAmount(product.sellPriceSnapshot, currencyCode)
-            val lineTotal = CurrencyUtils.formatAmount(product.getLineTotal(), currencyCode)
-            binding.tvProductQuantity.text = "$unitPrice × ${product.quantitySold}"
+            val unitPrice = CurrencyUtils.formatAmount(itemView.context, product.sellPriceSnapshot, currencyCode)
+            val lineTotal = CurrencyUtils.formatAmount(itemView.context, product.getLineTotal(), currencyCode)
+            binding.tvProductQuantity.text = binding.root.context.getString(com.mohamed.playstation.R.string.product_quantity_format, unitPrice, product.quantitySold)
             binding.tvProductPrice.text = lineTotal
         }
     }

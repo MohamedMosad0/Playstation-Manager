@@ -164,12 +164,11 @@ class AddProductDialog : DialogFragment() {
                 if (currentBinding != null) {
                     dialog.getButton(Dialog.BUTTON_POSITIVE).isEnabled = true
                     val message = error.message.orEmpty()
-                    if (message.contains("stock", ignoreCase = true)) {
-                        currentBinding.tilRequestedQuantity.error =
-                            getString(R.string.insufficient_stock)
-                    } else {
-                        currentBinding.tilInventoryProduct.error =
-                            error.message ?: getString(R.string.error_occurred)
+                    when (message) {
+                        "INSUFFICIENT_STOCK" -> currentBinding.tilRequestedQuantity.error = getString(R.string.insufficient_stock)
+                        "PRODUCT_NOT_FOUND" -> currentBinding.tilInventoryProduct.error = getString(R.string.product_not_found)
+                        "INVALID_QUANTITY" -> currentBinding.tilRequestedQuantity.error = getString(R.string.invalid_quantity)
+                        else -> currentBinding.tilInventoryProduct.error = getString(R.string.error_occurred)
                     }
                 }
             }

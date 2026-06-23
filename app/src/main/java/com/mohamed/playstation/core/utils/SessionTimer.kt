@@ -42,7 +42,7 @@ object SessionTimer {
         val hours = TimeUnit.MILLISECONDS.toHours(durationMs)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(durationMs) % 60
         val seconds = TimeUnit.MILLISECONDS.toSeconds(durationMs) % 60
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        return String.format(java.util.Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     fun formatForSession(session: Session, nowMs: Long): String {

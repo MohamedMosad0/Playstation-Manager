@@ -61,7 +61,7 @@ class ReceiptViewModel @Inject constructor(
             receiptUseCases.getAllReceipts()
                 .catch { e ->
                     Timber.e(e, "Error loading all receipts")
-                    _allReceipts.value = UiState.Error(e.message ?: "Unknown error")
+                    _allReceipts.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
                 }
                 .collect { receipts ->
                     _allReceipts.value = if (receipts.isEmpty()) {
@@ -81,7 +81,7 @@ class ReceiptViewModel @Inject constructor(
             receiptUseCases.getTodayReceipts()
                 .catch { e ->
                     Timber.e(e, "Error loading today receipts")
-                    _todayReceipts.value = UiState.Error(e.message ?: "Unknown error")
+                    _todayReceipts.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
                 }
                 .collect { receipts ->
                     _todayReceipts.value = if (receipts.isEmpty()) {

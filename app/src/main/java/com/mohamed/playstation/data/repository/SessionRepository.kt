@@ -76,7 +76,8 @@ class SessionRepository @Inject constructor(
     }
 
     fun getTodaySessions(): Flow<List<Session>> {
-        return sessionDao.getTodaySessions().map { entities ->
+        val (start, end) = com.mohamed.playstation.core.utils.DateUtils.todayRange()
+        return sessionDao.getTodaySessions(start, end).map { entities ->
             SessionMapper.toModelList(entities)
         }
     }

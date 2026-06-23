@@ -152,7 +152,7 @@ class SessionDetailsFragment : Fragment() {
         val isAutoEnding = session.isActive() && session.isFixed() && remaining <= 0L
 
         if (isAutoEnding) {
-            binding.tvStatus.text = "جاري الإنهاء..."
+            binding.tvStatus.text = getString(com.mohamed.playstation.R.string.finishing_progress)
             binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_paused))
             binding.tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
                 androidx.core.graphics.ColorUtils.setAlphaComponent(requireContext().getColor(R.color.status_paused), 38)
@@ -211,9 +211,9 @@ class SessionDetailsFragment : Fragment() {
         binding.tvNoProducts.isVisible = data.products.isEmpty()
         binding.rvProducts.isVisible = data.products.isNotEmpty()
 
-        binding.tvPlayCost.text = CurrencyUtils.formatAmount(playCost, data.currency)
-        binding.tvTotalCost.text = CurrencyUtils.formatAmount(totalCost, data.currency)
-        binding.tvProductCost.text = CurrencyUtils.formatAmount(productCost, data.currency)
+        binding.tvPlayCost.text = CurrencyUtils.formatAmount(requireContext(), playCost, data.currency)
+        binding.tvTotalCost.text = CurrencyUtils.formatAmount(requireContext(), totalCost, data.currency)
+        binding.tvProductCost.text = CurrencyUtils.formatAmount(requireContext(), productCost, data.currency)
     }
 
     private fun updateTimer(session: Session, currentTick: Long) {
@@ -222,7 +222,7 @@ class SessionDetailsFragment : Fragment() {
 
         if (isAutoEnding) {
             binding.tvLargeTimer.text = "00:00:00"
-            binding.tvTimerLabel.text = "جاري إنهاء الجلسة..."
+            binding.tvTimerLabel.text = getString(com.mohamed.playstation.R.string.finishing_session_progress)
             binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.status_paused))
         } else {
             binding.tvLargeTimer.text = SessionTimer.formatForSession(session, currentTick)

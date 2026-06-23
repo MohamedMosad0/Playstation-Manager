@@ -1,5 +1,6 @@
 package com.mohamed.playstation.core.utils
 
+import android.content.Context
 import com.mohamed.playstation.domain.model.CurrencyList
 import java.text.DecimalFormat
 
@@ -11,12 +12,13 @@ object CurrencyUtils {
     /**
      * تنسيق المبلغ مع رمز العملة
      *
+     * @param context السياق لحل الرمز
      * @param amount المبلغ
      * @param currencyCode كود العملة (EGP, SAR, etc.)
      * @return المبلغ منسق مع الرمز مثل: "30.00 ج.م"
      */
-    fun formatAmount(amount: Double, currencyCode: String): String {
-        val symbol = CurrencyList.getSymbol(currencyCode)
+    fun formatAmount(context: Context, amount: Double, currencyCode: String): String {
+        val symbol = getCurrencySymbol(context, currencyCode)
         val formatter = DecimalFormat("#,##0.00")
         return "${formatter.format(amount)} $symbol"
     }
@@ -35,11 +37,13 @@ object CurrencyUtils {
     /**
      * الحصول على رمز العملة فقط
      *
+     * @param context السياق لحل الرمز
      * @param currencyCode كود العملة
      * @return الرمز مثل: "ج.م"
      */
-    fun getCurrencySymbol(currencyCode: String): String {
-        return CurrencyList.getSymbol(currencyCode)
+    fun getCurrencySymbol(context: Context, currencyCode: String): String {
+        val currency = CurrencyList.getCurrencyByCode(currencyCode)
+        return context.getString(currency.symbolRes)
     }
 
     /**
@@ -57,17 +61,19 @@ object CurrencyUtils {
     /**
      * تنسيق الإجمالي مع العملة
      *
+     * @param context السياق لحل الرمز
      * @param durationMinutes مدة الجلسة بالدقائق
      * @param pricePerHour السعر بالساعة
      * @param currencyCode كود العملة
      * @return الإجمالي منسق مثل: "45.50 ج.م"
      */
     fun formatTotal(
+        context: Context,
         durationMinutes: Long,
         pricePerHour: Double,
         currencyCode: String
     ): String {
         val total = calculateTotal(durationMinutes, pricePerHour)
-        return formatAmount(total, currencyCode)
+        return formatAmount(context, total, currencyCode)
     }
 }

@@ -61,7 +61,7 @@ class CompletedSessionAdapter(
 
                 // Total price
                 val total = session.calculateTotal(endMs)
-                tvCompletedTotal.text = CurrencyUtils.formatAmount(total, currency)
+                tvCompletedTotal.text = CurrencyUtils.formatAmount(binding.root.context, total, currency)
             }
         }
     }

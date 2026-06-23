@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="PS4"
+            android:text="@string/ps4"
             android:textColor="@color/text_primary" />
 
         <com.google.android.material.button.MaterialButton
@@ -64,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="PS5"
+            android:text="@string/ps5"
             android:textColor="@color/text_primary" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>

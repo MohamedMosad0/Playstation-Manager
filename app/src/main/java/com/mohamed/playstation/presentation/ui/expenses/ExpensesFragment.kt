@@ -74,7 +74,7 @@ class ExpensesFragment : Fragment() {
                 }
                 launch {
                     viewModel.totalAmount.collect { total ->
-                        binding.tvTotalExpenses.text = CurrencyUtils.formatAmount(total, viewModel.currency.value)
+                        binding.tvTotalExpenses.text = CurrencyUtils.formatAmount(requireContext(), total, viewModel.currency.value)
                     }
                 }
                 launch {
@@ -83,7 +83,7 @@ class ExpensesFragment : Fragment() {
                     }
                 }
                 launch {
-                    val monthFormat = SimpleDateFormat("MMMM yyyy", Locale("ar"))
+                    val monthFormat = java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
                     binding.tvCurrentMonth.text = monthFormat.format(Date())
                 }
             }

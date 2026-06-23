@@ -89,6 +89,24 @@
                         android:layout_alignParentEnd="true" />
                 </RelativeLayout>
 
+                <!-- Language -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/settings_language">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/actvLanguage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:saveEnabled="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <!-- Currency -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -128,7 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="PlayStation 4" />
+                    android:text="@string/ps4" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilPs4HourPrice"
@@ -180,7 +198,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="PlayStation 5" />
+                    android:text="@string/ps5" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilPs5HourPrice"

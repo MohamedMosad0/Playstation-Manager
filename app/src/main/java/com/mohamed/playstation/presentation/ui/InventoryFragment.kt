@@ -8,13 +8,20 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mohamed.playstation.databinding.FragmentInventoryBinding
+import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class InventoryFragment : Fragment() {
 
     private var _binding: FragmentInventoryBinding? = null
     private val binding get() = _binding!!
+    
+    private val viewModel: InventoryViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,9 +48,17 @@ class InventoryFragment : Fragment() {
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
             tab.text = when (pos) {
                 0 -> getString(com.mohamed.playstation.R.string.products)
-                else -> "الحركات"
+                else -> getString(com.mohamed.playstation.R.string.tab_movements)
             }
         }.attach()
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.addEditUiState.collect { state ->
+                if (state is UiState.Error) {
+                    android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

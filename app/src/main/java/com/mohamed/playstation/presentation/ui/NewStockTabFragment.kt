@@ -67,25 +67,25 @@ class NewStockTabFragment : Fragment() {
                 
                 binding.tvCurrentAvailable.visibility = View.VISIBLE
                 val unitName = match.unitLabel
-                val pluralUnit = UnitFormatUtils.getPluralUnit(unitName)
-                val definitePlural = UnitFormatUtils.getDefinitePluralUnit(unitName)
+                val pluralUnit = requireContext().getString(UnitFormatUtils.getPluralUnitRes(unitName))
+                val definitePlural = requireContext().getString(UnitFormatUtils.getDefinitePluralUnitRes(unitName))
                 
                 if (match.isPrepared) {
-                    val icon = if (unitName == "علبة") "🍜" else "☕"
-                    binding.tvCurrentAvailable.text = "$icon المتاح حالياً: ${match.quantity} $pluralUnit"
-                    binding.etInitialQty.hint = "عدد $definitePlural الجديدة"
-                    binding.btnSave.text = "إضافة"
+                    val icon = if (unitName == binding.root.context.getString(com.mohamed.playstation.R.string.unit_pack)) "🍜" else "☕"
+                    binding.tvCurrentAvailable.text = "$icon ${getString(com.mohamed.playstation.R.string.currently_available_format, match.quantity.toString(), pluralUnit)}"
+                    binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.new_quantity_hint, definitePlural)
+                    binding.btnSave.text = getString(com.mohamed.playstation.R.string.action_add)
                     binding.etMinQty.visibility = View.GONE
                 } else {
-                    binding.tvCurrentAvailable.text = "📦 المتاح حالياً: ${match.quantity} $pluralUnit"
-                    binding.etInitialQty.hint = "عدد $definitePlural الجديدة"
-                    binding.btnSave.text = "إضافة"
+                    binding.tvCurrentAvailable.text = "📦 ${getString(com.mohamed.playstation.R.string.currently_available_format, match.quantity.toString(), pluralUnit)}"
+                    binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.new_quantity_hint, definitePlural)
+                    binding.btnSave.text = getString(com.mohamed.playstation.R.string.action_add)
                     binding.etMinQty.visibility = View.VISIBLE
                 }
             } else {
                 binding.tvCurrentAvailable.visibility = View.GONE
-                binding.etInitialQty.hint = "Quantity to add"
-                binding.btnSave.text = "Save"
+                binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.inventory_quantity_to_add)
+                binding.btnSave.text = getString(com.mohamed.playstation.R.string.inventory_save)
                 binding.etMinQty.visibility = View.VISIBLE
             }
         }
@@ -132,7 +132,7 @@ class NewStockTabFragment : Fragment() {
                 }
 
                 // create new product and add initial stock
-                viewModel.addNewProduct(name, price, 0.0, qty, minQty, false, "قطعة")
+                viewModel.addNewProduct(name, price, 0.0, qty, minQty, false, getString(com.mohamed.playstation.R.string.unit_piece))
 
                 // clear fields
                 binding.actProductSearch.setText("")
@@ -140,8 +140,8 @@ class NewStockTabFragment : Fragment() {
                 binding.etMinQty.setText("")
                 binding.etInitialQty.setText("")
                 binding.tvCurrentAvailable.visibility = View.GONE
-                binding.etInitialQty.hint = "Quantity to add"
-                binding.btnSave.text = "Save"
+                binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.inventory_quantity_to_add)
+                binding.btnSave.text = getString(com.mohamed.playstation.R.string.inventory_save)
                 binding.etMinQty.visibility = View.VISIBLE
                 selectedProductId = null
 
@@ -163,8 +163,8 @@ class NewStockTabFragment : Fragment() {
                 binding.etMinQty.setText("")
                 binding.etInitialQty.setText("")
                 binding.tvCurrentAvailable.visibility = View.GONE
-                binding.etInitialQty.hint = "Quantity to add"
-                binding.btnSave.text = "Save"
+                binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.inventory_quantity_to_add)
+                binding.btnSave.text = getString(com.mohamed.playstation.R.string.inventory_save)
                 binding.etMinQty.visibility = View.VISIBLE
                 selectedProductId = null
             }

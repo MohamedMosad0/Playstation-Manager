@@ -73,15 +73,15 @@ class MainActivity : AppCompatActivity() {
             val alarmManager = getSystemService(android.app.AlarmManager::class.java)
             if (!alarmManager.canScheduleExactAlarms()) {
                 com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                    .setTitle("إذن الإنذار الدقيق")
-                    .setMessage("للحصول على إنهاء دقيق للجلسات في وقتها بالثانية، يُفضل تفعيل الإنذارات الدقيقة.")
-                    .setPositiveButton("تفعيل") { _, _ ->
+                    .setTitle(getString(com.mohamed.playstation.R.string.exact_alarm_permission_title))
+                    .setMessage(getString(com.mohamed.playstation.R.string.exact_alarm_permission_message))
+                    .setPositiveButton(getString(com.mohamed.playstation.R.string.action_confirm)) { _, _ ->
                         val intent = android.content.Intent(
                             android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
                         )
                         startActivity(intent)
                     }
-                    .setNegativeButton("لاحقاً", null)
+                    .setNegativeButton(getString(com.mohamed.playstation.R.string.action_cancel), null)
                     .show()
             }
         }

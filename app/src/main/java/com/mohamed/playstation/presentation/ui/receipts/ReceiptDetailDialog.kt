@@ -106,7 +106,7 @@ class ReceiptDetailDialog : DialogFragment() {
                 tvPausedDuration.text = formatPausedDuration(pausedMinutes)
             }
 
-            val currencySymbol = CurrencyUtils.getCurrencySymbol(currentReceipt.currencyCode)
+            val currencySymbol = CurrencyUtils.getCurrencySymbol(requireContext(), currentReceipt.currencyCode)
             tvRate.text = getString(
                 R.string.receipt_rate_per_hour,
                 String.format(Locale.getDefault(), "%.2f", currentReceipt.pricePerHour),
@@ -114,13 +114,13 @@ class ReceiptDetailDialog : DialogFragment() {
             )
             val playAmount = (currentReceipt.durationMinutes / 60.0) * currentReceipt.pricePerHour
             val productsAmount = currentProducts.sumOf { it.getLineTotal() }
-            tvPlayCost.text = CurrencyUtils.formatAmount(playAmount, currentReceipt.currencyCode)
-            tvProductsCost.text = CurrencyUtils.formatAmount(productsAmount, currentReceipt.currencyCode)
+            tvPlayCost.text = CurrencyUtils.formatAmount(requireContext(), playAmount, currentReceipt.currencyCode)
+            tvProductsCost.text = CurrencyUtils.formatAmount(requireContext(), productsAmount, currentReceipt.currencyCode)
             tvTotal.text = "${String.format(Locale.getDefault(), "%.2f", currentReceipt.totalAmount)} $currencySymbol"
             tvProductsList.text = currentProducts.joinToString("\n") { product ->
-                val unitPrice = CurrencyUtils.formatAmount(product.sellPriceSnapshot, currentReceipt.currencyCode)
-                val lineTotal = CurrencyUtils.formatAmount(product.getLineTotal(), currentReceipt.currencyCode)
-                "${product.nameSnapshot} ($unitPrice × ${product.quantitySold} = $lineTotal)"
+                val unitPrice = CurrencyUtils.formatAmount(requireContext(), product.sellPriceSnapshot, currentReceipt.currencyCode)
+                val lineTotal = CurrencyUtils.formatAmount(requireContext(), product.getLineTotal(), currentReceipt.currencyCode)
+                requireContext().getString(com.mohamed.playstation.R.string.receipt_item_format, product.nameSnapshot, unitPrice, product.quantitySold, lineTotal)
             }
             tvProductsList.isVisible = currentProducts.isNotEmpty()
             tvNoProducts.isVisible = currentProducts.isEmpty()
@@ -166,9 +166,9 @@ class ReceiptDetailDialog : DialogFragment() {
 
     private fun printReceipt() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("طباعة الفاتورة")
-            .setMessage("سيتم إضافة ميزة الطباعة قريباً")
-            .setPositiveButton("موافق", null)
+            .setTitle(getString(R.string.print_receipt_title))
+            .setMessage(getString(R.string.print_receipt_soon))
+            .setPositiveButton(getString(R.string.action_confirm), null)
             .show()
     }
 
@@ -185,7 +185,7 @@ class ReceiptDetailDialog : DialogFragment() {
             appendLine()
             appendLine("${getString(R.string.device)}: ${receipt.deviceType} #${receipt.deviceNumber}")
             appendLine(
-                "النوع: ${
+                "${getString(R.string.receipt_type_label)} ${
                     if (receipt.sessionType == "single") {
                         getString(R.string.single_player)
                     } else {
@@ -204,7 +204,7 @@ class ReceiptDetailDialog : DialogFragment() {
                 )
             }
             appendLine()
-            val currencySymbol = CurrencyUtils.getCurrencySymbol(receipt.currencyCode)
+            val currencySymbol = CurrencyUtils.getCurrencySymbol(requireContext(), receipt.currencyCode)
             appendLine(
                 "${getString(R.string.rate)}: ${
                     getString(
@@ -217,6 +217,7 @@ class ReceiptDetailDialog : DialogFragment() {
             appendLine(
                 "${getString(R.string.play_cost)}: ${
                     CurrencyUtils.formatAmount(
+                        requireContext(),
                         (receipt.durationMinutes / 60.0) * receipt.pricePerHour,
                         receipt.currencyCode
                     )
@@ -225,15 +226,15 @@ class ReceiptDetailDialog : DialogFragment() {
             val productsAmount = currentProducts.sumOf { it.getLineTotal() }
             appendLine(
                 "${getString(R.string.products_cost)}: ${
-                    CurrencyUtils.formatAmount(productsAmount, receipt.currencyCode)
+                    CurrencyUtils.formatAmount(requireContext(), productsAmount, receipt.currencyCode)
                 }"
             )
             if (currentProducts.isNotEmpty()) {
                 appendLine(getString(R.string.products))
                 currentProducts.forEach { product ->
-                    val unitPrice = CurrencyUtils.formatAmount(product.sellPriceSnapshot, receipt.currencyCode)
-                    val lineTotal = CurrencyUtils.formatAmount(product.getLineTotal(), receipt.currencyCode)
-                    appendLine("- ${product.nameSnapshot}: $unitPrice × ${product.quantitySold} = $lineTotal")
+                    val unitPrice = CurrencyUtils.formatAmount(requireContext(), product.sellPriceSnapshot, receipt.currencyCode)
+                    val lineTotal = CurrencyUtils.formatAmount(requireContext(), product.getLineTotal(), receipt.currencyCode)
+                    appendLine(requireContext().getString(com.mohamed.playstation.R.string.receipt_item_format_print, product.nameSnapshot, unitPrice, product.quantitySold, lineTotal))
                 }
             }
             appendLine(
@@ -243,8 +244,8 @@ class ReceiptDetailDialog : DialogFragment() {
             )
             appendLine()
             appendLine(
-                "طريقة الدفع: ${
-                    if (receipt.paymentMethod == "cash") "نقداً" else "كارت"
+                "${getString(R.string.receipt_payment_method_label)}: ${
+                    if (receipt.paymentMethod == "cash") getString(R.string.payment_cash) else getString(R.string.payment_card)
                 }"
             )
             appendLine("━━━━━━━━━━━━━━━━━━━━")

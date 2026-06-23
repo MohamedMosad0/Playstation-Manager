@@ -82,7 +82,7 @@ class InventoryRepository @Inject constructor(
         database.withTransaction {
             val item = inventoryItemDao.getById(id) ?: throw IllegalArgumentException("Item not found")
             if (item.quantity + delta < 0) {
-                throw IllegalStateException("لا يمكن أن يكون المخزون أقل من صفر")
+                throw IllegalStateException("INSUFFICIENT_STOCK")
             }
             inventoryItemDao.adjustQuantity(id, delta)
             stockMovementDao.insert(

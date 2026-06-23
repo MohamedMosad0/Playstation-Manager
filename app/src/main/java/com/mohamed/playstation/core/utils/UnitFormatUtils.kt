@@ -1,54 +1,47 @@
 package com.mohamed.playstation.core.utils
 
+import androidx.annotation.StringRes
+import com.mohamed.playstation.R
+
+enum class UnitType(
+    val rawDbValue: String,
+    @StringRes val singularRes: Int,
+    @StringRes val pluralRes: Int,
+    @StringRes val defPluralRes: Int,
+    @StringRes val defSingularRes: Int
+) {
+    CUP("كوب", R.string.unit_cup, R.string.unit_cup_plural, R.string.unit_cup_def_plural, R.string.unit_cup_def_sing),
+    BOX("علبة", R.string.unit_box, R.string.unit_box_plural, R.string.unit_box_def_plural, R.string.unit_box_def_sing),
+    BOTTLE("زجاجة", R.string.unit_bottle, R.string.unit_bottle_plural, R.string.unit_bottle_def_plural, R.string.unit_bottle_def_sing),
+    BAG("كيس", R.string.unit_bag, R.string.unit_bag_plural, R.string.unit_bag_def_plural, R.string.unit_bag_def_sing),
+    PIECE("قطعة", R.string.unit_piece, R.string.unit_piece_plural, R.string.unit_piece_def_plural, R.string.unit_piece_def_sing),
+    PLATE("طبق", R.string.unit_plate, R.string.unit_plate_plural, R.string.unit_plate_def_plural, R.string.unit_plate_def_sing),
+    UNIT("وحدة", R.string.unit_unit, R.string.unit_unit_plural, R.string.unit_unit_def_plural, R.string.unit_unit_def_sing),
+    PACK("عبوة", R.string.unit_pack, R.string.unit_pack_plural, R.string.unit_pack_def_plural, R.string.unit_pack_def_sing),
+    CARTON("كرتونة", R.string.unit_carton, R.string.unit_carton_plural, R.string.unit_carton_def_plural, R.string.unit_carton_def_sing),
+    TRAY("صينية", R.string.unit_tray, R.string.unit_tray_plural, R.string.unit_tray_def_plural, R.string.unit_tray_def_sing),
+    BUNDLE("ربطة", R.string.unit_bundle, R.string.unit_bundle_plural, R.string.unit_bundle_def_plural, R.string.unit_bundle_def_sing);
+
+    companion object {
+        fun fromRaw(raw: String): UnitType? {
+            return values().find { it.rawDbValue == raw }
+        }
+    }
+}
+
 object UnitFormatUtils {
-    fun getPluralUnit(unitLabel: String): String {
-        return when (unitLabel) {
-            "كوب" -> "أكواب"
-            "علبة" -> "علب"
-            "زجاجة" -> "زجاجات"
-            "كيس" -> "أكياس"
-            "قطعة" -> "قطع"
-            "طبق" -> "أطباق"
-            "وحدة" -> "وحدات"
-            "عبوة" -> "عبوات"
-            "كرتونة" -> "كراتين"
-            "صينية" -> "صواني"
-            "ربطة" -> "ربطات"
-            else -> unitLabel
-        }
+    @StringRes
+    fun getPluralUnitRes(unitLabel: String): Int {
+        return UnitType.fromRaw(unitLabel)?.pluralRes ?: R.string.unit_unit_plural
     }
 
-    fun getDefinitePluralUnit(unitLabel: String): String {
-        return when (unitLabel) {
-            "كوب" -> "الأكواب"
-            "علبة" -> "العلب"
-            "زجاجة" -> "الزجاجات"
-            "كيس" -> "الأكياس"
-            "قطعة" -> "القطع"
-            "طبق" -> "الأطباق"
-            "وحدة" -> "الوحدات"
-            "عبوة" -> "العبوات"
-            "كرتونة" -> "الكراتين"
-            "صينية" -> "الصواني"
-            "ربطة" -> "الربطات"
-            else -> "ال$unitLabel" // Simple fallback
-        }
+    @StringRes
+    fun getDefinitePluralUnitRes(unitLabel: String): Int {
+        return UnitType.fromRaw(unitLabel)?.defPluralRes ?: R.string.unit_unit_def_plural
     }
 
-    fun getDefiniteSingularUnit(unitLabel: String): String {
-        return when (unitLabel) {
-            "كوب" -> "الكوب"
-            "علبة" -> "العلبة"
-            "زجاجة" -> "الزجاجة"
-            "كيس" -> "الكيس"
-            "قطعة" -> "القطعة"
-            "طبق" -> "الطبق"
-            "وحدة" -> "الوحدة"
-            "عبوة" -> "العبوة"
-            "كرتونة" -> "الكرتونة"
-            "صينية" -> "الصينية"
-            "ربطة" -> "الربطة"
-            else -> "ال$unitLabel"
-        }
+    @StringRes
+    fun getDefiniteSingularUnitRes(unitLabel: String): Int {
+        return UnitType.fromRaw(unitLabel)?.defSingularRes ?: R.string.unit_unit_def_sing
     }
 }

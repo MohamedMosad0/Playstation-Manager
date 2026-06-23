@@ -67,7 +67,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="اليوم"
+                        android:text="@string/today"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -105,7 +105,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="مصروف"
+                        android:text="@string/dashboard_expense"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -143,7 +143,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="اليوم"
+                        android:text="@string/today"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -181,7 +181,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="نشطة"
+                        android:text="@string/dashboard_active"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -219,7 +219,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="منتج"
+                        android:text="@string/dashboard_product"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -258,7 +258,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="عنصر"
+                        android:text="@string/dashboard_item"
                         android:layout_marginTop="4dp"
                         android:textSize="12sp"
                         android:textColor="?android:textColorTertiary"/>
@@ -424,7 +424,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="🎮 لا توجد جلسات نشطة"
+                    android:text="@string/dashboard_no_active_sessions"
                     android:textColor="?android:textColorSecondary"
                     android:textSize="14sp"/>
             </LinearLayout>
@@ -469,7 +469,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="💸 لا توجد مصروفات اليوم"
+                    android:text="@string/dashboard_no_expenses_today"
                     android:textColor="?android:textColorSecondary"
                     android:textSize="14sp"/>
             </LinearLayout>

@@ -40,13 +40,13 @@ class TopProductsAdapter(
             
             val isPrepared = item.isPrepared
             val unitName = item.unitLabel
-            val pluralUnit = com.mohamed.playstation.core.utils.UnitFormatUtils.getPluralUnit(unitName)
-            val icon = if (isPrepared && unitName == "علبة") "🍜" else if (isPrepared) "☕" else "📦"
+            val pluralUnit = binding.root.context.getString(com.mohamed.playstation.core.utils.UnitFormatUtils.getPluralUnitRes(unitName))
+            val icon = if (isPrepared && unitName == binding.root.context.getString(com.mohamed.playstation.R.string.unit_pack)) "🍜" else if (isPrepared) "☕" else "📦"
             
-            binding.tvQuantitySold.text = "$icon تم بيع: ${item.quantitySold} $pluralUnit"
+            binding.tvQuantitySold.text = "$icon ${binding.root.context.getString(com.mohamed.playstation.R.string.quantity_sold_label)} ${item.quantitySold} $pluralUnit"
             
-            val formattedRevenue = CurrencyUtils.formatAmount(item.revenue, currency)
-            binding.tvProductRevenue.text = "💰 الإيراد: $formattedRevenue"
+            val formattedRevenue = CurrencyUtils.formatAmount(binding.root.context, item.revenue, currency)
+            binding.tvProductRevenue.text = binding.root.context.getString(com.mohamed.playstation.R.string.top_product_revenue_format, binding.root.context.getString(com.mohamed.playstation.R.string.revenue_label), formattedRevenue)
             
             itemView.alpha = 0f
             itemView.translationX = -50f

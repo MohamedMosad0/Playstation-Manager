@@ -44,13 +44,8 @@ class PlayStationApplication : Application() {
 
         Timber.plant(Timber.DebugTree())
 
-        // Apply dark mode IMMEDIATELY (synchronous one-shot read) so the very first
-        // Activity window is inflated with the correct night mode. This prevents any
-        // flash of wrong theme on cold start and after process death.
-        val isDarkOnStart = runBlocking { settingsManager.darkModeFlow.first() }
-        applyDarkMode(isDarkOnStart, "Application.onCreate")
-
         // Keep watching for runtime changes (user toggles the switch while the app is running)
+        // This will also asynchronously apply the initial dark mode state upon app launch.
         applicationScope.launch {
             settingsRepository.darkModeFlow.collect { isDark ->
                 applyDarkMode(isDark, "Application.collect")

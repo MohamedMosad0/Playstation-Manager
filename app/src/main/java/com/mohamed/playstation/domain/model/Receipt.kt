@@ -69,14 +69,5 @@ data class Receipt(
         return "$deviceType #$deviceNumber"
     }
 
-    /**
-     * نوع الجلسة بالعربي
-     */
-    fun getSessionTypeArabic(): String {
-        return when (sessionType) {
-            "single" -> "لاعب واحد"
-            "multi" -> "متعدد اللاعبين"
-            else -> sessionType
-        }
-    }
+
 }

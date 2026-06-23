@@ -123,6 +123,8 @@ class SessionsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 // --- Running sessions (existing logic, unchanged) ---
+                var cachedSessions: List<com.mohamed.playstation.domain.model.Session> = emptyList()
+                
                 launch {
                     combine(
                         viewModel.activeSessions,
@@ -132,14 +134,26 @@ class SessionsFragment : Fragment() {
                             activeState is UiState.Loading && pausedState is UiState.Loading
 
                         val activeSessions =
-                            if (activeState is UiState.Success) activeState.data.first else emptyList()
+                            if (activeState is UiState.Success) activeState.data.first else if (activeState is UiState.Loading) emptyList() else null
                         val activeTick =
                             if (activeState is UiState.Success) activeState.data.second else 0L
 
                         val pausedSessions =
-                            if (pausedState is UiState.Success) pausedState.data.first else emptyList()
+                            if (pausedState is UiState.Success) pausedState.data.first else if (pausedState is UiState.Loading) emptyList() else null
 
-                        val allSessions = activeSessions + pausedSessions
+                        if (activeState is UiState.Error) {
+                            android.widget.Toast.makeText(requireContext(), activeState.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                        if (pausedState is UiState.Error) {
+                            android.widget.Toast.makeText(requireContext(), pausedState.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                        
+                        val newActive = activeSessions ?: cachedSessions.filter { it.status == "active" }
+                        val newPaused = pausedSessions ?: cachedSessions.filter { it.status == "paused" }
+                        
+                        val allSessions = newActive + newPaused
+                        cachedSessions = allSessions
+
                         Triple(isLoading, allSessions, activeTick)
                     }.collect { (isLoading, sessions, tick) ->
                         if (isLoading) {

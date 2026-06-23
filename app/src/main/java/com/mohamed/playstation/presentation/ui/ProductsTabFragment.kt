@@ -27,7 +27,8 @@ import com.mohamed.playstation.R
 import com.mohamed.playstation.databinding.FragmentInventoryProductsBinding
 import com.mohamed.playstation.domain.model.InventoryItem
 import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
-import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.presentation.viewmodel.SettingsViewModel
+import androidx.fragment.app.activityViewModels
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -38,6 +39,7 @@ class ProductsTabFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: InventoryViewModel by viewModels({ requireParentFragment() })
+    private val settingsViewModel: SettingsViewModel by activityViewModels()
 
     private lateinit var adapter: ProductsAdapter
 
@@ -89,16 +91,24 @@ class ProductsTabFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.products.collect { list ->
-                    adapter.submitList(list) {
-                        if (list.isEmpty()) {
-                            binding.emptyState.visibility = View.VISIBLE
-                            binding.rvProducts.visibility = View.GONE
-                        } else {
-                            binding.emptyState.visibility = View.GONE
-                            binding.rvProducts.visibility = View.VISIBLE
-                            binding.rvProducts.scheduleLayoutAnimation()
+                launch {
+                    viewModel.products.collect { list ->
+                        adapter.submitList(list) {
+                            if (list.isEmpty()) {
+                                binding.emptyState.visibility = View.VISIBLE
+                                binding.rvProducts.visibility = View.GONE
+                            } else {
+                                binding.emptyState.visibility = View.GONE
+                                binding.rvProducts.visibility = View.VISIBLE
+                                binding.rvProducts.scheduleLayoutAnimation()
+                            }
                         }
+                    }
+                }
+                launch {
+                    settingsViewModel.currency.collect { currency ->
+                        adapter.currencyCode = currency
+                        adapter.notifyItemRangeChanged(0, adapter.itemCount)
                     }
                 }
             }
@@ -129,7 +139,7 @@ class ProductsTabFragment : Fragment() {
             val pc = etPreparationCost.text.toString().toDoubleOrNull() ?: 0.0
             val pu = etProduced.text.toString().toIntOrNull() ?: 0
             if (pc > 0 && pu > 0) {
-                tvComputed.text = "تكلفة الوحدة المحسوبة: %.2f".format(pc / pu)
+                tvComputed.text = requireContext().getString(R.string.computed_unit_cost, pc / pu)
                 tvComputed.visibility = View.VISIBLE
             } else {
                 tvComputed.visibility = View.GONE
@@ -172,7 +182,7 @@ class ProductsTabFragment : Fragment() {
                     costPerUnit = if (produced > 0) prepCost / produced else 0.0
                     
                     if (produced <= 0) {
-                        Toast.makeText(requireContext(), "يرجى إدخال عدد وحدات صحيح", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), R.string.invalid_unit_count, Toast.LENGTH_SHORT).show()
                         return@setPositiveButton
                     }
                 } else {
@@ -195,7 +205,7 @@ class ProductsTabFragment : Fragment() {
                     return@setPositiveButton
                 }
 
-                val unitLabel = if (isPrepared) "كوب" else "قطعة"
+                val unitLabel = if (isPrepared) requireContext().getString(R.string.unit_cup) else requireContext().getString(R.string.unit_piece)
 
                 viewModel.addNewProduct(name, price, costPerUnit, qty, minQty, isPrepared, unitLabel)
                 d.dismiss()
@@ -233,13 +243,14 @@ class ProductsTabFragment : Fragment() {
             tvPreparedQtyPreview.isVisible = true
             
             val unitName = product.unitLabel
-            val pluralUnit = com.mohamed.playstation.core.utils.UnitFormatUtils.getPluralUnit(unitName)
-            tvAvailable.text = "المتاح حالياً: ${product.quantity} $pluralUnit"
+            val pluralUnitRes = com.mohamed.playstation.core.utils.UnitFormatUtils.getPluralUnitRes(unitName)
+            val pluralUnit = requireContext().getString(pluralUnitRes)
+            tvAvailable.text = requireContext().getString(R.string.currently_available_format, product.quantity.toString(), pluralUnit)
             
             etNewPreparedQty.doAfterTextChanged { text ->
                 val delta = text?.toString()?.toIntOrNull() ?: 0
                 val newTotal = product.quantity + delta
-                tvPreparedQtyPreview.text = "سيصبح المتاح: $newTotal $pluralUnit"
+                tvPreparedQtyPreview.text = requireContext().getString(R.string.will_be_available_format, newTotal.toString(), pluralUnit)
             }
         } else {
             etMinQty.setText(product.minimumQuantity.toString())
@@ -304,9 +315,9 @@ class ProductsTabFragment : Fragment() {
 
     private fun showDeleteDialog(product: InventoryItem) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("أرشفة")
-            .setMessage("سيتم إخفاء المنتج من القوائم النشطة مع الاحتفاظ بجميع الفواتير والتقارير والحركات السابقة.")
-            .setPositiveButton("أرشفة") { d, _ ->
+            .setTitle(getString(R.string.archive_title))
+            .setMessage(getString(R.string.archive_message))
+            .setPositiveButton(getString(R.string.archive_action)) { d, _ ->
                 viewModel.archiveProduct(product.id)
                 d.dismiss()
             }
@@ -325,6 +336,8 @@ class ProductsAdapter(
     private val onEdit: (InventoryItem) -> Unit,
     private val onDelete: (InventoryItem) -> Unit
 ) : ListAdapter<InventoryItem, ProductsAdapter.VH>(DIFF) {
+
+    var currencyCode: String = com.mohamed.playstation.core.constants.AppConstants.DEFAULT_CURRENCY
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<InventoryItem>() {
@@ -349,18 +362,19 @@ class ProductsAdapter(
 
         fun bind(item: InventoryItem) {
             tvName.text = item.name
-            tvPrice.text = "${item.sellPrice} ج.م"
-            tvUnitCost.text = "${item.costPerUnit} ج.م"
+            tvPrice.text = com.mohamed.playstation.core.utils.CurrencyUtils.formatAmount(itemView.context, item.sellPrice, currencyCode)
+            tvUnitCost.text = com.mohamed.playstation.core.utils.CurrencyUtils.formatAmount(itemView.context, item.costPerUnit, currencyCode)
             
             val profit = item.sellPrice - item.costPerUnit
-            tvProfit.text = "${"%.2f".format(profit)} ج.م"
+            tvProfit.text = com.mohamed.playstation.core.utils.CurrencyUtils.formatAmount(itemView.context, profit, currencyCode)
             
             val isPrepared = item.isPrepared
             val unitName = item.unitLabel
             
-            val definiteUnit = com.mohamed.playstation.core.utils.UnitFormatUtils.getDefiniteSingularUnit(unitName)
-            tvUnitCostLabel.text = "تكلفة $definiteUnit:"
-            tvProfitLabel.text = "ربح $definiteUnit:"
+            val definiteUnitRes = com.mohamed.playstation.core.utils.UnitFormatUtils.getDefiniteSingularUnitRes(unitName)
+            val definiteUnit = itemView.context.getString(definiteUnitRes)
+            tvUnitCostLabel.text = itemView.context.getString(R.string.cost_of_unit, definiteUnit)
+            tvProfitLabel.text = itemView.context.getString(R.string.profit_of_unit, definiteUnit)
             
             // Quantity transition animation logic
             if (tvQuantity.text.toString().isNotEmpty() && tvQuantity.text.toString() != item.quantity.toString()) {
@@ -373,13 +387,13 @@ class ProductsAdapter(
             }
 
             if (isPrepared) {
-                val icon = if (unitName == "علبة") "🍜" else "☕"
-                tvStockLabel.text = "$icon المتاح:"
-                tvTypeBadge.text = "منتج مُحضَّر"
+                val icon = if (unitName == itemView.context.getString(R.string.unit_pack)) "🍜" else "☕"
+                tvStockLabel.text = "$icon ${itemView.context.getString(R.string.available_label)}"
+                tvTypeBadge.text = itemView.context.getString(R.string.prepared_product_badge)
                 itemView.findViewById<TextView>(R.id.tvUnitLabel).text = unitName
             } else {
-                tvStockLabel.text = "📦 المتاح:"
-                tvTypeBadge.text = "منتج عادي"
+                tvStockLabel.text = "📦 ${itemView.context.getString(R.string.available_label)}"
+                tvTypeBadge.text = itemView.context.getString(R.string.normal_product_label)
                 itemView.findViewById<TextView>(R.id.tvUnitLabel).text = unitName
             }
 
@@ -391,20 +405,20 @@ class ProductsAdapter(
                 item.quantity <= item.minimumQuantity && !isOutOfStock
             }
 
-            if (isOutOfStock) {
-                chipStatus.text = "نفد"
-                chipStatus.setChipBackgroundColorResource(R.color.error)
-                chipStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
-                tvQuantity.setTextColor(ContextCompat.getColor(itemView.context, R.color.error))
-            } else if (isLowStock) {
-                chipStatus.text = "منخفض"
+            if (item.quantity == 0) {
+                chipStatus.text = itemView.context.getString(R.string.inventory_status_out_of_stock)
                 chipStatus.setChipBackgroundColorResource(R.color.status_paused)
-                chipStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                chipStatus.setTextColor(itemView.context.getColor(R.color.white))
+                tvQuantity.setTextColor(ContextCompat.getColor(itemView.context, R.color.error))
+            } else if (item.quantity <= item.minimumQuantity) {
+                chipStatus.text = itemView.context.getString(R.string.inventory_status_low_stock)
+                chipStatus.setChipBackgroundColorResource(R.color.status_error)
+                chipStatus.setTextColor(itemView.context.getColor(R.color.white))
                 tvQuantity.setTextColor(ContextCompat.getColor(itemView.context, R.color.status_paused))
             } else {
-                chipStatus.text = "متوفر"
+                chipStatus.text = itemView.context.getString(R.string.inventory_status_available)
                 chipStatus.setChipBackgroundColorResource(R.color.status_active)
-                chipStatus.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                chipStatus.setTextColor(itemView.context.getColor(R.color.white))
                 tvQuantity.setTextColor(ContextCompat.getColor(itemView.context, R.color.text_primary))
             }
 

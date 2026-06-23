@@ -8,7 +8,7 @@ data class ReportsUiState(
     // Date Range (Start and End in milliseconds)
     val dateRangeStart: Long = 0L,
     val dateRangeEnd: Long = System.currentTimeMillis(),
-    val dateRangeLabel: String = "الكل",
+    @androidx.annotation.StringRes val dateRangeLabel: Int = com.mohamed.playstation.R.string.filter_all,
     
     // KPI Metrics
     val totalRevenue: Double = 0.0,

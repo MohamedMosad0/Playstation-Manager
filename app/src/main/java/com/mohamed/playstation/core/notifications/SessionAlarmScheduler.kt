@@ -36,13 +36,17 @@ class SessionAlarmScheduler @Inject constructor(
     @Volatile
     private var initialized = false
 
-    fun initialize() {
-        if (initialized) return
+    @Volatile
+    private var initJob: kotlinx.coroutines.Job? = null
+
+    fun initialize(): kotlinx.coroutines.Job? {
+        if (initialized) return initJob
         initialized = true
 
-        scope.launch {
+        initJob = scope.launch {
             reconcileExistingFixedSessions()
         }
+        return initJob
     }
 
     suspend fun syncSession(sessionId: Long, allowImmediateWarning: Boolean = true) {
@@ -113,9 +117,9 @@ class SessionAlarmScheduler @Inject constructor(
         triggerAtMillis: Long,
         pendingIntent: PendingIntent
     ) {
-        Timber.e(
-            "canScheduleExactAlarms = ${alarmManager.canScheduleExactAlarms()}"
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Timber.e("canScheduleExactAlarms = ${alarmManager.canScheduleExactAlarms()}")
+        }
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
                 !alarmManager.canScheduleExactAlarms() -> {

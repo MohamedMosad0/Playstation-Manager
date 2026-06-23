@@ -76,7 +76,7 @@ class ReportsFragment : Fragment() {
 
     private fun showDateRangePicker() {
         val picker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText("اختر فترة التقرير")
+            .setTitleText(getString(com.mohamed.playstation.R.string.report_date_picker_title))
             .build()
             
         picker.addOnPositiveButtonClickListener { selection: Pair<Long, Long> ->
@@ -167,29 +167,29 @@ class ReportsFragment : Fragment() {
         binding.rvTopProducts.adapter = topProductsAdapter
 
         // Date Label
-        if (state.dateRangeLabel == "مخصص") {
+        if (state.dateRangeLabel == com.mohamed.playstation.R.string.filter_custom) {
             // Keep the custom date label format but we might want to format the range
-            binding.tvDateRange.text = "فترة مخصصة"
+            binding.tvDateRange.text = getString(com.mohamed.playstation.R.string.custom_period)
         } else {
-            binding.tvDateRange.text = state.dateRangeLabel
+            binding.tvDateRange.text = getString(state.dateRangeLabel)
         }
 
         // KPIs
-        binding.tvTotalRevenue.text = CurrencyUtils.formatAmount(state.totalRevenue, currency)
-        binding.tvTotalExpenses.text = CurrencyUtils.formatAmount(state.totalExpenses, currency)
-        binding.tvSessionRevenue.text = CurrencyUtils.formatAmount(state.sessionRevenue, currency)
-        binding.tvProductRevenue.text = CurrencyUtils.formatAmount(state.productRevenue, currency)
+        binding.tvTotalRevenue.text = CurrencyUtils.formatAmount(requireContext(), state.totalRevenue, currency)
+        binding.tvTotalExpenses.text = CurrencyUtils.formatAmount(requireContext(), state.totalExpenses, currency)
+        binding.tvSessionRevenue.text = CurrencyUtils.formatAmount(requireContext(), state.sessionRevenue, currency)
+        binding.tvProductRevenue.text = CurrencyUtils.formatAmount(requireContext(), state.productRevenue, currency)
         binding.tvTotalSessions.text = state.totalSessions.toString()
-        binding.tvAvgDuration.text = "${state.avgSessionDurationMinutes} دقيقة"
-        binding.tvProductCost.text = CurrencyUtils.formatAmount(state.productCost, currency)
-        binding.tvProductProfit.text = CurrencyUtils.formatAmount(state.productProfit, currency)
-        binding.tvNetProfit.text = CurrencyUtils.formatAmount(state.netProfit, currency)
+        binding.tvAvgDuration.text = "${state.avgSessionDurationMinutes} ${getString(com.mohamed.playstation.R.string.minutes_suffix)}"
+        binding.tvProductCost.text = CurrencyUtils.formatAmount(requireContext(), state.productCost, currency)
+        binding.tvProductProfit.text = CurrencyUtils.formatAmount(requireContext(), state.productProfit, currency)
+        binding.tvNetProfit.text = CurrencyUtils.formatAmount(requireContext(), state.netProfit, currency)
 
         // Colour net profit based on sign
         val netProfitColor = if (state.netProfit >= 0) {
-            androidx.core.content.ContextCompat.getColor(requireContext(), R.color.chart_green)
+            ContextCompat.getColor(requireContext(), R.color.chart_green)
         } else {
-            androidx.core.content.ContextCompat.getColor(requireContext(), R.color.chart_red)
+            ContextCompat.getColor(requireContext(), R.color.chart_red)
         }
         binding.tvNetProfit.setTextColor(netProfitColor)
 
@@ -226,7 +226,7 @@ class ReportsFragment : Fragment() {
             labels.add(pair.first)
         }
 
-        val dataSet = BarDataSet(entries, "الإيرادات")
+        val dataSet = BarDataSet(entries, getString(com.mohamed.playstation.R.string.revenue_chart_label))
         dataSet.color = ContextCompat.getColor(requireContext(), R.color.ps_blue_primary)
         dataSet.valueTextColor = ContextCompat.getColor(requireContext(), R.color.text_primary)
         dataSet.valueTextSize = 10f
@@ -245,7 +245,12 @@ class ReportsFragment : Fragment() {
 
         val entries = ArrayList<PieEntry>()
         for ((label, value) in distribution) {
-            entries.add(PieEntry(value.toFloat(), label))
+            val displayLabel = when (label) {
+                "session_revenue" -> getString(com.mohamed.playstation.R.string.session_revenue)
+                "product_revenue" -> getString(com.mohamed.playstation.R.string.product_revenue)
+                else -> label
+            }
+            entries.add(PieEntry(value.toFloat(), displayLabel))
         }
 
         val dataSet = PieDataSet(entries, "")

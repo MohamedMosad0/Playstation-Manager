@@ -73,7 +73,7 @@ class SessionAdapter(
                     session.isActive() -> {
                         val isAutoEnding = session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
                         if (isAutoEnding) {
-                            tvStatus.text = "جاري الإنهاء..."
+                            tvStatus.text = root.context.getString(R.string.finishing_progress)
                             tvStatus.setTextColor(root.context.getColor(R.color.status_paused))
                             tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
                                 androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.status_paused), 38) // ~15% alpha

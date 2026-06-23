@@ -79,7 +79,8 @@ class ReceiptRepository @Inject constructor(
      * الحصول على فواتير اليوم
      */
     fun getTodayReceipts(): Flow<List<Receipt>> {
-        return receiptDao.getTodayReceipts().map { entities ->
+        val (start, end) = com.mohamed.playstation.core.utils.DateUtils.todayRange()
+        return receiptDao.getTodayReceipts(start, end).map { entities ->
             ReceiptMapper.toModelList(entities)
         }
     }
@@ -97,7 +98,8 @@ class ReceiptRepository @Inject constructor(
      * الحصول على إجمالي الإيرادات اليوم
      */
     fun getTodayTotalRevenue(): Flow<Double> {
-        return receiptDao.getTodayTotalRevenue().map { it ?: 0.0 }
+        val (start, end) = com.mohamed.playstation.core.utils.DateUtils.todayRange()
+        return receiptDao.getTodayTotalRevenue(start, end).map { it ?: 0.0 }
     }
 
     /**
@@ -108,7 +110,7 @@ class ReceiptRepository @Inject constructor(
 
         return if (lastNumber != null) {
             val number = lastNumber.toIntOrNull() ?: 0
-            String.format("%07d", number + 1)
+            String.format(java.util.Locale.US, "%07d", number + 1)
         } else {
             "0000001"
         }

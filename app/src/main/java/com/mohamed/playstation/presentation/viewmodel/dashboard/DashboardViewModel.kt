@@ -37,7 +37,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             getDashboardDataUseCase()
                 .catch { e ->
-                    _uiState.value = UiState.Error(e.message ?: "Unknown error")
+                    _uiState.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
                 }
                 .collect { data ->
                     _uiState.value = UiState.Success(data)

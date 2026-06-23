@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="نوع المنتج"
+            android:text="@string/product_type_label"
             android:textSize="13sp"
             android:textColor="@color/text_secondary" />
 
@@ -32,7 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="منتج عادي" />
+                android:text="@string/product_type_normal" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTypePrepared"
@@ -40,7 +40,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="منتج مُحضَّر" />
+                android:text="@string/product_type_prepared" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -123,7 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="تكلفة الوحدة"
+            android:hint="@string/unit_cost_label"
             android:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -142,7 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="تكلفة التحضير"
+            android:hint="@string/preparation_cost_label"
             android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -161,7 +161,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="عدد الوحدات الناتجة"
+            android:hint="@string/resulting_units_label"
             android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText

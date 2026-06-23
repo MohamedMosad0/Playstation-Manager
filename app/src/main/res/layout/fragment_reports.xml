@@ -47,7 +47,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_reports"
-                        android:tint="@color/ps_blue_primary"
+                        app:tint="@color/ps_blue_primary"
                         tools:ignore="ContentDescription" />
 
                     <TextView
@@ -63,7 +63,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/arrow_down_float"
-                        android:tint="@color/text_secondary"
+                        app:tint="@color/text_secondary"
                         tools:ignore="ContentDescription" />
                 </LinearLayout>
 
@@ -84,28 +84,28 @@
                             style="@style/Widget.Material3.Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="اليوم" />
+                            android:text="@string/today" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipLast7Days"
                             style="@style/Widget.Material3.Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="آخر 7 أيام" />
+                            android:text="@string/last_7_days" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipThisMonth"
                             style="@style/Widget.Material3.Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="هذا الشهر" />
+                            android:text="@string/this_month" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipLast30Days"
                             style="@style/Widget.Material3.Chip.Filter"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="آخر 30 يوم" />
+                            android:text="@string/last_30_days" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipAllTime"
@@ -113,7 +113,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="true"
-                            android:text="الكل" />
+                            android:text="@string/all_time" />
 
                     </com.google.android.material.chip.ChipGroup>
                 </HorizontalScrollView>
@@ -145,7 +145,7 @@
                         style="@style/TextAppearance.PlayStation.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="💰 إجمالي الإيرادات" />
+                        android:text="@string/reports_total_revenue" />
                     <TextView
                         android:id="@+id/tvTotalRevenue"
                         style="@style/TextAppearance.PlayStation.Title"
@@ -173,7 +173,7 @@
                         style="@style/TextAppearance.PlayStation.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="💸 إجمالي المصروفات" />
+                        android:text="@string/reports_total_expenses" />
                     <TextView
                         android:id="@+id/tvTotalExpenses"
                         style="@style/TextAppearance.PlayStation.Title"
@@ -202,7 +202,7 @@
                         style="@style/TextAppearance.PlayStation.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🎮 إيرادات الجلسات" />
+                        android:text="@string/reports_sessions_revenue" />
                     <TextView
                         android:id="@+id/tvSessionRevenue"
                         style="@style/TextAppearance.PlayStation.Title"
@@ -230,7 +230,7 @@
                         style="@style/TextAppearance.PlayStation.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🥤 إيرادات المنتجات" />
+                        android:text="@string/reports_products_revenue" />
                     <TextView
                         android:id="@+id/tvProductRevenue"
                         style="@style/TextAppearance.PlayStation.Title"
@@ -258,7 +258,7 @@
                         style="@style/TextAppearance.PlayStation.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🎮 إجمالي الجلسات" />
+                        android:text="@string/reports_total_sessions" />
                     <TextView
                         android:id="@+id/tvTotalSessions"
                         style="@style/TextAppearance.PlayStation.Title"
@@ -286,7 +286,7 @@
                         style="@style/TextAppearance.PlayStation.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="⏱ متوسط المدة" />
+                        android:text="@string/reports_average_duration" />
                     <TextView
                         android:id="@+id/tvAvgDuration"
                         style="@style/TextAppearance.PlayStation.Title"
@@ -331,7 +331,7 @@
                     android:layout_marginStart="8dp"
                     android:textSize="12sp"
                     android:textColor="@color/status_paused"
-                    android:text="بعض المنتجات القديمة لا تحتوي على معلومات التكلفة، لذلك قد تكون حسابات الأرباح القديمة غير مكتملة." />
+                    android:text="@string/reports_old_products_warning" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -361,7 +361,7 @@
                         style="@style/TextAppearance.PlayStation.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="💸 تكلفة المنتجات" />
+                        android:text="@string/reports_products_cost" />
                     <TextView
                         android:id="@+id/tvProductCost"
                         style="@style/TextAppearance.PlayStation.Title"
@@ -390,7 +390,7 @@
                         style="@style/TextAppearance.PlayStation.Body"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📈 ربح المنتجات" />
+                        android:text="@string/reports_products_profit" />
                     <TextView
                         android:id="@+id/tvProductProfit"
                         style="@style/TextAppearance.PlayStation.Title"
@@ -431,7 +431,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="صافي الربح"
+                            android:text="@string/reports_net_profit"
                             android:textColor="@color/white"
                             android:textSize="13sp" />
                         <TextView
@@ -465,7 +465,7 @@
                     style="@style/TextAppearance.PlayStation.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="الإيرادات خلال آخر 7 أيام" />
+                    android:text="@string/reports_last_7_days_revenue" />
                 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/barChartRevenue"
@@ -490,7 +490,7 @@
                     style="@style/TextAppearance.PlayStation.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="توزيع الإيرادات" />
+                    android:text="@string/reports_revenue_distribution" />
                 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pieChartRevenue"
@@ -515,7 +515,7 @@
                     style="@style/TextAppearance.PlayStation.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="توزيع الجلسات حسب الجهاز" />
+                    android:text="@string/reports_sessions_distribution" />
                 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pieChartDevices"
@@ -540,7 +540,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="أفضل المنتجات مبيعًا" />
+                    android:text="@string/reports_top_products" />
                 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvTopProducts"
@@ -562,7 +562,7 @@
                     android:visibility="gone"
                     android:textColor="?android:textColorSecondary"
                     android:textSize="14sp"
-                    android:text="📦 لا توجد منتجات مباعة" />
+                    android:text="@string/reports_no_products_sold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

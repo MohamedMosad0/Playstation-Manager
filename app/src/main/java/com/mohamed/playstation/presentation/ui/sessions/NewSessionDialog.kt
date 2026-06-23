@@ -92,16 +92,16 @@ class NewSessionDialog : DialogFragment() {
 
             if (!isDismissed && !alarmManager.canScheduleExactAlarms()) {
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("إذن الإنذار الدقيق")
-                    .setMessage("للحصول على إنهاء دقيق للجلسات في وقتها بالثانية، يُفضل تفعيل الإنذارات الدقيقة.")
-                    .setPositiveButton("تفعيل") { _, _ ->
+                    .setTitle(getString(com.mohamed.playstation.R.string.exact_alarm_permission_title))
+                    .setMessage(getString(com.mohamed.playstation.R.string.exact_alarm_permission_message))
+                    .setPositiveButton(getString(com.mohamed.playstation.R.string.action_confirm)) { _, _ ->
                         val intent = android.content.Intent(
                             android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
                         )
                         startActivity(intent)
                         parentDialog.dismiss()
                     }
-                    .setNegativeButton("لاحقاً") { _, _ ->
+                    .setNegativeButton(getString(com.mohamed.playstation.R.string.action_cancel)) { _, _ ->
                         lifecycleScope.launch {
                             settingsManager.setExactAlarmPromptDismissed(true)
                             parentDialog.dismiss()
@@ -204,14 +204,14 @@ class NewSessionDialog : DialogFragment() {
             val amount = SessionPricing.previewAmount(
                 sessionMode, pricing, deviceType, isMultiPlayer, minutes
             )
-            getString(R.string.price_preview_fixed, CurrencyUtils.formatAmount(amount, currency))
+            getString(R.string.price_preview_fixed, CurrencyUtils.formatAmount(requireContext(), amount, currency))
         } else {
             val amount = SessionPricing.previewAmount(
                 sessionMode, pricing, deviceType, isMultiPlayer, null
             )
             getString(
                 R.string.price_preview_hourly,
-                CurrencyUtils.formatAmount(amount, currency)
+                CurrencyUtils.formatAmount(requireContext(), amount, currency)
             )
         }
         binding.tvPricePreview.text = previewText

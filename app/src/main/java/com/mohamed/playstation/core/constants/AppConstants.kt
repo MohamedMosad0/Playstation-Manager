@@ -48,7 +48,7 @@ object AppConstants {
     const val DEFAULT_MULTI_PRICE = 20.0   // EGP
     const val DEFAULT_ALERT_TIME = 5 // minutes
     const val DEFAULT_DARK_MODE = true
-    const val DEFAULT_LANGUAGE = "ar"
+    const val DEFAULT_LANGUAGE = "system"
     const val DEFAULT_CURRENCY = "EGP"
 
     // Default Values — PS4 Pricing

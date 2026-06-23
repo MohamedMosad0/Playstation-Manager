@@ -134,7 +134,7 @@ class SessionViewModel @Inject constructor(
             }
                 .catch { e ->
                     Timber.e(e, "Error loading active sessions")
-                    _activeSessions.value = UiState.Error(e.message ?: "Unknown error")
+                    _activeSessions.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
                 }
                 .collect { (sessions, tick) ->
                     _activeSessions.value = if (sessions.isEmpty()) {
@@ -156,7 +156,7 @@ class SessionViewModel @Inject constructor(
             }
                 .catch { e ->
                     Timber.e(e, "Error loading paused sessions")
-                    _pausedSessions.value = UiState.Error(e.message ?: "Unknown error")
+                    _pausedSessions.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
                 }
                 .collect { (sessions, tick) ->
                     _pausedSessions.value = if (sessions.isEmpty()) {

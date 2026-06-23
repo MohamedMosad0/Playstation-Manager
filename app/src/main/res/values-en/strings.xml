@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">PlayStation</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_loading">Loading…</string>
+
+    <!-- Main Screen -->
+    <string name="main_title">PlayStation</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="sessions">Sessions</string>
+    <string name="receipts">Receipts</string>
+    <string name="inventory">Inventory</string>
+    <string name="settings">Settings</string>
+    <string name="nav_settings">Settings</string>
+    <string name="reports">Reports</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="revenue_report">Revenue</string>
+    <string name="profit_report">Profit</string>
+
+    <!-- Dashboard -->
+    <string name="revenue">Revenue</string>
+    <string name="net_profit">Net Profit</string>
+    <string name="low_stock">Low Stock</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="recent_sessions">Recent Sessions</string>
+    <string name="recent_expenses">Recent Expenses</string>
+    <string name="no_data">No Data</string>
+
+    <!-- Session Status -->
+    <string name="status_available">Available</string>
+    <string name="status_running">Running</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_completed">Completed ✓</string>
+    <string name="tab_running">Running</string>
+    <string name="tab_completed">Completed</string>
+    <string name="no_completed_sessions">No Completed Sessions</string>
+    <string name="no_completed_sessions_hint">Start and end a session to see history here</string>
+
+    <!-- Sessions -->
+    <string name="active_sessions">Active Sessions</string>
+    <string name="new_session">New Session</string>
+    <string name="start_session">Start Session</string>
+    <string name="end_session">End Session</string>
+    <string name="pause_session">Pause</string>
+    <string name="resume_session">Resume</string>
+    <string name="no_active_sessions">No Active Sessions</string>
+    <string name="session_type">Session Type</string>
+    <string name="add_product">Add Product</string>
+    <string name="products">Products</string>
+    <string name="no_products_added">No Products Added</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_price">Product Price</string>
+    <string name="quantity">Quantity</string>
+    <string name="required_field">This field is required</string>
+    <string name="invalid_price">Enter a valid price greater than zero</string>
+    <string name="invalid_quantity">Enter a valid quantity greater than zero</string>
+    <string name="minimum_quantity">Minimum Quantity</string>
+    <string name="new_product">New Product</string>
+    <string name="product_exists">Product already exists. Edit or restock it.</string>
+    <string name="product_exists_rename">Another product with this name already exists.</string>
+
+    <string name="select_inventory_product">Select an inventory product</string>
+    <string name="available_quantity">Available Stock</string>
+    <string name="requested_quantity">Requested Quantity</string>
+    <string name="insufficient_stock">Requested quantity exceeds available stock</string>
+    <string name="no_inventory_products">No inventory products available</string>
+
+    <!-- Device Types -->
+    <string name="ps4_standard">PS4 Standard</string>
+    <string name="ps4_pro">PS4 Pro</string>
+    <string name="ps5_standard">PS5 Standard</string>
+    <string name="ps5_digital">PS5 Digital</string>
+
+    <!-- Session Types -->
+    <string name="single_player">Single Player</string>
+    <string name="multiplayer">Multiplayer</string>
+    <string name="device_number">Device Number</string>
+    <string name="console_type">Console Type</string>
+    <string name="session_duration_minutes">Session Duration (min)</string>
+    <string name="price_preview">Price Preview</string>
+    <string name="price_preview_hourly">%1$s / Hour</string>
+    <string name="price_preview_fixed">%1$s (Fixed Session)</string>
+    <string name="invalid_duration">Enter a valid duration greater than zero</string>
+    <string name="device_session_exists">%1$s already has an active or paused session</string>
+
+    <!-- Receipts -->
+    <string name="receipt_number">Receipt #%s</string>
+    <string name="device">Device</string>
+    <string name="started">Started</string>
+    <string name="ended">Ended</string>
+    <string name="duration">Duration</string>
+    <string name="elapsed_time">Elapsed Time</string>
+    <string name="time_remaining">Time Remaining</string>
+    <string name="rate">Rate</string>
+    <string name="total">Total</string>
+    <string name="print">Print</string>
+    <string name="share">Share</string>
+    <string name="save">Save</string>
+    <string name="close">Close</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="cash">Cash</string>
+    <string name="card">Card</string>
+    <string name="today_revenue">Today\'s Revenue</string>
+    <string name="today">Today</string>
+    <string name="all">All</string>
+    <string name="no_receipts">No Receipts</string>
+    <string name="play_cost">Play Cost</string>
+    <string name="products_cost">Products Cost</string>
+    <string name="session_products_cost">Products Cost</string>
+    <string name="receipt_products_summary">Products: %1$d • %2$s</string>
+    <string name="receipt_rate_per_hour">%1$s %2$s/hour</string>
+    <string name="receipt_type_label">Type</string>
+    <string name="receipt_payment_method_label">Payment</string>
+    <string name="pause_duration">Pause Duration</string>
+    <string name="print_receipt_message">Print feature coming soon</string>
+
+    <!-- Settings -->
+    <string name="appearance">Appearance</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="language">Language</string>
+    <string name="pricing">Pricing</string>
+    <string name="currency">Currency</string>
+    <string name="single_player_price">Single Player Price</string>
+    <string name="multiplayer_price">Multiplayer Price</string>
+    <string name="notifications">Notifications</string>
+    <string name="alert_time">Alert Time</string>
+    <string name="alert_sound">Alert Sound</string>
+    <string name="backup">Backup</string>
+    <string name="backup_now">Backup Now</string>
+    <string name="restore">Restore</string>
+    <string name="per_hour">/ Hour</string>
+    <string name="select_currency">Select Currency</string>
+    <string name="settings_saved">Settings Saved</string>
+    <string name="settings_general">General</string>
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_currency">Currency</string>
+    <string name="settings_language">Language</string>
+    <string name="language_system">System Default</string>
+    <string name="language_arabic">العربية</string>
+    <string name="language_english">English</string>
+    <string name="settings_hour_price">Price per Hour</string>
+    <string name="settings_multi_hour_price">Multiplayer Price per Hour</string>
+    <string name="settings_alerts">Alerts</string>
+    <string name="settings_reminder_minutes">Reminder Minutes Before End</string>
+    <string name="settings_reminder_helper">Minutes before session ends</string>
+    <string name="error_invalid_price">Must be greater than zero</string>
+    <string name="error_empty_price">Cannot be empty</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_backup">Backup</string>
+    <string name="settings_restore">Restore</string>
+    <string name="settings_about">About</string>
+    <string name="settings_reset">Reset Settings</string>
+    <string name="settings_reset_confirm_title">Reset Settings?</string>
+    <string name="settings_reset_confirm_message">Are you sure you want to reset all settings? This action cannot be undone.</string>
+    <string name="settings_reset_success">Settings reset successfully</string>
+    <string name="settings_version">Version: %1$s</string>
+    <string name="settings_developer">Developer: %1$s</string>
+
+    <!-- Settings - PS4 Pricing -->
+    <string name="ps4_pricing">PS4 Pricing</string>
+    <string name="ps4_hour_price">1 Hour Price</string>
+    <string name="ps4_half_hour_price">1/2 Hour Price</string>
+    <string name="ps4_multi_extra">Extra Multiplayer Price</string>
+
+    <!-- Settings - PS5 Pricing -->
+    <string name="ps5_pricing">PS5 Pricing</string>
+    <string name="ps5_hour_price">1 Hour Price</string>
+    <string name="ps5_half_hour_price">1/2 Hour Price</string>
+    <string name="ps5_multi_extra">Extra Multiplayer Price</string>
+
+    <!-- Settings - Session Defaults -->
+    <string name="session_defaults">Session Defaults</string>
+    <string name="session_mode">Session Mode</string>
+    <string name="session_mode_open">Open</string>
+    <string name="session_mode_fixed">Fixed</string>
+    <string name="default_fixed_minutes">Fixed Duration (min)</string>
+
+    <!-- Settings - Warning Settings -->
+    <string name="warning_settings">Warning Settings</string>
+    <string name="warnings_enabled">Enable Warnings</string>
+    <string name="warning_sound">Warning Sound</string>
+    <string name="warning_notification">Warning Notification</string>
+    <string name="warning_minutes">Warning Minutes Before End</string>
+    <string name="per_half_hour">/ Half Hour</string>
+    <string name="extra_per_player">Extra / Player</string>
+
+    <!-- Currencies -->
+    <string name="currency_egp">Egyptian Pound (EGP)</string>
+    <string name="currency_sar">Saudi Riyal (SAR)</string>
+    <string name="currency_aed">UAE Dirham (AED)</string>
+    <string name="currency_usd">US Dollar (USD)</string>
+    <string name="currency_eur">Euro (EUR)</string>
+    <string name="currency_kwd">Kuwaiti Dinar (KWD)</string>
+    <string name="currency_bhd">Bahraini Dinar (BHD)</string>
+    <string name="currency_omr">Omani Rial (OMR)</string>
+    <string name="currency_qar">Qatari Riyal (QAR)</string>
+    <string name="currency_jod">Jordanian Dinar (JOD)</string>
+    <string name="currency_iqd">Iraqi Dinar (IQD)</string>
+    <string name="currency_lbp">Lebanese Pound (LBP)</string>
+    <string name="currency_mad">Moroccan Dirham (MAD)</string>
+    <string name="currency_tnd">Tunisian Dinar (TND)</string>
+    <string name="currency_dzd">Algerian Dinar (DZD)</string>
+    <string name="currency_lyd">Libyan Dinar (LYD)</string>
+
+    <!-- Currency Symbols -->
+    <string name="symbol_egp">EGP</string>
+    <string name="symbol_sar">SAR</string>
+    <string name="symbol_aed">AED</string>
+    <string name="symbol_usd">$</string>
+    <string name="symbol_eur">€</string>
+    <string name="symbol_kwd">KWD</string>
+    <string name="symbol_bhd">BHD</string>
+    <string name="symbol_omr">OMR</string>
+    <string name="symbol_qar">QAR</string>
+    <string name="symbol_jod">JOD</string>
+    <string name="symbol_iqd">IQD</string>
+    <string name="symbol_lbp">LBP</string>
+    <string name="symbol_mad">MAD</string>
+    <string name="symbol_tnd">TND</string>
+    <string name="symbol_dzd">DZD</string>
+    <string name="symbol_lyd">LYD</string>
+
+    <!-- Time -->
+    <string name="hours">Hour</string>
+    <string name="minutes">Minute</string>
+    <string name="seconds">Second</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="confirm">Confirm</string>
+    <string name="loading">Loading…</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_description">Session End Alerts</string>
+    <string name="notification_channel_ongoing_description">Show active sessions in status bar</string>
+    <string name="notification_active_sessions_title">🎮 Active Sessions: %1$d</string>
+    <string name="notification_session_ending_warning">Session ending in %1$d minutes</string>
+    <string name="notification_session_ended_receipt">Session ended and receipt created</string>
+
+    <!-- Expenses -->
+    <string name="expenses">Expenses</string>
+    <string name="total_expenses">Total Expenses</string>
+    <string name="expense_count">Operations Count</string>
+    <string name="no_expenses">No Expenses</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="expense_added">Expense Added Successfully</string>
+    <string name="expense_deleted">Expense Deleted</string>
+    <string name="amount">Amount</string>
+    <string name="category">Category</string>
+    <string name="notes">Notes</string>
+    <string name="date">Date</string>
+    <string name="category_electricity">Electricity</string>
+    <string name="category_internet">Internet</string>
+    <string name="category_maintenance">Maintenance</string>
+    <string name="category_purchases">Purchases</string>
+    <string name="category_water">Water</string>
+    <string name="category_other">Other</string>
+
+    <!-- Messages -->
+    <string name="session_started">Session Started</string>
+    <string name="session_ended">Session Ended</string>
+    <string name="backup_success">Backup Created Successfully</string>
+    <string name="restore_success">Restore Successful</string>
+    <string name="error_occurred">An error occurred</string>
+
+    <!-- Extracted from Layouts -->
+    <string name="product_sale_price">💰 Sale Price:</string>
+    <string name="product_cost">💸 Cost:</string>
+    <string name="product_unit_profit">📈 Unit Profit:</string>
+    <string name="product_available">📦 Available:</string>
+    <string name="product_unit">Unit</string>
+    <string name="ps4">PlayStation 4</string>
+    <string name="ps5">PlayStation 5</string>
+    <string name="last_7_days">Last 7 Days</string>
+    <string name="this_month">This Month</string>
+    <string name="last_30_days">Last 30 Days</string>
+    <string name="all_time">All Time</string>
+    <string name="reports_total_revenue">💰 Total Revenue</string>
+    <string name="reports_total_expenses">💸 Total Expenses</string>
+    <string name="reports_sessions_revenue">🎮 Sessions Revenue</string>
+    <string name="reports_products_revenue">🥤 Products Revenue</string>
+    <string name="reports_total_sessions">🎮 Total Sessions</string>
+    <string name="reports_average_duration">⏱️ Avg Duration</string>
+    <string name="reports_old_products_warning">Some old products lack cost info; historical profits may be incomplete.</string>
+    <string name="reports_products_cost">💸 Products Cost</string>
+    <string name="reports_products_profit">📈 Products Profit</string>
+    <string name="reports_net_profit">Net Profit</string>
+    <string name="reports_last_7_days_revenue">Last 7 Days Revenue</string>
+    <string name="reports_revenue_distribution">Revenue Distribution</string>
+    <string name="reports_sessions_distribution">Sessions per Device Type</string>
+    <string name="reports_top_products">Top Selling Products</string>
+    <string name="reports_no_products_sold">📦 No products sold</string>
+    <string name="inventory_empty_title">No Products</string>
+    <string name="inventory_empty_subtitle">Add your first product to inventory</string>
+    <string name="inventory_add_product">Add Product</string>
+    <string name="inventory_search_product">Search or enter product name</string>
+    <string name="inventory_sale_price">Sale Price</string>
+    <string name="inventory_min_quantity">Min Quantity</string>
+    <string name="inventory_quantity_to_add">Quantity to Add</string>
+    <string name="inventory_save">Save</string>
+    <string name="history_empty_title">No Movements</string>
+    <string name="history_empty_subtitle">No inventory movements recorded yet</string>
+    <string name="dashboard_expense">Expense</string>
+    <string name="dashboard_active">Active</string>
+    <string name="dashboard_product">Product</string>
+    <string name="dashboard_item">Item</string>
+    <string name="dashboard_no_active_sessions">🎮 No active sessions</string>
+    <string name="dashboard_no_expenses_today">💸 No expenses today</string>
+
+    <string name="end_session_title">End Session</string>
+    <string name="end_session_message">Are you sure you want to end this session?\nA receipt will be generated automatically.</string>
+    <string name="enable">Enable</string>
+    <string name="later">Later</string>
+
+    <!-- Phase 3 -->
+    <string name="product_type_label">Product Type</string>
+    <string name="product_type_normal">Normal Product</string>
+    <string name="product_type_prepared">Prepared Product</string>
+    <string name="unit_cost_label">Unit Cost</string>
+    <string name="preparation_cost_label">Preparation Cost</string>
+    <string name="resulting_units_label">Resulting Units</string>
+    <string name="sale_price_label">Sale Price</string>
+    <string name="current_quantity_label">Current Quantity</string>
+    <string name="min_quantity_label">Minimum Quantity</string>
+    <string name="new_prepared_qty_label">Number of New Cups</string>
+    <string name="save_inventory_changes">Save Changes</string>
+    <string name="save_add_inventory">Save &amp; Add to Inventory</string>
+    <string name="unit_cup_plural">Cups</string>
+    <string name="unit_cup_def_plural">Cups</string>
+    <string name="unit_cup_def_sing">Cup</string>
+    <string name="unit_box">Box</string>
+    <string name="unit_box_plural">Boxes</string>
+    <string name="unit_box_def_plural">Boxes</string>
+    <string name="unit_box_def_sing">Box</string>
+    <string name="unit_bottle">Bottle</string>
+    <string name="unit_bottle_plural">Bottles</string>
+    <string name="unit_bottle_def_plural">Bottles</string>
+    <string name="unit_bottle_def_sing">Bottle</string>
+    <string name="unit_bag">Bag</string>
+    <string name="unit_bag_plural">Bags</string>
+    <string name="unit_bag_def_plural">Bags</string>
+    <string name="unit_bag_def_sing">Bag</string>
+    <string name="unit_piece_plural">Pieces</string>
+    <string name="unit_piece_def_plural">Pieces</string>
+    <string name="unit_piece_def_sing">Piece</string>
+    <string name="unit_plate">Plate</string>
+    <string name="unit_plate_plural">Plates</string>
+    <string name="unit_plate_def_plural">Plates</string>
+    <string name="unit_plate_def_sing">Plate</string>
+    <string name="unit_unit">Unit</string>
+    <string name="unit_unit_plural">Units</string>
+    <string name="unit_unit_def_plural">Units</string>
+    <string name="unit_unit_def_sing">Unit</string>
+    <string name="unit_pack">Pack</string>
+    <string name="unit_pack_plural">Packs</string>
+    <string name="unit_pack_def_plural">Packs</string>
+    <string name="unit_pack_def_sing">Pack</string>
+    <string name="unit_carton">Carton</string>
+    <string name="unit_carton_plural">Cartons</string>
+    <string name="unit_carton_def_plural">Cartons</string>
+    <string name="unit_carton_def_sing">Carton</string>
+    <string name="unit_tray">Tray</string>
+    <string name="unit_tray_plural">Trays</string>
+    <string name="unit_tray_def_plural">Trays</string>
+    <string name="unit_tray_def_sing">Tray</string>
+    <string name="unit_bundle">Bundle</string>
+    <string name="unit_bundle_plural">Bundles</string>
+    <string name="unit_bundle_def_plural">Bundles</string>
+    <string name="unit_bundle_def_sing">The Bundle</string>
+
+    <!-- Phase 3 Kotlin Strings -->
+    <string name="deleted_archived">[Deleted/Archived]</string>
+    <string name="finishing_progress">Finishing...</string>
+    <string name="finishing_session_progress">Ending Session...</string>
+    <string name="session_revenue">Session Revenue</string>
+    <string name="product_revenue">Product Revenue</string>
+    <string name="filter_today">Today</string>
+    <string name="filter_last_7_days">Last 7 Days</string>
+    <string name="filter_this_month">This Month</string>
+    <string name="filter_last_30_days">Last 30 Days</string>
+    <string name="filter_all">All</string>
+    <string name="filter_custom">Custom</string>
+    <string name="invalid_unit_count">Please enter a valid unit count</string>
+    <string name="archive_title">Archive</string>
+    <string name="archive_message">The product will be hidden from active lists while retaining all invoices, reports, and past transactions.</string>
+    <string name="archive_action">Archive</string>
+    <string name="prepared_product_badge">Prepared Product</string>
+    <string name="normal_product_badge">Normal Product</string>
+    <string name="inventory_status_out_of_stock">Out of Stock</string>
+    <string name="inventory_status_low_stock">Low Stock</string>
+    <string name="inventory_status_available">Available</string>
+    <string name="action_add">Add</string>
+    <string name="payment_method_title">Payment Method</string>
+    <string name="payment_method_message">Select a payment method to settle the invoice</string>
+    <string name="action_pay">Pay</string>
+    <string name="status_closed">Closed</string>
+    <string name="status_open">Open</string>
+    <!-- Phase 3B Kotlin Strings -->
+    <string name="inventory_stock_label">In Stock:</string>
+    <string name="normal_product_label">Normal Product</string>
+    <string name="computed_unit_cost">Computed Unit Cost: %.2f</string>
+    <string name="currently_available_format">Currently Available: %1$s %2$s</string>
+    <string name="will_be_available_format">Will Become Available: %1$s %2$s</string>
+    <string name="currency_egp_suffix">EGP</string>
+    <string name="cost_of_unit">Cost of %1$s:</string>
+    <string name="profit_of_unit">Profit of %1$s:</string>
+    <string name="available_label">Available:</string>
+    <string name="quantity_sold_label">Sold:</string>
+    <string name="revenue_label">Revenue:</string>
+    <string name="report_date_picker_title">Select Report Period</string>
+    <string name="custom_period">Custom Period</string>
+    <string name="minutes_suffix">min</string>
+    <string name="revenue_chart_label">Revenue</string>
+    <string name="print_receipt_soon">Printing feature will be added soon</string>
+    <string name="action_ok">OK</string>
+    <string name="payment_cash">Cash</string>
+    <string name="payment_card">Card</string>
+    <string name="new_quantity_hint">New %1$s count</string>
+    <string name="movement_add">Add</string>
+    <string name="movement_sales">Sales</string>
+    <string name="movement_withdraw_sale">Withdraw / Sale</string>
+    <string name="movement_adjustment">Adjustment</string>
+    <string name="tab_movements">Movements</string>
+    <string name="error_duplicate_product_name">A product with this name already exists</string>
+    <string name="product_not_found">Product not found</string>
+    <string name="invalid_return_quantity">Cannot return more quantity than sold</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="unit_cup">Cup</string>
+    <string name="unit_piece">Piece</string>
+    <string name="print_receipt_title">Print Receipt</string>
+    <string name="exact_alarm_permission_title">Exact Alarm Permission</string>
+    <string name="exact_alarm_permission_message">The app requires exact alarm permission to ensure you are alerted when timed sessions expire.</string>
+    <string name="receipt_item_format">%1$s (%2$s × %3$d = %4$s)</string>
+    <string name="receipt_item_format_print">- %1$s: %2$s × %3$d = %4$s</string>
+    <string name="product_quantity_format">%1$s × %2$d</string>
+    <string name="top_product_revenue_format">💰 %1$s %2$s</string>
+    <string name="movement_order_indicator">Order</string>
+</resources>
+

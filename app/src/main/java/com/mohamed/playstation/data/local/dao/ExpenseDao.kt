@@ -22,9 +22,9 @@ interface ExpenseDao {
     @Query("SELECT * FROM expenses ORDER BY expenseDate DESC, id DESC")
     fun getAllExpenses(): Flow<List<ExpenseEntity>>
 
-    @Query("SELECT * FROM expenses WHERE expenseDate >= :startTime AND expenseDate <= :endTime ORDER BY expenseDate DESC, id DESC")
+    @Query("SELECT * FROM expenses WHERE expenseDate >= :startTime AND expenseDate < :endTime ORDER BY expenseDate DESC, id DESC")
     fun getExpensesInRange(startTime: Long, endTime: Long): Flow<List<ExpenseEntity>>
 
-    @Query("SELECT SUM(amount) FROM expenses WHERE expenseDate >= :startTime AND expenseDate <= :endTime")
+    @Query("SELECT SUM(amount) FROM expenses WHERE expenseDate >= :startTime AND expenseDate < :endTime")
     fun getTotalExpensesInRange(startTime: Long, endTime: Long): Flow<Double?>
 }

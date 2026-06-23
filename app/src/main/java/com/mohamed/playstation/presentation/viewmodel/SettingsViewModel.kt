@@ -78,6 +78,7 @@ class SettingsViewModel @Inject constructor(
 
     data class LanguageItem(val code: String, val nameResId: Int)
     val languageList = listOf(
+        LanguageItem("system", com.mohamed.playstation.R.string.language_system),
         LanguageItem("ar", com.mohamed.playstation.R.string.language_arabic),
         LanguageItem("en", com.mohamed.playstation.R.string.language_english)
     )

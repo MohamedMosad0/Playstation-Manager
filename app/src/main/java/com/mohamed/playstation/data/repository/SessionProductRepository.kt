@@ -40,10 +40,10 @@ class SessionProductRepository @Inject constructor(
     ) {
         database.withTransaction {
             val inventoryItem = inventoryItemDao.getById(inventoryItemId)
-                ?: throw IllegalArgumentException("المنتج غير موجود في المخزون")
+                ?: throw IllegalArgumentException("PRODUCT_NOT_FOUND")
 
             if (inventoryItem.quantity < quantityToSell) {
-                throw IllegalStateException("الكمية المطلوبة غير متوفرة في المخزون")
+                throw IllegalStateException("INSUFFICIENT_STOCK")
             }
 
             // Decrease stock and log movement
@@ -74,7 +74,7 @@ class SessionProductRepository @Inject constructor(
     suspend fun removeSessionProductAndRestoreStock(sessionProductId: Long) {
         database.withTransaction {
             val sessionProduct = sessionProductDao.getById(sessionProductId)
-                ?: throw IllegalArgumentException("المنتج غير موجود")
+                ?: throw IllegalArgumentException("PRODUCT_NOT_FOUND")
 
             sessionProductDao.delete(sessionProduct)
 

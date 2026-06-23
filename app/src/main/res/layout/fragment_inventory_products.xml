@@ -67,7 +67,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="لا توجد منتجات"
+            android:text="@string/inventory_empty_title"
             android:textAppearance="?attr/textAppearanceHeadlineSmall"
             android:textStyle="bold"
             android:layout_marginTop="16dp"
@@ -76,7 +76,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ابدأ بإضافة أول منتج للمخزون"
+            android:text="@string/inventory_empty_subtitle"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginTop="8dp" />
@@ -89,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="إضافة منتج"
+        android:text="@string/inventory_add_product"
         android:textColor="?attr/colorOnPrimaryContainer"
         android:backgroundTint="?attr/colorPrimaryContainer"
         app:icon="@drawable/ic_add"

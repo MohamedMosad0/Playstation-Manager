@@ -85,6 +85,9 @@ class MovementHistoryTabFragment : Fragment() {
 
 
 
+private const val SALE_MARKER = "مبيعات"
+private const val ORDER_MARKER = "طلب"
+
 class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView, MovementsAdapter.VH>(DIFF) {
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView>() {
@@ -105,18 +108,20 @@ class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmo
             val typeText: String
             val colorRes: Int
             if (item.quantityChange > 0) {
-                typeText = "إضافة"
+                typeText = itemView.context.getString(R.string.movement_add)
                 colorRes = R.color.status_active
             } else if (item.quantityChange < 0) {
-                if (item.productName.contains("مبيعات") || item.productName.contains("طلب")) {
-                    typeText = "مبيعات"
+                // TODO(v8):
+                // Replace legacy markers with explicit MovementType enum column.
+                if (item.productName.contains(SALE_MARKER) || item.productName.contains(ORDER_MARKER)) {
+                    typeText = itemView.context.getString(R.string.movement_sales)
                     colorRes = R.color.status_paused
                 } else {
-                    typeText = "سحب / بيع"
+                    typeText = itemView.context.getString(R.string.movement_withdraw_sale)
                     colorRes = R.color.status_error
                 }
             } else {
-                typeText = "تسوية"
+                typeText = itemView.context.getString(R.string.movement_adjustment)
                 colorRes = R.color.ps_blue_primary
             }
 

@@ -32,7 +32,7 @@ import com.mohamed.playstation.data.local.converter.DateConverter
         ExpenseEntity::class
     ],
     version = 7,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(DateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -44,31 +44,4 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun stockMovementDao(): StockMovementDao
     abstract fun expenseDao(): ExpenseDao
 
-    companion object {
-        val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Legacy migration
-            }
-        }
-        val MIGRATION_2_3 = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Legacy migration
-            }
-        }
-        val MIGRATION_3_4 = object : Migration(3, 4) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Legacy migration
-            }
-        }
-        val MIGRATION_4_5 = object : Migration(4, 5) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Legacy migration
-            }
-        }
-        val MIGRATION_5_6 = object : Migration(5, 6) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Legacy migration
-            }
-        }
-    }
 }

@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="سعر البيع">
+            android:hint="@string/sale_price_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPrice"
@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="الكمية الحالية">
+            android:hint="@string/current_quantity_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCurrentQty"
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="الحد الأدنى للكمية">
+            android:hint="@string/min_quantity_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMinQty"
@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="تكلفة الوحدة">
+            android:hint="@string/unit_cost_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCostPerUnit"
@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:visibility="gone"
-            android:hint="عدد الأكواب الجديدة">
+            android:hint="@string/new_prepared_qty_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNewPreparedQty"

@@ -87,8 +87,8 @@ class ReceiptsFragment : Fragment() {
                         viewModel.currency
                     ) { revenue, currency -> revenue to currency }
                         .collect { (revenue, currency) ->
-                            val symbol = CurrencyUtils.getCurrencySymbol(currency)
-                            binding.tvTodayRevenue.text = "${String.format(Locale.getDefault(), "%.2f", revenue)} $symbol"
+                            val symbol = CurrencyUtils.getCurrencySymbol(requireContext(), currency)
+                            binding.tvTodayRevenue.text = com.mohamed.playstation.core.utils.CurrencyFormatter.formatCurrency(revenue, symbol)
                         }
                 }
 
@@ -138,6 +138,7 @@ class ReceiptsFragment : Fragment() {
                 binding.progressBar.isVisible = false
                 binding.emptyState.isVisible = true
                 binding.rvReceipts.isVisible = false
+                android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
             }
         }
     }

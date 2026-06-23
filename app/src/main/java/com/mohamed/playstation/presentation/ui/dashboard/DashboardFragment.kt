@@ -151,6 +151,7 @@ class DashboardFragment : Fragment() {
             }
             is UiState.Error -> {
                 binding.progressBar.isVisible = false
+                android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_LONG).show()
             }
             is UiState.Empty -> {
                 binding.progressBar.isVisible = false
@@ -161,9 +162,9 @@ class DashboardFragment : Fragment() {
     private fun bindData(data: DashboardData) {
         val currencyStr = viewModel.currency.value
         
-        binding.tvRevenue.text = CurrencyUtils.formatAmount(data.todayRevenue, currencyStr)
-        binding.tvExpenses.text = CurrencyUtils.formatAmount(data.todayExpenses, currencyStr)
-        binding.tvNetProfit.text = CurrencyUtils.formatAmount(data.netProfit, currencyStr)
+        binding.tvRevenue.text = CurrencyUtils.formatAmount(requireContext(), data.todayRevenue, currencyStr)
+        binding.tvExpenses.text = CurrencyUtils.formatAmount(requireContext(), data.todayExpenses, currencyStr)
+        binding.tvNetProfit.text = CurrencyUtils.formatAmount(requireContext(), data.netProfit, currencyStr)
         binding.tvSessions.text = data.sessionsToday.toString()
         binding.tvTotalProducts.text = data.totalProducts.toString()
         binding.tvLowStock.text = data.lowStockProducts.toString()
@@ -184,7 +185,7 @@ class DashboardFragment : Fragment() {
             val barEntries = data.revenueChartData.mapIndexed { index, point ->
                 BarEntry(index.toFloat(), point.value)
             }
-            val barDataSet = BarDataSet(barEntries, "Revenue").apply {
+            val barDataSet = BarDataSet(barEntries, requireContext().getString(R.string.revenue)).apply {
                 color = requireContext().getColor(R.color.ps_blue_primary)
                 valueTextSize = 10f
                 valueTextColor = requireContext().getColor(R.color.text_primary)
@@ -203,7 +204,7 @@ class DashboardFragment : Fragment() {
             val pieEntries = data.expenseChartData.map { point ->
                 PieEntry(point.value, getCategoryFriendlyName(point.label))
             }
-            val pieDataSet = PieDataSet(pieEntries, "Expenses").apply {
+            val pieDataSet = PieDataSet(pieEntries, requireContext().getString(R.string.expenses)).apply {
                 colors = listOf(
                     requireContext().getColor(R.color.chart_green),
                     requireContext().getColor(R.color.chart_red),

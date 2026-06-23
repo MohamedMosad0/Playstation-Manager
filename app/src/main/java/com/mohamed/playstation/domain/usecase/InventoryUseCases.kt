@@ -14,14 +14,14 @@ class InventoryUseCases @Inject constructor(
 
     suspend fun insertItem(item: InventoryItem): Long {
         if (inventoryRepository.existsByName(item.name)) {
-            throw IllegalArgumentException("يوجد منتج آخر بنفس الاسم")
+            throw IllegalArgumentException("DUPLICATE_PRODUCT_NAME")
         }
         return inventoryRepository.insertItem(item)
     }
 
     suspend fun updateItem(item: InventoryItem) {
         if (inventoryRepository.existsByNameExcluding(item.name, item.id)) {
-            throw IllegalArgumentException("يوجد منتج آخر بنفس الاسم")
+            throw IllegalArgumentException("DUPLICATE_PRODUCT_NAME")
         }
         inventoryRepository.updateItem(item)
     }

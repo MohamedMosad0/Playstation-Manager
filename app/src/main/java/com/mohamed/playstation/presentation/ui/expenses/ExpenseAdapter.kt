@@ -30,7 +30,7 @@ class ExpenseAdapter(
     inner class ViewHolder(private val binding: ItemExpenseBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(expense: Expense) {
             binding.tvCategoryName.text = getCategoryName(expense.category)
-            binding.tvAmount.text = CurrencyUtils.formatAmount(expense.amount, currency)
+            binding.tvAmount.text = CurrencyUtils.formatAmount(binding.root.context, expense.amount, currency)
             binding.tvDescription.text = expense.description
             binding.tvDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(expense.expenseDate)
             binding.ivCategory.setImageResource(getCategoryIcon(expense.category))

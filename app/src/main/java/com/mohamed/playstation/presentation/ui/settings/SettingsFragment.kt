@@ -17,6 +17,7 @@ import com.mohamed.playstation.BuildConfig
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.databinding.FragmentSettingsBinding
+import com.mohamed.playstation.domain.model.CurrencyList
 import com.mohamed.playstation.presentation.viewmodel.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -118,13 +119,31 @@ class SettingsFragment : Fragment() {
         }
 
         // Currency
-        val currencies = com.mohamed.playstation.domain.model.CurrencyList.currencies
-        val displayNames = currencies.map { "${it.nameAr} (${it.code})" }.toTypedArray()
+        val currencies = CurrencyList.currencies
+        val displayNames = currencies.map { "${getString(it.displayNameRes)} (${it.code})" }.toTypedArray()
         binding.actvCurrency.setSimpleItems(displayNames)
         
         binding.actvCurrency.setOnItemClickListener { _, _, position, _ ->
             if (!isUpdatingUi) {
                 viewModel.setCurrency(currencies[position].code)
+            }
+        }
+
+        // Language
+        val languageItems = viewModel.languageList
+        val languageNames = languageItems.map { getString(it.nameResId) }.toTypedArray()
+        binding.actvLanguage.setSimpleItems(languageNames)
+        
+        binding.actvLanguage.setOnItemClickListener { _, _, position, _ ->
+            if (!isUpdatingUi) {
+                val selectedCode = languageItems[position].code
+                viewModel.setLanguage(selectedCode)
+                val localeList = if (selectedCode == "system") {
+                    androidx.core.os.LocaleListCompat.getEmptyLocaleList()
+                } else {
+                    androidx.core.os.LocaleListCompat.forLanguageTags(selectedCode)
+                }
+                androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(localeList)
             }
         }
 
@@ -192,14 +211,26 @@ class SettingsFragment : Fragment() {
                 // Currency
                 launch {
                     viewModel.currency.collect { code ->
-                        val currency = com.mohamed.playstation.domain.model.CurrencyList.getCurrencyByCode(code)
-                        val displayName = "${currency.nameAr} (${currency.code})"
+                        val currency = CurrencyList.getCurrencyByCode(code)
+                        val displayName = "${getString(currency.displayNameRes)} (${currency.code})"
                         if (binding.actvCurrency.text.toString() != displayName) {
                             android.util.Log.d("SettingsAudit", "[CURRENCY] setText starting: $displayName, Popup showing: ${binding.actvCurrency.isPopupShowing}")
                             isUpdatingUi = true
                             binding.actvCurrency.setText(displayName, false)
                             isUpdatingUi = false
                             android.util.Log.d("SettingsAudit", "[CURRENCY] setText finished. Popup showing: ${binding.actvCurrency.isPopupShowing}")
+                        }
+                    }
+                }
+                // Language
+                launch {
+                    viewModel.language.collect { code ->
+                        val languageItem = viewModel.languageList.find { it.code == code } ?: viewModel.languageList.first()
+                        val displayName = getString(languageItem.nameResId)
+                        if (binding.actvLanguage.text.toString() != displayName) {
+                            isUpdatingUi = true
+                            binding.actvLanguage.setText(displayName, false)
+                            isUpdatingUi = false
                         }
                     }
                 }

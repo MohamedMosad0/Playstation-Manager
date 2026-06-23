@@ -30,8 +30,8 @@ class EndSessionDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialAlertDialogBuilder(requireContext())
-            .setTitle("إنهاء الجلسة")
-            .setMessage("هل أنت متأكد من إنهاء هذه الجلسة؟\nسيتم إنشاء فاتورة تلقائياً.")
+            .setTitle(requireContext().getString(R.string.end_session_title))
+            .setMessage(requireContext().getString(R.string.end_session_message))
             .setPositiveButton(R.string.end_session) { _, _ ->
                 endSession()
             }

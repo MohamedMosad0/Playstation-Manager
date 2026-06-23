@@ -65,9 +65,9 @@ class ReceiptAdapter(
                 tvDuration.text = "${receipt.getFormattedDuration()} • $timeRange"
 
                 // Total Amount
-                val currencySymbol = CurrencyUtils.getCurrencySymbol(receipt.currencyCode)
+                val currencySymbol = CurrencyUtils.getCurrencySymbol(binding.root.context, receipt.currencyCode)
                 // استخدم Locale عند التنسيق لتجنب lint warnings
-                tvTotal.text = "${String.format(Locale.getDefault(), "%.2f", receipt.totalAmount)} $currencySymbol"
+                tvTotal.text = com.mohamed.playstation.core.utils.CurrencyFormatter.formatCurrency(receipt.totalAmount, currencySymbol)
 
                 // Payment Method
                 chipPaymentMethod.text = when (receipt.paymentMethod) {
@@ -81,7 +81,7 @@ class ReceiptAdapter(
                     tvProductsSummary.text = root.context.getString(
                         R.string.receipt_products_summary,
                         summary.totalQuantity,
-                        CurrencyUtils.formatAmount(summary.totalAmount, receipt.currencyCode)
+                        CurrencyUtils.formatAmount(binding.root.context, summary.totalAmount, receipt.currencyCode)
                     )
                     tvProductsSummary.visibility = android.view.View.VISIBLE
                 } else {
