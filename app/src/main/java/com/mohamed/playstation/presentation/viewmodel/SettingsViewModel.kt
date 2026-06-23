@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -34,14 +35,50 @@ class SettingsViewModel @Inject constructor(
     val ps4HourPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps4HourPriceFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_HOUR_PRICE)
 
-    val ps4MultiplayerPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps4MultiplayerPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_MULTI_HOUR_PRICE)
+    val ps4MultiExtra: StateFlow<Double> = getSettingsFlowsUseCase.ps4MultiExtraFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_MULTI_EXTRA)
 
     val ps5HourPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps5HourPriceFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_HOUR_PRICE)
 
-    val ps5MultiplayerPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps5MultiplayerPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_MULTI_HOUR_PRICE)
+    val ps5MultiExtra: StateFlow<Double> = getSettingsFlowsUseCase.ps5MultiExtraFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_MULTI_EXTRA)
+
+    init {
+        migrateLegacyPricing()
+    }
+
+    private fun migrateLegacyPricing() {
+        viewModelScope.launch {
+            // PS4 Migration
+            combine(
+                getSettingsFlowsUseCase.ps4HourPriceFlow,
+                getSettingsFlowsUseCase.ps4MultiExtraFlow,
+                getSettingsFlowsUseCase.ps4MultiplayerPriceFlow
+            ) { hour, extra, legacyMultiHour ->
+                Triple(hour, extra, legacyMultiHour)
+            }.first().let { (hour, extra, legacyMultiHour) ->
+                if (extra == AppConstants.DEFAULT_PS4_MULTI_EXTRA && legacyMultiHour > hour) {
+                    val migrated = (legacyMultiHour - hour).coerceAtLeast(0.0)
+                    updateSettingsUseCase.setPs4MultiExtra(migrated)
+                }
+            }
+
+            // PS5 Migration
+            combine(
+                getSettingsFlowsUseCase.ps5HourPriceFlow,
+                getSettingsFlowsUseCase.ps5MultiExtraFlow,
+                getSettingsFlowsUseCase.ps5MultiplayerPriceFlow
+            ) { hour, extra, legacyMultiHour ->
+                Triple(hour, extra, legacyMultiHour)
+            }.first().let { (hour, extra, legacyMultiHour) ->
+                if (extra == AppConstants.DEFAULT_PS5_MULTI_EXTRA && legacyMultiHour > hour) {
+                    val migrated = (legacyMultiHour - hour).coerceAtLeast(0.0)
+                    updateSettingsUseCase.setPs5MultiExtra(migrated)
+                }
+            }
+        }
+    }
 
     // Validation State
     data class ValidationErrors(
@@ -109,35 +146,35 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun setPs4HourPrice(price: Double?) {
-        validateAndSavePrice(price, { err -> _validationErrors.update { it.copy(ps4HourError = err) } }) {
+        validateAndSavePrice(price, allowZero = false, errorSetter = { err -> _validationErrors.update { it.copy(ps4HourError = err) } }) {
             viewModelScope.launch { updateSettingsUseCase.setPs4HourPrice(it) }
         }
     }
 
-    fun setPs4MultiplayerPrice(price: Double?) {
-        validateAndSavePrice(price, { err -> _validationErrors.update { it.copy(ps4MultiError = err) } }) {
-            viewModelScope.launch { updateSettingsUseCase.setPs4MultiplayerPrice(it) }
+    fun setPs4MultiExtra(price: Double?) {
+        validateAndSavePrice(price, allowZero = true, errorSetter = { err -> _validationErrors.update { it.copy(ps4MultiError = err) } }) {
+            viewModelScope.launch { updateSettingsUseCase.setPs4MultiExtra(it) }
         }
     }
 
     fun setPs5HourPrice(price: Double?) {
-        validateAndSavePrice(price, { err -> _validationErrors.update { it.copy(ps5HourError = err) } }) {
+        validateAndSavePrice(price, allowZero = false, errorSetter = { err -> _validationErrors.update { it.copy(ps5HourError = err) } }) {
             viewModelScope.launch { updateSettingsUseCase.setPs5HourPrice(it) }
         }
     }
 
-    fun setPs5MultiplayerPrice(price: Double?) {
-        validateAndSavePrice(price, { err -> _validationErrors.update { it.copy(ps5MultiError = err) } }) {
-            viewModelScope.launch { updateSettingsUseCase.setPs5MultiplayerPrice(it) }
+    fun setPs5MultiExtra(price: Double?) {
+        validateAndSavePrice(price, allowZero = true, errorSetter = { err -> _validationErrors.update { it.copy(ps5MultiError = err) } }) {
+            viewModelScope.launch { updateSettingsUseCase.setPs5MultiExtra(it) }
         }
     }
 
-    private fun validateAndSavePrice(price: Double?, errorSetter: (Int?) -> Unit, onSave: (Double) -> Unit) {
+    private fun validateAndSavePrice(price: Double?, allowZero: Boolean, errorSetter: (Int?) -> Unit, onSave: (Double) -> Unit) {
         when {
             price == null -> {
                 errorSetter(com.mohamed.playstation.R.string.error_empty_price)
             }
-            price <= 0 -> {
+            (!allowZero && price <= 0) || (allowZero && price < 0) -> {
                 errorSetter(com.mohamed.playstation.R.string.error_invalid_price)
             }
             else -> {

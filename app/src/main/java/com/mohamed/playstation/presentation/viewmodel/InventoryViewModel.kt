@@ -56,11 +56,9 @@ class InventoryViewModel @Inject constructor(
         _movementSearchQuery
     ) { list, query ->
         val mapped = list.map { row ->
-            val movementType = try {
-                MovementType.valueOf(row.movementType)
-            } catch (e: Exception) {
-                MovementType.STOCK_IN
-            }
+            val movementType = MovementType.entries
+                .firstOrNull { it.name == row.movementType }
+                ?: MovementType.STOCK_IN
             StockMovementView(
                 id = row.id,
                 inventoryItemId = row.inventoryItemId,

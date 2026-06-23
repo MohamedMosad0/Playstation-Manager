@@ -18,5 +18,7 @@ enum class MovementType {
     STOCK_OUT,
     INITIAL,
     SALE,
-    SALE_REVERT
+    SALE_REVERT,
+    MANUAL_ADD,
+    MANUAL_DEDUCT
 }

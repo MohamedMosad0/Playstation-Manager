@@ -13,6 +13,8 @@ import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -53,9 +55,11 @@ class InventoryFragment : Fragment() {
         }.attach()
         
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.addEditUiState.collect { state ->
-                if (state is UiState.Error) {
-                    android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addEditUiState.collect { state ->
+                    if (state is UiState.Error) {
+                        android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

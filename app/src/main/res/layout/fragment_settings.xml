@@ -164,14 +164,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPs4MultiHourPrice"
+                    android:id="@+id/tilPs4MultiExtra"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/settings_multi_hour_price">
+                    android:hint="@string/ps4_multi_extra">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPs4MultiHourPrice"
+                        android:id="@+id/etPs4MultiExtra"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal" />
@@ -216,14 +216,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPs5MultiHourPrice"
+                    android:id="@+id/tilPs5MultiExtra"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/settings_multi_hour_price">
+                    android:hint="@string/ps5_multi_extra">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPs5MultiHourPrice"
+                        android:id="@+id/etPs5MultiExtra"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal" />

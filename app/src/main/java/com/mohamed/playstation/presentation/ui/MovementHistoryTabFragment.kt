@@ -85,8 +85,7 @@ class MovementHistoryTabFragment : Fragment() {
 
 
 
-private const val SALE_MARKER = "مبيعات"
-private const val ORDER_MARKER = "طلب"
+
 
 class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView, MovementsAdapter.VH>(DIFF) {
     companion object {
@@ -107,22 +106,27 @@ class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmo
             // Movement Types
             val typeText: String
             val colorRes: Int
-            if (item.quantityChange > 0) {
-                typeText = itemView.context.getString(R.string.movement_add)
-                colorRes = R.color.status_active
-            } else if (item.quantityChange < 0) {
-                // TODO(v8):
-                // Replace legacy markers with explicit MovementType enum column.
-                if (item.productName.contains(SALE_MARKER) || item.productName.contains(ORDER_MARKER)) {
+            when (item.movementType) {
+                com.mohamed.playstation.domain.model.MovementType.SALE,
+                com.mohamed.playstation.domain.model.MovementType.SALE_REVERT -> {
                     typeText = itemView.context.getString(R.string.movement_sales)
                     colorRes = R.color.status_paused
-                } else {
+                }
+                com.mohamed.playstation.domain.model.MovementType.MANUAL_ADD,
+                com.mohamed.playstation.domain.model.MovementType.STOCK_IN,
+                com.mohamed.playstation.domain.model.MovementType.INITIAL -> {
+                    typeText = itemView.context.getString(R.string.movement_add)
+                    colorRes = R.color.status_active
+                }
+                com.mohamed.playstation.domain.model.MovementType.MANUAL_DEDUCT,
+                com.mohamed.playstation.domain.model.MovementType.STOCK_OUT -> {
                     typeText = itemView.context.getString(R.string.movement_withdraw_sale)
                     colorRes = R.color.status_error
                 }
-            } else {
-                typeText = itemView.context.getString(R.string.movement_adjustment)
-                colorRes = R.color.ps_blue_primary
+                else -> {
+                    typeText = itemView.context.getString(R.string.movement_adjustment)
+                    colorRes = R.color.ps_blue_primary
+                }
             }
 
             tvMovementDetail.text = "$typeText • $sign${item.quantityChange}"

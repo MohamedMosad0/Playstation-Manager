@@ -21,14 +21,26 @@ interface SettingsRepository {
     // PS4 Pricing
     val ps4HourPriceFlow: Flow<Double>
     suspend fun setPs4HourPrice(price: Double)
+    
+    @Deprecated("Legacy migration only")
     val ps4MultiplayerPriceFlow: Flow<Double>
+    @Deprecated("Legacy migration only")
     suspend fun setPs4MultiplayerPrice(price: Double)
+
+    val ps4MultiExtraFlow: Flow<Double>
+    suspend fun setPs4MultiExtra(price: Double)
 
     // PS5 Pricing
     val ps5HourPriceFlow: Flow<Double>
     suspend fun setPs5HourPrice(price: Double)
+    
+    @Deprecated("Legacy migration only")
     val ps5MultiplayerPriceFlow: Flow<Double>
+    @Deprecated("Legacy migration only")
     suspend fun setPs5MultiplayerPrice(price: Double)
+
+    val ps5MultiExtraFlow: Flow<Double>
+    suspend fun setPs5MultiExtra(price: Double)
 
     // Session Defaults
     val sessionModeFlow: Flow<String>

@@ -149,9 +149,11 @@ class SettingsFragment : Fragment() {
 
         // Pricing Inputs with Validation
         setupPriceInput(binding.etPs4HourPrice) { viewModel.setPs4HourPrice(it) }
-        setupPriceInput(binding.etPs4MultiHourPrice) { viewModel.setPs4MultiplayerPrice(it) }
+        setupPriceInput(binding.etPs4MultiExtra) { viewModel.setPs4MultiExtra(it) }
         setupPriceInput(binding.etPs5HourPrice) { viewModel.setPs5HourPrice(it) }
-        setupPriceInput(binding.etPs5MultiHourPrice) { viewModel.setPs5MultiplayerPrice(it) }
+        setupPriceInput(binding.etPs5MultiExtra) { viewModel.setPs5MultiExtra(it) }
+
+        // TODO(v1.8): Implement non-linear half-hour pricing support before exposing halfHourPrice to users.
 
         // Reminder Minutes with Validation
         binding.etReminderMinutes.addTextChangedListener(object : TextWatcher {
@@ -241,8 +243,8 @@ class SettingsFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.ps4MultiplayerPrice.collect { price ->
-                        updatePriceEditText(binding.etPs4MultiHourPrice, price)
+                    viewModel.ps4MultiExtra.collect { price ->
+                        updatePriceEditText(binding.etPs4MultiExtra, price)
                     }
                 }
                 launch {
@@ -251,8 +253,8 @@ class SettingsFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.ps5MultiplayerPrice.collect { price ->
-                        updatePriceEditText(binding.etPs5MultiHourPrice, price)
+                    viewModel.ps5MultiExtra.collect { price ->
+                        updatePriceEditText(binding.etPs5MultiExtra, price)
                     }
                 }
                 // Reminder
@@ -269,9 +271,9 @@ class SettingsFragment : Fragment() {
                 launch {
                     viewModel.validationErrors.collect { errors ->
                         binding.tilPs4HourPrice.error = errors.ps4HourError?.let { getString(it) }
-                        binding.tilPs4MultiHourPrice.error = errors.ps4MultiError?.let { getString(it) }
+                        binding.tilPs4MultiExtra.error = errors.ps4MultiError?.let { getString(it) }
                         binding.tilPs5HourPrice.error = errors.ps5HourError?.let { getString(it) }
-                        binding.tilPs5MultiHourPrice.error = errors.ps5MultiError?.let { getString(it) }
+                        binding.tilPs5MultiExtra.error = errors.ps5MultiError?.let { getString(it) }
                         binding.tilReminderMinutes.error = errors.reminderError?.let { getString(it) }
                     }
                 }
