@@ -459,4 +459,8 @@
     <string name="error_generating_pdf">حدث خطأ أثناء إنشاء ملف PDF</string>
     <string name="share_text">مشاركة نصية</string>
     <string name="share_pdf">مشاركة ملف PDF</string>
+    <string name="reports_empty_title">لا توجد بيانات لهذه الفترة</string>
+    <string name="reports_empty_subtitle">قم بتغيير الفترة أو أضف بيانات جديدة</string>
+    <string name="receipts_empty_subtitle">لا توجد إيصالات حتى الآن</string>
+    <string name="expenses_empty_subtitle">لا توجد مصروفات حتى الآن</string>
 </resources>

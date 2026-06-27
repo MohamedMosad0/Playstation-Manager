@@ -38,6 +38,7 @@ class SettingsFragment : Fragment() {
     lateinit var localeManager: LocaleManager
 
     private var isUpdatingUi = false
+    private var progressDialog: android.app.Dialog? = null
 
     private val exportLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         uri?.let {
@@ -51,58 +52,21 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        android.util.Log.d("SettingsAudit", "SettingsFragment.onCreate: savedInstanceState is ${if (savedInstanceState == null) "null" else "NOT null"}")
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        android.util.Log.d("SettingsAudit", "SettingsFragment.onCreateView")
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        android.util.Log.d("SettingsAudit", "SettingsFragment.onViewCreated: savedInstanceState is ${if (savedInstanceState == null) "null" else "NOT null"}")
-
-        binding.actvCurrency.setOnFocusChangeListener { v, hasFocus ->
-            android.util.Log.d("SettingsAudit", "[CURRENCY] Focus changed: $hasFocus, Popup showing: ${binding.actvCurrency.isPopupShowing}, Text: ${binding.actvCurrency.text}")
-        }
-
-        binding.switchDarkMode.setOnTouchListener { v, event ->
-            android.util.Log.d("SettingsAudit", "[TOUCH] switchDarkMode: Action=${event.action}, x=${event.x}, y=${event.y}")
-            false
-        }
-
-        binding.actvCurrency.setOnTouchListener { v, event ->
-            android.util.Log.d("SettingsAudit", "[TOUCH] actvCurrency: Action=${event.action}, x=${event.x}, y=${event.y}")
-            false
-        }
 
         setupAboutSection()
         setupListeners()
         observeData()
-    }
-
-    override fun onResume() {
-        android.util.Log.d("SettingsAudit", "SettingsFragment.onResume")
-        super.onResume()
-    }
-
-    override fun onDestroyView() {
-        android.util.Log.d("SettingsAudit", "SettingsFragment.onDestroyView")
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onDestroy() {
-        android.util.Log.d("SettingsAudit", "SettingsFragment.onDestroy")
-        super.onDestroy()
     }
 
     private fun setupAboutSection() {
@@ -155,8 +119,6 @@ class SettingsFragment : Fragment() {
         setupPriceInput(binding.etPs5HourPrice) { viewModel.setPs5HourPrice(it) }
         setupPriceInput(binding.etPs5MultiExtra) { viewModel.setPs5MultiExtra(it) }
 
-        // TODO(v1.8): Implement non-linear half-hour pricing support before exposing halfHourPrice to users.
-
         // Reminder Minutes with Validation
         binding.etReminderMinutes.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -198,6 +160,24 @@ class SettingsFragment : Fragment() {
         })
     }
 
+    private fun showLoadingDialog(messageRes: Int) {
+        if (progressDialog == null) {
+            val view = layoutInflater.inflate(R.layout.dialog_loading, null)
+            val tvMessage = view.findViewById<android.widget.TextView>(R.id.tvLoadingMessage)
+            tvMessage.setText(messageRes)
+            
+            progressDialog = MaterialAlertDialogBuilder(requireContext())
+                .setView(view)
+                .setCancelable(false)
+                .create()
+        }
+        progressDialog?.show()
+    }
+
+    private fun dismissLoadingDialog() {
+        progressDialog?.dismiss()
+        progressDialog = null
+    }
 
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -220,11 +200,9 @@ class SettingsFragment : Fragment() {
                         val currency = CurrencyList.getCurrencyByCode(code)
                         val displayName = "${getString(currency.displayNameRes)} (${currency.code})"
                         if (binding.actvCurrency.text.toString() != displayName) {
-                            android.util.Log.d("SettingsAudit", "[CURRENCY] setText starting: $displayName, Popup showing: ${binding.actvCurrency.isPopupShowing}")
                             isUpdatingUi = true
                             binding.actvCurrency.setText(displayName, false)
                             isUpdatingUi = false
-                            android.util.Log.d("SettingsAudit", "[CURRENCY] setText finished. Popup showing: ${binding.actvCurrency.isPopupShowing}")
                         }
                     }
                 }
@@ -285,21 +263,24 @@ class SettingsFragment : Fragment() {
                 launch {
                     viewModel.backupUiState.collect { state ->
                         when (state) {
-                            is BackupUiState.Idle -> { /* do nothing */ }
+                            is BackupUiState.Idle -> { dismissLoadingDialog() }
                             is BackupUiState.Loading -> {
-                                Toast.makeText(requireContext(), R.string.backup_loading, Toast.LENGTH_SHORT).show()
+                                showLoadingDialog(R.string.backup_loading)
                             }
                             is BackupUiState.Success -> {
+                                dismissLoadingDialog()
                                 Toast.makeText(requireContext(), R.string.backup_success, Toast.LENGTH_LONG).show()
                                 viewModel.resetBackupUiState()
                             }
                             is BackupUiState.RestoreSuccess -> {
+                                dismissLoadingDialog()
                                 Toast.makeText(requireContext(), R.string.restore_success, Toast.LENGTH_LONG).show()
                                 viewModel.resetBackupUiState()
                                 state.language?.let { localeManager.applyLanguage(it) }
                                 requireActivity().recreate()
                             }
                             is BackupUiState.Error -> {
+                                dismissLoadingDialog()
                                 Toast.makeText(requireContext(), state.message.asString(requireContext()), Toast.LENGTH_LONG).show()
                                 viewModel.resetBackupUiState()
                             }
@@ -366,5 +347,11 @@ class SettingsFragment : Fragment() {
     private fun executeRestore(uri: android.net.Uri) {
         val inputStream = requireContext().contentResolver.openInputStream(uri)
         viewModel.importBackup(uri, inputStream)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        dismissLoadingDialog()
+        _binding = null
     }
 }

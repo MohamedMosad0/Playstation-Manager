@@ -21,7 +21,7 @@
 
             <ImageView
                 style="@style/Widget.PlayStation.ScreenHeader.Logo"
-                android:src="@drawable/ic_ps_logo"
+                android:src="@drawable/ic_dashboard_header"
                 android:contentDescription="@null" />
 
             <TextView

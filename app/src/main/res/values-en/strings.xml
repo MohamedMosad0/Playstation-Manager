@@ -460,4 +460,8 @@
     <string name="error_generating_pdf">Error generating PDF file</string>
     <string name="share_text">Share as Text</string>
     <string name="share_pdf">Share as PDF</string>
+    <string name="reports_empty_title">No data for this period</string>
+    <string name="reports_empty_subtitle">Change the date range or add new data</string>
+    <string name="receipts_empty_subtitle">No receipts yet</string>
+    <string name="expenses_empty_subtitle">No expenses yet</string>
 </resources>

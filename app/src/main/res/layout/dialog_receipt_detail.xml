@@ -391,49 +391,66 @@
         </com.google.android.material.chip.ChipGroup>
 
         <LinearLayout
+            android:id="@+id/actionLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:orientation="horizontal"
-            android:weightSum="3"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/chipGroupPayment">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPrint"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/pdfProgressBar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:text="@string/print"
-                android:textColor="@color/ps_blue_light"
-                app:strokeColor="@color/ps_blue_light" />
+                android:layout_marginBottom="12dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:indicatorColor="@color/ps_blue_light"
+                tools:visibility="visible" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnShare"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:text="@string/share"
-                android:textColor="@color/ps_blue_light"
-                app:strokeColor="@color/ps_blue_light" />
+                android:orientation="horizontal"
+                android:weightSum="3">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnClose"
-                style="@style/Widget.Material3.Button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/ps_blue_primary"
-                android:text="@string/close"
-                android:textColor="@color/text_primary" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPrint"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/print"
+                    android:textColor="@color/ps_blue_light"
+                    app:strokeColor="@color/ps_blue_light" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShare"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:text="@string/share"
+                    android:textColor="@color/ps_blue_light"
+                    app:strokeColor="@color/ps_blue_light" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnClose"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/ps_blue_primary"
+                    android:text="@string/close"
+                    android:textColor="@color/text_primary" />
+
+            </LinearLayout>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -100,17 +100,19 @@ class ReceiptDetailDialog : DialogFragment() {
                         is PdfUiState.Loading -> {
                             binding.btnPrint.isEnabled = false
                             binding.btnShare.isEnabled = false
-                            // Optional: show a loading indicator if available in layout
+                            binding.pdfProgressBar.isVisible = true
                         }
                         is PdfUiState.Success -> {
                             binding.btnPrint.isEnabled = true
                             binding.btnShare.isEnabled = true
+                            binding.pdfProgressBar.isVisible = false
                             handlePdfSuccess(state.uri)
                             receiptViewModel.resetPdfState()
                         }
                         is PdfUiState.Error -> {
                             binding.btnPrint.isEnabled = true
                             binding.btnShare.isEnabled = true
+                            binding.pdfProgressBar.isVisible = false
                             MaterialAlertDialogBuilder(requireContext())
                                 .setTitle(R.string.error)
                                 .setMessage(state.message.asString(requireContext()))
@@ -122,6 +124,7 @@ class ReceiptDetailDialog : DialogFragment() {
                         is PdfUiState.Idle -> {
                             binding.btnPrint.isEnabled = true
                             binding.btnShare.isEnabled = true
+                            binding.pdfProgressBar.isVisible = false
                         }
                     }
                 }

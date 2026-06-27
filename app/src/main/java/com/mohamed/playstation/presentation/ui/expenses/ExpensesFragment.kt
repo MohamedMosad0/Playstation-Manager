@@ -68,7 +68,7 @@ class ExpensesFragment : Fragment() {
                 launch {
                     viewModel.expenses.collect { list ->
                         adapter.submitList(list)
-                        binding.tvEmpty.isVisible = list.isEmpty()
+                        binding.layoutEmpty.isVisible = list.isEmpty()
                         binding.rvExpenses.isVisible = list.isNotEmpty()
                     }
                 }

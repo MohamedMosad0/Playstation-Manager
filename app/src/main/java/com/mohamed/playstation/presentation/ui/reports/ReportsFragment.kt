@@ -198,10 +198,10 @@ class ReportsFragment : Fragment() {
 
         // Top Products
         if (state.topProducts.isEmpty()) {
-            binding.tvNoProducts.visibility = View.VISIBLE
+            binding.layoutEmpty.visibility = View.VISIBLE
             binding.rvTopProducts.visibility = View.GONE
         } else {
-            binding.tvNoProducts.visibility = View.GONE
+            binding.layoutEmpty.visibility = View.GONE
             binding.rvTopProducts.visibility = View.VISIBLE
             topProductsAdapter.submitList(state.topProducts)
         }
