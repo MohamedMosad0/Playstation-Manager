@@ -53,6 +53,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions ORDER BY startTime DESC")
     fun getAllSessions(): Flow<List<SessionEntity>>
 
+    @Query("SELECT * FROM sessions")
+    suspend fun getAllOnce(): List<SessionEntity>
+
     @Query("SELECT COUNT(*) FROM sessions WHERE status = 'active'")
     fun getActiveSessionsCount(): Flow<Int>
 

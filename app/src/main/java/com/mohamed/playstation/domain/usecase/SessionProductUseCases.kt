@@ -27,7 +27,7 @@ class SessionProductUseCases @Inject constructor(
                 com.mohamed.playstation.domain.model.SessionProductSummary(
                     sessionId = sessionId,
                     totalQuantity = sessionProducts.sumOf { it.quantitySold },
-                    totalAmount = sessionProducts.sumOf { it.getLineTotal() }
+                    totalAmount = SessionProduct.calculateTotalAmount(sessionProducts)
                 )
             }
         }

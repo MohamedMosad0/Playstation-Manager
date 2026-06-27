@@ -20,6 +20,9 @@ interface StockMovementDao {
     @Query("SELECT * FROM stock_movements ORDER BY timestamp DESC, id DESC")
     fun getAllMovements(): Flow<List<StockMovementEntity>>
 
+    @Query("SELECT * FROM stock_movements")
+    suspend fun getAllOnce(): List<StockMovementEntity>
+
     @Query("""
         SELECT sm.id,
                sm.inventoryItemId,

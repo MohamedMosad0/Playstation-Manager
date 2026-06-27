@@ -11,10 +11,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 
+import com.mohamed.playstation.core.backup.BackupManager
+import com.mohamed.playstation.presentation.ui.settings.BackupUiState
+import android.net.Uri
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.UiText
+import com.mohamed.playstation.core.backup.BackupResult
+import com.mohamed.playstation.domain.usecase.SessionUseCases
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val getSettingsFlowsUseCase: GetSettingsFlowsUseCase,
-    private val updateSettingsUseCase: UpdateSettingsUseCase
+    private val updateSettingsUseCase: UpdateSettingsUseCase,
+    private val backupManager: BackupManager,
+    private val sessionUseCases: SessionUseCases
 ) : ViewModel() {
 
     val darkMode: StateFlow<Boolean> = getSettingsFlowsUseCase.darkModeFlow
@@ -91,6 +100,9 @@ class SettingsViewModel @Inject constructor(
 
     private val _validationErrors = MutableStateFlow(ValidationErrors())
     val validationErrors: StateFlow<ValidationErrors> = _validationErrors.asStateFlow()
+
+    private val _backupUiState = MutableStateFlow<BackupUiState>(BackupUiState.Idle)
+    val backupUiState: StateFlow<BackupUiState> = _backupUiState.asStateFlow()
 
     data class CurrencyItem(val code: String, val displayResName: String)
 
@@ -186,5 +198,65 @@ class SettingsViewModel @Inject constructor(
 
     fun resetSettings() {
         viewModelScope.launch { updateSettingsUseCase.resetSettings() }
+    }
+
+    suspend fun hasActiveSessions(): Boolean {
+        return sessionUseCases.getActiveSessionsCount().first() > 0
+    }
+
+    fun exportBackup(uri: Uri) {
+        _backupUiState.value = BackupUiState.Loading
+        viewModelScope.launch {
+            when (val result = backupManager.exportBackup(uri)) {
+                is BackupResult.Success -> {
+                    _backupUiState.value = BackupUiState.Success
+                }
+                is BackupResult.Error -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.backup_failed))
+                }
+                else -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.backup_failed))
+                }
+            }
+        }
+    }
+
+    fun importBackup(uri: Uri, inputStream: java.io.InputStream?) {
+        if (inputStream == null) {
+            _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.restore_failed))
+            return
+        }
+        _backupUiState.value = BackupUiState.Loading
+        viewModelScope.launch {
+            when (val result = backupManager.importBackup(inputStream)) {
+                is BackupResult.Success -> {
+                    _backupUiState.value = BackupUiState.RestoreSuccess(
+                        language = result.restoredLanguage
+                    )
+                }
+                is BackupResult.PartialSuccess -> {
+                    _backupUiState.value = BackupUiState.Error(result.warning) // Treat partial as error/warning message
+                }
+                is BackupResult.InvalidFile -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.invalid_backup_file))
+                }
+                is BackupResult.InvalidChecksum -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.checksum_invalid))
+                }
+                is BackupResult.UnsupportedVersion -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.unsupported_backup_version))
+                }
+                is BackupResult.WrongApplication -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.restore_failed))
+                }
+                is BackupResult.Error -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.restore_failed))
+                }
+            }
+        }
+    }
+
+    fun resetBackupUiState() {
+        _backupUiState.value = BackupUiState.Idle
     }
 }

@@ -16,11 +16,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.BuildConfig
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.localization.LocaleManager
 import com.mohamed.playstation.databinding.FragmentSettingsBinding
 import com.mohamed.playstation.domain.model.CurrencyList
 import com.mohamed.playstation.presentation.viewmodel.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.activity.result.contract.ActivityResultContracts
+import com.mohamed.playstation.presentation.ui.settings.BackupUiState
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -30,7 +34,22 @@ class SettingsFragment : Fragment() {
 
     private val viewModel: SettingsViewModel by viewModels()
 
+    @Inject
+    lateinit var localeManager: LocaleManager
+
     private var isUpdatingUi = false
+
+    private val exportLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        uri?.let {
+            viewModel.exportBackup(it)
+        }
+    }
+
+    private val importLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let {
+            showRestoreConfirmation(it)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         android.util.Log.d("SettingsAudit", "SettingsFragment.onCreate: savedInstanceState is ${if (savedInstanceState == null) "null" else "NOT null"}")
@@ -50,12 +69,6 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         android.util.Log.d("SettingsAudit", "SettingsFragment.onViewCreated: savedInstanceState is ${if (savedInstanceState == null) "null" else "NOT null"}")
-
-        view.post {
-            logViewBounds("switchDarkMode", binding.switchDarkMode)
-            logViewBounds("actvCurrency", binding.actvCurrency)
-            logViewBounds("tilCurrencyContainer", binding.actvCurrency.parent.parent as View)
-        }
 
         binding.actvCurrency.setOnFocusChangeListener { v, hasFocus ->
             android.util.Log.d("SettingsAudit", "[CURRENCY] Focus changed: $hasFocus, Popup showing: ${binding.actvCurrency.isPopupShowing}, Text: ${binding.actvCurrency.text}")
@@ -90,12 +103,6 @@ class SettingsFragment : Fragment() {
     override fun onDestroy() {
         android.util.Log.d("SettingsAudit", "SettingsFragment.onDestroy")
         super.onDestroy()
-    }
-
-    private fun logViewBounds(name: String, view: View) {
-        val location = IntArray(2)
-        view.getLocationOnScreen(location)
-        android.util.Log.d("SettingsAudit", "View $name: x=${location[0]}, y=${location[1]}, w=${view.width}, h=${view.height}")
     }
 
     private fun setupAboutSection() {
@@ -138,12 +145,7 @@ class SettingsFragment : Fragment() {
             if (!isUpdatingUi) {
                 val selectedCode = languageItems[position].code
                 viewModel.setLanguage(selectedCode)
-                val localeList = if (selectedCode == "system") {
-                    androidx.core.os.LocaleListCompat.getEmptyLocaleList()
-                } else {
-                    androidx.core.os.LocaleListCompat.forLanguageTags(selectedCode)
-                }
-                androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(localeList)
+                localeManager.applyLanguage(selectedCode)
             }
         }
 
@@ -167,12 +169,14 @@ class SettingsFragment : Fragment() {
             }
         })
 
-        // Data Placeholders
+        // Backup & Restore
         binding.btnBackup.setOnClickListener {
-            Toast.makeText(requireContext(), "Backup feature coming soon", Toast.LENGTH_SHORT).show()
+            val sdf = java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm", java.util.Locale.ENGLISH)
+            val fileName = "playstation_backup_${sdf.format(java.util.Date())}.json"
+            exportLauncher.launch(fileName)
         }
         binding.btnRestore.setOnClickListener {
-            Toast.makeText(requireContext(), "Restore feature coming soon", Toast.LENGTH_SHORT).show()
+            importLauncher.launch(arrayOf("application/json", "*/*"))
         }
 
         // Reset
@@ -277,6 +281,31 @@ class SettingsFragment : Fragment() {
                         binding.tilReminderMinutes.error = errors.reminderError?.let { getString(it) }
                     }
                 }
+                // Backup State
+                launch {
+                    viewModel.backupUiState.collect { state ->
+                        when (state) {
+                            is BackupUiState.Idle -> { /* do nothing */ }
+                            is BackupUiState.Loading -> {
+                                Toast.makeText(requireContext(), R.string.backup_loading, Toast.LENGTH_SHORT).show()
+                            }
+                            is BackupUiState.Success -> {
+                                Toast.makeText(requireContext(), R.string.backup_success, Toast.LENGTH_LONG).show()
+                                viewModel.resetBackupUiState()
+                            }
+                            is BackupUiState.RestoreSuccess -> {
+                                Toast.makeText(requireContext(), R.string.restore_success, Toast.LENGTH_LONG).show()
+                                viewModel.resetBackupUiState()
+                                state.language?.let { localeManager.applyLanguage(it) }
+                                requireActivity().recreate()
+                            }
+                            is BackupUiState.Error -> {
+                                Toast.makeText(requireContext(), state.message.asString(requireContext()), Toast.LENGTH_LONG).show()
+                                viewModel.resetBackupUiState()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -308,5 +337,34 @@ class SettingsFragment : Fragment() {
                 Toast.makeText(requireContext(), R.string.settings_reset_success, Toast.LENGTH_SHORT).show()
             }
             .show()
+    }
+
+    private fun showRestoreConfirmation(uri: android.net.Uri) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (viewModel.hasActiveSessions()) {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.active_sessions_warning)
+                    .setMessage(R.string.restore_confirmation)
+                    .setPositiveButton(R.string.restore_backup_button) { _, _ ->
+                        executeRestore(uri)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            } else {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.restore)
+                    .setMessage(R.string.restore_confirmation)
+                    .setPositiveButton(R.string.restore_backup_button) { _, _ ->
+                        executeRestore(uri)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            }
+        }
+    }
+
+    private fun executeRestore(uri: android.net.Uri) {
+        val inputStream = requireContext().contentResolver.openInputStream(uri)
+        viewModel.importBackup(uri, inputStream)
     }
 }

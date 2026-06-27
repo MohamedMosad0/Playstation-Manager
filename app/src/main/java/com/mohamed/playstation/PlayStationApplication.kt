@@ -1,7 +1,9 @@
 package com.mohamed.playstation
 
 import android.app.Application
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.mohamed.playstation.core.localization.LocaleManager
 import com.mohamed.playstation.core.notifications.SessionAlarmScheduler
 import com.mohamed.playstation.core.notifications.SessionNotificationHelper
 import com.mohamed.playstation.data.local.SettingsManager
@@ -12,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,11 +32,15 @@ class PlayStationApplication : Application() {
     @Inject
     lateinit var settingsManager: SettingsManager
 
+    @Inject
+    lateinit var localeManager: LocaleManager
+
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private fun applyDarkMode(isDark: Boolean, source: String) {
         val mode = if (isDark) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        android.util.Log.d("SettingsAudit", "[SET_NIGHT_MODE] Source: $source, Thread: ${Thread.currentThread().name}, Timestamp: ${System.currentTimeMillis()}, Requested: $mode, CurrentUI: ${resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK}")
+        Timber.tag("SettingsAudit")
+            .d("[SET_NIGHT_MODE] Source: $source, Thread: ${Thread.currentThread().name}, Timestamp: ${System.currentTimeMillis()}, Requested: $mode, CurrentUI: ${resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK}")
         AppCompatDelegate.setDefaultNightMode(mode)
     }
 
@@ -49,6 +54,13 @@ class PlayStationApplication : Application() {
         applicationScope.launch {
             settingsRepository.darkModeFlow.collect { isDark ->
                 applyDarkMode(isDark, "Application.collect")
+            }
+        }
+
+        // Synchronize locale on startup
+        applicationScope.launch {
+            settingsManager.languageFlow.first().let { lang ->
+                localeManager.applyLanguage(lang)
             }
         }
 

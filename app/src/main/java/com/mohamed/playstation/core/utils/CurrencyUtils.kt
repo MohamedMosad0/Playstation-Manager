@@ -54,8 +54,7 @@ object CurrencyUtils {
      * @return الإجمالي
      */
     fun calculateTotal(durationMinutes: Long, pricePerHour: Double): Double {
-        val hours = durationMinutes / 60.0
-        return hours * pricePerHour
+        return com.mohamed.playstation.core.utils.SessionPricing.calculatePlayAmount(durationMinutes, pricePerHour)
     }
 
     /**

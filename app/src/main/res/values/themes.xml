@@ -34,6 +34,63 @@
     <!-- Main Application Theme -->
     <style name="Theme.PlayStation" parent="Base.Theme.PlayStation" />
 
+    <!-- Unified Screen Header Style -->
+    <style name="Widget.PlayStation.ScreenHeader" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="Widget.PlayStation.ScreenHeader.Logo" parent="">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:tint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.PlayStation.ScreenHeader.Title" parent="TextAppearance.PlayStation.Headline">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Standardized Empty State Style -->
+    <style name="Widget.PlayStation.EmptyStateContainer" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">32dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.EmptyStateIcon" parent="">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:alpha">0.4</item>
+        <item name="android:tint">@color/text_secondary</item>
+    </style>
+
+    <style name="Widget.PlayStation.EmptyStateTitle" parent="TextAppearance.PlayStation.Title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="Widget.PlayStation.EmptyStateSubtitle" parent="TextAppearance.PlayStation.Body">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
     <!-- Splash Screen Theme -->
     <style name="Theme.PlayStation.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/background_dark</item>

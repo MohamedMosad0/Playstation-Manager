@@ -445,5 +445,19 @@
     <string name="product_quantity_format">%1$s × %2$d</string>
     <string name="top_product_revenue_format">💰 %1$s %2$s</string>
     <string name="movement_order_indicator">Order</string>
-</resources>
 
+    <!-- Backup and Restore -->
+    <string name="backup_failed">Backup Failed</string>
+    <string name="restore_failed">Restore Failed</string>
+    <string name="restore_backup_button">Restore Backup</string>
+    <string name="active_sessions_warning">Warning: Active Sessions</string>
+    <string name="restore_confirmation">All current data will be permanently replaced by the selected backup, including:\n• Products &amp; Inventory\n• Sessions &amp; Receipts\n• Expenses &amp; Reports\n• Settings &amp; Preferences\n\nThis action cannot be undone.</string>
+    <string name="invalid_backup_file">Invalid Backup File</string>
+    <string name="checksum_invalid">File Validation Failed (Checksum Invalid)</string>
+    <string name="unsupported_backup_version">Unsupported Backup Version</string>
+    <string name="backup_settings_restore_warning">Data restored successfully, but some settings could not be restored.</string>
+    <string name="backup_loading">Processing Backup...</string>
+    <string name="error_generating_pdf">Error generating PDF file</string>
+    <string name="share_text">Share as Text</string>
+    <string name="share_pdf">Share as PDF</string>
+</resources>

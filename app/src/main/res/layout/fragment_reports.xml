@@ -9,18 +9,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <!-- Title -->
-        <TextView
-            style="@style/TextAppearance.PlayStation.Headline"
-            android:layout_width="wrap_content"
+        <!-- Unified Header -->
+        <LinearLayout
+            style="@style/Widget.PlayStation.ScreenHeader">
+
+            <ImageView
+                style="@style/Widget.PlayStation.ScreenHeader.Logo"
+                android:src="@drawable/ic_ps_logo"
+                android:contentDescription="@null" />
+
+            <TextView
+                style="@style/Widget.PlayStation.ScreenHeader.Title"
+                android:text="@string/reports" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="@string/reports" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <!-- Date Range Selector -->
+            <!-- Date Range Selector -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardDateRange"
             style="@style/Widget.PlayStation.Card"

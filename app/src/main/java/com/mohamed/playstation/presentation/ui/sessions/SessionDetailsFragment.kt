@@ -203,7 +203,7 @@ class SessionDetailsFragment : Fragment() {
         updateTimer(session, data.currentTick)
 
         val playCost = viewModel.playCostForSession(session, data.currentTick, data.pricing)
-        val productCost = data.products.sumOf { it.getLineTotal() }
+        val productCost = com.mohamed.playstation.domain.model.SessionProduct.calculateTotalAmount(data.products)
         val totalCost = playCost + productCost
 
         productAdapter.updateCurrency(data.currency)

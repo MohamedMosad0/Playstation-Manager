@@ -2,29 +2,20 @@ package com.mohamed.playstation.presentation.ui.receipts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.mohamed.playstation.R
-import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.ItemReceiptBinding
-import com.mohamed.playstation.domain.model.Receipt
-import com.mohamed.playstation.domain.model.SessionProductSummary
-import java.util.Locale
+import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptListItemUiModel
 
 /**
- * Adapter لعرض قائمة الفواتير
+ * Adapter for displaying a list of receipts.
+ * Consumes pre-formatted [ReceiptListItemUiModel] to ensure consistency and zero logic duplication.
  */
 class ReceiptAdapter(
-    private val onReceiptClick: (Receipt) -> Unit
-) : ListAdapter<Receipt, ReceiptAdapter.ReceiptViewHolder>(ReceiptDiffCallback()) {
-
-    private var productSummaries: Map<Long, SessionProductSummary> = emptyMap()
-
-    fun submitProductSummaries(summaries: Map<Long, SessionProductSummary>) {
-        productSummaries = summaries
-        notifyItemRangeChanged(0, itemCount)
-    }
+    private val onReceiptClick: (Long) -> Unit
+) : ListAdapter<ReceiptListItemUiModel, ReceiptAdapter.ReceiptViewHolder>(ReceiptDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReceiptViewHolder {
         val binding = ItemReceiptBinding.inflate(
@@ -43,65 +34,30 @@ class ReceiptAdapter(
         private val binding: ItemReceiptBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(receipt: Receipt) {
+        fun bind(model: ReceiptListItemUiModel) {
             with(binding) {
-                // Receipt Number
-                tvReceiptNumber.text = root.context.getString(
-                    R.string.receipt_number,
-                    receipt.receiptNumber
-                )
+                tvReceiptNumber.text = model.receiptNumber
+                tvDeviceInfo.text = model.deviceInfo
+                tvDuration.text = model.durationAndRange
+                tvTotal.text = model.totalAmount
+                chipPaymentMethod.text = model.paymentMethod
+                
+                tvProductsSummary.isVisible = model.hasProducts
+                tvProductsSummary.text = model.productsSummary
 
-                // Device Info
-                val sessionTypeText = when (receipt.sessionType) {
-                    "single" -> root.context.getString(R.string.single_player)
-                    "multi" -> root.context.getString(R.string.multiplayer)
-                    else -> receipt.sessionType
-                }
-
-                tvDeviceInfo.text = "${receipt.deviceType} #${receipt.deviceNumber} • $sessionTypeText"
-
-                // Duration and Time
-                val timeRange = "${receipt.getFormattedStartTime()} - ${receipt.getFormattedEndTime()}"
-                tvDuration.text = "${receipt.getFormattedDuration()} • $timeRange"
-
-                // Total Amount
-                val currencySymbol = CurrencyUtils.getCurrencySymbol(binding.root.context, receipt.currencyCode)
-                // استخدم Locale عند التنسيق لتجنب lint warnings
-                tvTotal.text = com.mohamed.playstation.core.utils.CurrencyFormatter.formatCurrency(receipt.totalAmount, currencySymbol)
-
-                // Payment Method
-                chipPaymentMethod.text = when (receipt.paymentMethod) {
-                    "cash" -> root.context.getString(R.string.cash)
-                    "card" -> root.context.getString(R.string.card)
-                    else -> receipt.paymentMethod
-                }
-
-                val summary = productSummaries[receipt.sessionId]
-                if (summary != null && summary.totalQuantity > 0) {
-                    tvProductsSummary.text = root.context.getString(
-                        R.string.receipt_products_summary,
-                        summary.totalQuantity,
-                        CurrencyUtils.formatAmount(binding.root.context, summary.totalAmount, receipt.currencyCode)
-                    )
-                    tvProductsSummary.visibility = android.view.View.VISIBLE
-                } else {
-                    tvProductsSummary.visibility = android.view.View.GONE
-                }
-
-                // Click listener
                 root.setOnClickListener {
-                    onReceiptClick(receipt)
+                    onReceiptClick(model.id)
                 }
             }
         }
     }
 
-    private class ReceiptDiffCallback : DiffUtil.ItemCallback<Receipt>() {
-        override fun areItemsTheSame(oldItem: Receipt, newItem: Receipt): Boolean {
+    private class ReceiptDiffCallback : DiffUtil.ItemCallback<ReceiptListItemUiModel>() {
+        override fun areItemsTheSame(oldItem: ReceiptListItemUiModel, newItem: ReceiptListItemUiModel): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Receipt, newItem: Receipt): Boolean {
+        override fun areContentsTheSame(oldItem: ReceiptListItemUiModel, newItem: ReceiptListItemUiModel): Boolean {
             return oldItem == newItem
         }
     }

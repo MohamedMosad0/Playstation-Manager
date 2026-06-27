@@ -27,6 +27,9 @@ interface SessionProductDao {
     @Query("SELECT * FROM session_products")
     fun getAllSessionProducts(): Flow<List<SessionProductEntity>>
 
+    @Query("SELECT * FROM session_products")
+    suspend fun getAllOnce(): List<SessionProductEntity>
+
     @Query("SELECT * FROM session_products WHERE inventoryItemId = :inventoryItemId")
     fun getProductsByInventoryItemId(inventoryItemId: Long): Flow<List<SessionProductEntity>>
 }

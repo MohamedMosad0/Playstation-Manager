@@ -9,8 +9,11 @@ import com.mohamed.playstation.domain.model.Expense
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.dashboard.ChartPoint
 import com.mohamed.playstation.domain.model.dashboard.DashboardData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -30,17 +33,17 @@ class DashboardRepositoryImpl @Inject constructor(
         val (startOf7Days, _) = DateUtils.last7DaysRange()
 
         val dailyFlow = combine(
-            receiptRepository.getTodayTotalRevenue(),
-            expenseRepository.getTotalExpensesInRange(startOfDay, endOfDay),
-            sessionRepository.getTodaySessions(),
-            inventoryRepository.getAllActiveItems()
+            receiptRepository.getTodayTotalRevenue().distinctUntilChanged(),
+            expenseRepository.getTotalExpensesInRange(startOfDay, endOfDay).distinctUntilChanged(),
+            sessionRepository.getTodaySessions().distinctUntilChanged(),
+            inventoryRepository.getAllActiveItems().distinctUntilChanged()
         ) { todayRevenue, todayExpenses, todaySessions, inventoryProducts ->
-            DailyMetrics(todayRevenue, todayExpenses ?: 0.0, todaySessions, inventoryProducts)
+            DailyMetrics(todayRevenue, todayExpenses, todaySessions, inventoryProducts)
         }
 
         val chartFlow = combine(
-            receiptRepository.getReceiptsInRange(startOf7Days, endOfDay),
-            expenseRepository.getExpensesInRange(startOf7Days, endOfDay)
+            receiptRepository.getReceiptsInRange(startOf7Days, endOfDay).distinctUntilChanged(),
+            expenseRepository.getExpensesInRange(startOf7Days, endOfDay).distinctUntilChanged()
         ) { recentReceipts, recentExpenses ->
             ChartMetrics(recentReceipts, recentExpenses)
         }
@@ -60,22 +63,29 @@ class DashboardRepositoryImpl @Inject constructor(
                 recentSessions = daily.todaySessions.sortedByDescending { it.startTime }.take(5),
                 recentExpenses = todayExpensesList.sortedByDescending { it.expenseDate }.take(5)
             )
-        }
+        }.flowOn(Dispatchers.Default)
+    }
+
+    private val dateFormatter = ThreadLocal.withInitial {
+        SimpleDateFormat("dd/MM", Locale.getDefault())
     }
 
     private fun buildRevenueChartData(receipts: List<Receipt>): List<ChartPoint> {
-        val dateFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
         val last7DaysMap = linkedMapOf<String, Float>()
 
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, -6)
         for (i in 0..6) {
-            last7DaysMap[dateFormat.format(calendar.time)] = 0f
+            @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+            last7DaysMap[
+                dateFormatter.get().format(calendar.time)
+            ] = 0f
+
             calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
 
         for (receipt in receipts) {
-            val dateStr = dateFormat.format(receipt.createdAt)
+            val dateStr = dateFormatter.get()!!.format(receipt.createdAt)
             if (last7DaysMap.containsKey(dateStr)) {
                 last7DaysMap[dateStr] = last7DaysMap[dateStr]!! + receipt.totalAmount.toFloat()
             }

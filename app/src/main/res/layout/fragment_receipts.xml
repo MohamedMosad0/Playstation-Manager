@@ -6,7 +6,25 @@
     android:layout_height="match_parent"
     android:background="@color/background_dark">
 
-    <!-- Header -->
+    <!-- Unified Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        style="@style/Widget.PlayStation.ScreenHeader"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            style="@style/Widget.PlayStation.ScreenHeader.Logo"
+            android:src="@drawable/ic_ps_logo"
+            android:contentDescription="@null" />
+
+        <TextView
+            style="@style/Widget.PlayStation.ScreenHeader.Title"
+            android:text="@string/receipts" />
+    </LinearLayout>
+
+    <!-- Header Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/headerCard"
         android:layout_width="0dp"
@@ -17,7 +35,7 @@
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

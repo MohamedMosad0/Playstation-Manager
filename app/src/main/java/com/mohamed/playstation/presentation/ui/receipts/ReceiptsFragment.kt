@@ -34,7 +34,6 @@ class ReceiptsFragment : Fragment() {
     private lateinit var receiptAdapter: ReceiptAdapter
 
     private val _selectedTab = MutableStateFlow(0)
-    private var latestProductSummaries: Map<Long, SessionProductSummary> = emptyMap()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,12 +53,11 @@ class ReceiptsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        receiptAdapter = ReceiptAdapter { receipt ->
-            showReceiptDetail(receipt)
+        receiptAdapter = ReceiptAdapter { receiptId ->
+            showReceiptDetail(receiptId)
         }
 
         binding.rvReceipts.adapter = receiptAdapter
-        receiptAdapter.submitProductSummaries(latestProductSummaries)
     }
 
     private fun setupTabs() {
@@ -93,27 +91,19 @@ class ReceiptsFragment : Fragment() {
                 }
 
                 launch {
-                    viewModel.productSummaries.collect { summaries ->
-                        latestProductSummaries = summaries
-                        receiptAdapter.submitProductSummaries(summaries)
-                    }
-                }
-
-                // Single reactive collector — switches source on tab change via flatMapLatest
-                launch {
-                    _selectedTab
-                        .flatMapLatest { tab ->
-                            if (tab == 0) viewModel.todayReceipts else viewModel.allReceipts
-                        }
-                        .collect { state ->
-                            handleUiState(state)
+                    combine(
+                        _selectedTab.flatMapLatest { tab -> if (tab == 0) viewModel.todayReceipts else viewModel.allReceipts },
+                        viewModel.productSummaries
+                    ) { state, summaries -> state to summaries }
+                        .collect { (state, summaries) ->
+                            handleUiState(state, summaries)
                         }
                 }
             }
         }
     }
 
-    private fun handleUiState(state: UiState<List<Receipt>>) {
+    private fun handleUiState(state: UiState<List<Receipt>>, summaries: Map<Long, SessionProductSummary>) {
         when (state) {
             is UiState.Loading -> {
                 binding.progressBar.isVisible = true
@@ -125,7 +115,15 @@ class ReceiptsFragment : Fragment() {
                 binding.progressBar.isVisible = false
                 binding.emptyState.isVisible = false
                 binding.rvReceipts.isVisible = true
-                receiptAdapter.submitList(state.data)
+                
+                val uiModels = state.data.map { receipt ->
+                    com.mohamed.playstation.presentation.ui.receipts.mapper.ReceiptDisplayMapper.mapToListItem(
+                        requireContext(),
+                        receipt,
+                        summaries[receipt.sessionId]
+                    )
+                }
+                receiptAdapter.submitList(uiModels)
             }
 
             is UiState.Empty -> {
@@ -143,8 +141,8 @@ class ReceiptsFragment : Fragment() {
         }
     }
 
-    private fun showReceiptDetail(receipt: Receipt) {
-        val dialog = ReceiptDetailDialog.newInstance(receiptId = receipt.id)
+    private fun showReceiptDetail(receiptId: Long) {
+        val dialog = ReceiptDetailDialog.newInstance(receiptId = receiptId)
         dialog.show(childFragmentManager, "ReceiptDetailDialog")
     }
 

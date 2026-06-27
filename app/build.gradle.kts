@@ -4,6 +4,7 @@ plugins {
     id("com.google.dagger.hilt.android")
 
     kotlin("kapt")
+    kotlin("plugin.serialization")
 
     id("com.google.devtools.ksp") // لRoom فقط
 }
@@ -18,6 +19,8 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
+        
+        buildConfigField("int", "DB_VERSION", "1")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -101,4 +104,7 @@ dependencies {
 
     // MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 }

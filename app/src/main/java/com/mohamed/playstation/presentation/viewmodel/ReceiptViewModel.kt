@@ -10,9 +10,15 @@ import com.mohamed.playstation.domain.model.SessionProductSummary
 import com.mohamed.playstation.domain.usecase.ReceiptUseCases
 import com.mohamed.playstation.domain.usecase.SessionProductUseCases
 import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.ui.receipts.state.PdfUiState
+import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptUiModel
+import com.mohamed.playstation.core.pdf.ReceiptPdfGenerator
+import com.mohamed.playstation.core.pdf.mapper.ReceiptPdfMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -23,7 +29,8 @@ import javax.inject.Inject
 class ReceiptViewModel @Inject constructor(
     private val receiptUseCases: ReceiptUseCases,
     private val sessionProductUseCases: SessionProductUseCases,
-    private val settingsManager: SettingsManager
+    private val settingsManager: SettingsManager,
+    private val pdfGenerator: ReceiptPdfGenerator
 ) : ViewModel() {
 
     // كل الفواتير
@@ -46,6 +53,10 @@ class ReceiptViewModel @Inject constructor(
     // العملة من الإعدادات — reactive من DataStore
     val currency: StateFlow<String> = settingsManager.currencyFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_CURRENCY)
+
+    // PDF UI State
+    private val _pdfUiState = MutableStateFlow<PdfUiState>(PdfUiState.Idle)
+    val pdfUiState: StateFlow<PdfUiState> = _pdfUiState.asStateFlow()
 
     init {
         loadAllReceipts()
@@ -134,6 +145,39 @@ class ReceiptViewModel @Inject constructor(
                 Timber.e(e, "Error deleting receipt")
             }
         }
+    }
+
+    /**
+     * Generates a PDF for the given receipt UI model.
+     */
+    fun generateReceiptPdf(uiModel: ReceiptUiModel, appName: String, footerMessage: String) {
+        if (_pdfUiState.value is PdfUiState.Loading) return
+        
+        viewModelScope.launch {
+            _pdfUiState.value = PdfUiState.Loading
+            try {
+                val uri = withContext(Dispatchers.IO) {
+                    val pdfModel = ReceiptPdfMapper.mapToPdfModel(uiModel, appName, footerMessage)
+                    pdfGenerator.generate(pdfModel)
+                }
+                
+                if (uri != null) {
+                    _pdfUiState.value = PdfUiState.Success(uri)
+                } else {
+                    _pdfUiState.value = PdfUiState.Error(com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_generating_pdf))
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Error generating PDF")
+                _pdfUiState.value = PdfUiState.Error(com.mohamed.playstation.core.utils.UiText.DynamicString(e.message ?: "Unknown error"))
+            }
+        }
+    }
+
+    /**
+     * Resets the PDF UI state to Idle.
+     */
+    fun resetPdfState() {
+        _pdfUiState.value = PdfUiState.Idle
     }
 
     // ---------------------------

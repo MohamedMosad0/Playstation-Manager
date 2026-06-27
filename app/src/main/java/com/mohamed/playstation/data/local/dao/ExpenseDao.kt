@@ -22,6 +22,9 @@ interface ExpenseDao {
     @Query("SELECT * FROM expenses ORDER BY expenseDate DESC, id DESC")
     fun getAllExpenses(): Flow<List<ExpenseEntity>>
 
+    @Query("SELECT * FROM expenses")
+    suspend fun getAllOnce(): List<ExpenseEntity>
+
     @Query("SELECT * FROM expenses WHERE expenseDate >= :startTime AND expenseDate < :endTime ORDER BY expenseDate DESC, id DESC")
     fun getExpensesInRange(startTime: Long, endTime: Long): Flow<List<ExpenseEntity>>
 

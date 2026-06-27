@@ -18,6 +18,8 @@ data class ReportsUiState(
     val productProfit: Double = 0.0,
     val netProfit: Double = 0.0,
     val totalExpenses: Double = 0.0,
+    val totalDiscounts: Double = 0.0,
+    val totalTaxes: Double = 0.0,
     val totalSessions: Int = 0,
     val avgSessionDurationMinutes: Long = 0L,
     

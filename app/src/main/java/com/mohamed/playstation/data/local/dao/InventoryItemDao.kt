@@ -18,6 +18,15 @@ interface InventoryItemDao {
     @Query("SELECT * FROM inventory_items WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): InventoryItemEntity?
 
+    @Query("SELECT * FROM inventory_items")
+    fun getAllInventoryItems(): Flow<List<InventoryItemEntity>>
+
+    @Query("SELECT * FROM inventory_items")
+    suspend fun getAllOnce(): List<InventoryItemEntity>
+
+    @Query("SELECT * FROM inventory_items WHERE isActive = 1")
+    fun getActiveInventoryItems(): Flow<List<InventoryItemEntity>>
+
     @Query("SELECT * FROM inventory_items WHERE isActive = 1 ORDER BY name")
     fun getAllActiveItems(): Flow<List<InventoryItemEntity>>
 

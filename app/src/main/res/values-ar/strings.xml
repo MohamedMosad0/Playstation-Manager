@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App Name -->
     <string name="app_name">بلايستيشن</string>
@@ -444,5 +444,19 @@
     <string name="product_quantity_format">%1$s × %2$d</string>
     <string name="top_product_revenue_format">💰 %1$s %2$s</string>
     <string name="movement_order_indicator">طلب</string>
-</resources>
 
+    <!-- Backup and Restore -->
+    <string name="backup_failed">فشل النسخ الاحتياطي</string>
+    <string name="restore_failed">فشل استعادة النسخة الاحتياطية</string>
+    <string name="restore_backup_button">استعادة النسخة الاحتياطية</string>
+    <string name="active_sessions_warning">تحذير: جلسات نشطة</string>
+    <string name="restore_confirmation">سيتم استبدال جميع البيانات الحالية نهائيًا بالبيانات الموجودة في النسخة الاحتياطية المحددة، بما في ذلك:\n• المنتجات والمخزون\n• الجلسات والفواتير\n• المصروفات والتقارير\n• الإعدادات والتفضيلات\n\nلا يمكن التراجع عن هذه العملية.</string>
+    <string name="invalid_backup_file">ملف نسخة احتياطية غير صالح</string>
+    <string name="checksum_invalid">فشل التحقق من صحة الملف (Checksum Invalid)</string>
+    <string name="unsupported_backup_version">إصدار النسخة الاحتياطية غير مدعوم</string>
+    <string name="backup_settings_restore_warning">تمت استعادة البيانات بنجاح، ولكن تعذر استعادة بعض الإعدادات.</string>
+    <string name="backup_loading">جاري معالجة النسخة الاحتياطية...</string>
+    <string name="error_generating_pdf">حدث خطأ أثناء إنشاء ملف PDF</string>
+    <string name="share_text">مشاركة نصية</string>
+    <string name="share_pdf">مشاركة ملف PDF</string>
+</resources>

@@ -32,13 +32,16 @@ object DatabaseModule {
     fun provideAppDatabase(
         @ApplicationContext context: Context
     ): AppDatabase {
+        // NOTE:
+        // Database schema was intentionally squashed to version 1 before production release.
+        // Existing development databases created with older schema versions (2-8)
+        // are unsupported and must be cleared or the app reinstalled.
+        // Never reintroduce migrations for pre-release development databases.
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
             AppConstants.DATABASE_NAME
-        )
-            .fallbackToDestructiveMigrationFrom(1, 2, 3, 4, 5, 6)
-            .build()
+        ).build()
     }
 
     /**

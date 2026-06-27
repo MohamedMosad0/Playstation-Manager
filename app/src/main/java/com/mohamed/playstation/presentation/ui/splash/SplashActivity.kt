@@ -120,7 +120,7 @@ class SplashActivity : AppCompatActivity() {
      */
     private fun navigateToMainAfterDelay() {
         lifecycleScope.launch {
-            delay(4000) // 2.5 seconds
+            delay(900)
 
             // Fade out animation before navigation
             binding.root.animate()

@@ -20,4 +20,10 @@ data class SessionProduct(
     fun getLineTotal(): Double = sellPriceSnapshot * quantitySold
     fun getLineCost(): Double = costSnapshot * quantitySold
     fun getLineProfit(): Double = getLineTotal() - getLineCost()
+
+    companion object {
+        fun calculateTotalAmount(products: List<SessionProduct>): Double {
+            return products.sumOf { it.getLineTotal() }
+        }
+    }
 }

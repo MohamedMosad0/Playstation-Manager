@@ -5,12 +5,30 @@
     android:layout_height="match_parent"
     android:background="?android:colorBackground">
 
+    <!-- Unified Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        style="@style/Widget.PlayStation.ScreenHeader"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            style="@style/Widget.PlayStation.ScreenHeader.Logo"
+            android:src="@drawable/ic_ps_logo"
+            android:contentDescription="@null" />
+
+        <TextView
+            style="@style/Widget.PlayStation.ScreenHeader.Title"
+            android:text="@string/inventory" />
+    </LinearLayout>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/bg_segmented_control"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorGravity="stretch"
@@ -19,7 +37,7 @@
         app:tabSelectedTextColor="?attr/colorOnPrimary"
         app:tabTextColor="?attr/colorOnSurfaceVariant"
         app:tabTextAppearance="@style/TextAppearance.Material3.TitleSmall"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

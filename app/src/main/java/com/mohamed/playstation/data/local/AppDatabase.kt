@@ -31,7 +31,7 @@ import com.mohamed.playstation.data.local.converter.DateConverter
         StockMovementEntity::class,
         ExpenseEntity::class
     ],
-    version = 7,
+    version = 1,
     exportSchema = true
 )
 @TypeConverters(DateConverter::class)

@@ -7,6 +7,7 @@ import com.mohamed.playstation.data.repository.ExpenseRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionProductRepository
 import com.mohamed.playstation.domain.model.Receipt
+import com.mohamed.playstation.domain.model.SessionProduct
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -80,10 +81,12 @@ class ReportsViewModel @Inject constructor(
         settingsManager.currencyFlow
     ) { receipts, expenses, products, dateRange, currency ->
         val totalRevenue = receipts.sumOf { it.totalAmount }
-        val productRevenue = products.sumOf { it.getLineTotal() }
+        val productRevenue = receipts.sumOf { it.productsAmount }
         val productCost = products.sumOf { it.getLineCost() }
         val productProfit = productRevenue - productCost
-        val sessionRevenue = totalRevenue - productRevenue
+        val sessionRevenue = receipts.sumOf { it.playAmount }
+        val totalDiscounts = receipts.sumOf { it.discountAmount }
+        val totalTaxes = receipts.sumOf { it.taxAmount }
         val totalExpenses = expenses.sumOf { it.amount }
         val netProfit = sessionRevenue + productProfit - totalExpenses
 
@@ -101,7 +104,7 @@ class ReportsViewModel @Inject constructor(
             .groupBy { it.nameSnapshot }
             .map { (name, group) ->
                 val qty = group.sumOf { it.quantitySold }
-                val rev = group.sumOf { it.getLineTotal() }
+                val rev = SessionProduct.calculateTotalAmount(group)
                 val sample = group.first()
                 TopProductItem(name, qty, rev, sample.isPreparedSnapshot, sample.unitLabelSnapshot)
             }
@@ -130,15 +133,7 @@ class ReportsViewModel @Inject constructor(
                 (revenueLast7DaysMap[dayLabel] ?: 0.0) + receipt.totalAmount
         }
 
-        // Match products to the correct day using their sessionId
-        val sessionDateMap = receipts.associate { it.sessionId to dateFormat.format(it.createdAt) }
-        products.forEach { product ->
-            val dayLabel = sessionDateMap[product.sessionId]
-            if (dayLabel != null) {
-                revenueLast7DaysMap[dayLabel] =
-                    (revenueLast7DaysMap[dayLabel] ?: 0.0) + product.getLineTotal()
-            }
-        }
+        // Product revenue is already included in receipt.totalAmount.
 
         val revenueLast7DaysList = revenueLast7DaysMap.entries
             .sortedBy { it.key }
@@ -164,6 +159,8 @@ class ReportsViewModel @Inject constructor(
             productProfit = productProfit,
             netProfit = netProfit,
             totalExpenses = totalExpenses,
+            totalDiscounts = totalDiscounts,
+            totalTaxes = totalTaxes,
             totalSessions = receipts.size,
             avgSessionDurationMinutes = avgDuration,
             revenueLast7Days = revenueLast7DaysList,

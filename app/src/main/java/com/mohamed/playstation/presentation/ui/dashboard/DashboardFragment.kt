@@ -40,6 +40,7 @@ class DashboardFragment : Fragment() {
     private val viewModel: DashboardViewModel by viewModels()
     private lateinit var sessionAdapter: DashboardSessionAdapter
     private lateinit var expenseAdapter: DashboardExpenseAdapter
+    private var revenueXAxisFormatter: IndexAxisValueFormatter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -190,14 +191,21 @@ class DashboardFragment : Fragment() {
                 valueTextSize = 10f
                 valueTextColor = requireContext().getColor(R.color.text_primary)
             }
-            binding.revenueChart.data = BarData(barDataSet)
-            binding.revenueChart.xAxis.apply {
-                valueFormatter = IndexAxisValueFormatter(data.revenueChartData.map { it.label })
-                textColor = requireContext().getColor(R.color.text_primary)
+            
+            if (binding.revenueChart.data == null) {
+                binding.revenueChart.data = BarData(barDataSet)
+                revenueXAxisFormatter = IndexAxisValueFormatter(data.revenueChartData.map { it.label })
+                binding.revenueChart.xAxis.apply {
+                    valueFormatter = revenueXAxisFormatter
+                    textColor = requireContext().getColor(R.color.text_primary)
+                }
+                binding.revenueChart.axisLeft.textColor = requireContext().getColor(R.color.text_primary)
+                binding.revenueChart.animateY(1000)
+            } else {
+                binding.revenueChart.data = BarData(barDataSet)
+                revenueXAxisFormatter?.values = data.revenueChartData.map { it.label }.toTypedArray()
+                binding.revenueChart.invalidate()
             }
-            binding.revenueChart.axisLeft.textColor = requireContext().getColor(R.color.text_primary)
-            binding.revenueChart.animateY(1000)
-            binding.revenueChart.invalidate()
         }
 
         if (data.expenseChartData.isNotEmpty()) {
@@ -215,11 +223,16 @@ class DashboardFragment : Fragment() {
                 valueTextSize = 12f
                 valueTextColor = android.graphics.Color.WHITE
             }
-            binding.expensePieChart.data = PieData(pieDataSet)
-            binding.expensePieChart.legend.textColor = requireContext().getColor(R.color.text_primary)
-            binding.expensePieChart.setCenterTextColor(requireContext().getColor(R.color.text_primary))
-            binding.expensePieChart.animateY(1000)
-            binding.expensePieChart.invalidate()
+            
+            if (binding.expensePieChart.data == null) {
+                binding.expensePieChart.data = PieData(pieDataSet)
+                binding.expensePieChart.legend.textColor = requireContext().getColor(R.color.text_primary)
+                binding.expensePieChart.setCenterTextColor(requireContext().getColor(R.color.text_primary))
+                binding.expensePieChart.animateY(1000)
+            } else {
+                binding.expensePieChart.data = PieData(pieDataSet)
+                binding.expensePieChart.invalidate()
+            }
         } else {
             binding.expensePieChart.clear()
         }

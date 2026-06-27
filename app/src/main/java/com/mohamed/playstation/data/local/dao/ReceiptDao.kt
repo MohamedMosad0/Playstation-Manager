@@ -53,6 +53,9 @@ interface ReceiptDao {
     @Query("SELECT * FROM receipts ORDER BY createdAt DESC")
     fun getAllReceipts(): Flow<List<ReceiptEntity>>
 
+    @Query("SELECT * FROM receipts")
+    suspend fun getAllOnce(): List<ReceiptEntity>
+
     /**
      * الحصول على فواتير اليوم
      */
