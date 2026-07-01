@@ -11,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mohamed.playstation.databinding.FragmentSessionsBinding
 import com.mohamed.playstation.presentation.ui.UiState
@@ -79,9 +78,10 @@ class SessionsFragment : Fragment() {
         )
 
         binding.rvSessions.apply {
-            layoutManager = GridLayoutManager(requireContext(), 2)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = sessionAdapter
             setHasFixedSize(true)
+            (itemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
         }
 
         // Completed sessions — vertical list, static (no ticker)
@@ -99,10 +99,18 @@ class SessionsFragment : Fragment() {
      * إعداد التبويبات (Chips)
      */
     private fun setupTabs() {
-        binding.chipGroupTabs.setOnCheckedStateChangeListener { _, checkedIds ->
-            val showCompleted = checkedIds.contains(com.mohamed.playstation.R.id.chipCompleted)
-            binding.layoutRunning.isVisible = !showCompleted
-            binding.layoutCompleted.isVisible = showCompleted
+        binding.chipGroupTabs.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                val showCompleted = checkedId == com.mohamed.playstation.R.id.chipCompleted
+                binding.layoutRunning.isVisible = !showCompleted
+                binding.layoutCompleted.isVisible = showCompleted
+                
+                if (showCompleted) {
+                    binding.fabNewSession.hide()
+                } else {
+                    binding.fabNewSession.show()
+                }
+            }
         }
     }
 
@@ -187,7 +195,7 @@ class SessionsFragment : Fragment() {
                             completedAdapter.submitList(sessions)
                             binding.chipCompleted.text = getString(com.mohamed.playstation.R.string.tab_completed) + " (${sessions.size})"
                             if (binding.layoutCompleted.isVisible && binding.rvCompletedSessions.adapter?.itemCount != sessions.size) {
-                                binding.rvCompletedSessions.scheduleLayoutAnimation()
+                                // removed scheduleLayoutAnimation
                             }
                         } else {
                             binding.chipCompleted.text = getString(com.mohamed.playstation.R.string.tab_completed)

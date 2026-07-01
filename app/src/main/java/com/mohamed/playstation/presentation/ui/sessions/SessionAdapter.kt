@@ -30,11 +30,19 @@ class SessionAdapter(
         holder.bind(getItem(position), tick)
     }
 
+    override fun onBindViewHolder(holder: SessionViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.contains("TIMER_TICK")) {
+            holder.bindTimerOnly(getItem(position), tick)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     fun updateTick(newTick: Long) {
         tick = newTick
         currentList.forEachIndexed { index, session ->
             if (session.isActive() || session.isPaused()) {
-                notifyItemChanged(index)
+                notifyItemChanged(index, "TIMER_TICK")
             }
         }
     }
@@ -128,6 +136,50 @@ class SessionAdapter(
                 }
             }
         }
+
+        fun bindTimerOnly(session: Session, currentTick: Long) {
+            with(binding) {
+                when {
+                    session.isActive() -> {
+                        val isAutoEnding = session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
+                        if (isAutoEnding) {
+                            tvStatus.text = root.context.getString(R.string.finishing_progress)
+                            tvStatus.setTextColor(root.context.getColor(R.color.status_paused))
+                            tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                                androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.status_paused), 38) // ~15% alpha
+                            )
+                        } else {
+                            tvStatus.text = root.context.getString(R.string.status_running)
+                            tvStatus.setTextColor(root.context.getColor(R.color.status_active))
+                            tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                                androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.status_active), 38)
+                            )
+                        }
+                    }
+                }
+
+                if (tvTimer.visibility == View.VISIBLE) {
+                    val isAutoEnding = session.isActive() && session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
+                    if (isAutoEnding) {
+                        tvTimer.text = "00:00:00"
+                        tvTimer.setTextColor(root.context.getColor(R.color.status_paused))
+                    } else {
+                        tvTimer.text = SessionTimer.formatForSession(session, currentTick)
+                        if (session.isFixed() && session.isActive()) {
+                            val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
+                            tvTimer.setTextColor(
+                                root.context.getColor(
+                                    if (remaining <= 5 * 60_000) R.color.status_paused
+                                    else R.color.ps_blue_primary
+                                )
+                            )
+                        } else {
+                            tvTimer.setTextColor(root.context.getColor(R.color.ps_blue_primary))
+                        }
+                    }
+                }
+            }
+        }
     }
 
     class SessionDiffCallback : DiffUtil.ItemCallback<Session>() {
@@ -135,7 +187,6 @@ class SessionAdapter(
             oldItem.id == newItem.id
 
         override fun areContentsTheSame(oldItem: Session, newItem: Session): Boolean {
-            if (newItem.isActive() || newItem.isPaused()) return false
             return oldItem == newItem
         }
     }

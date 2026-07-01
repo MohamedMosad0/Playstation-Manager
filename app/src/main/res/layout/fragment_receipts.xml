@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark">
+    android:background="?attr/colorSurface">
 
     <!-- Unified Header -->
     <LinearLayout
@@ -16,7 +16,7 @@
 
         <ImageView
             style="@style/Widget.PlayStation.ScreenHeader.Logo"
-            android:src="@drawable/ic_receipts_header"
+            android:src="@drawable/ic_receipt"
             android:contentDescription="@null" />
 
         <TextView
@@ -31,8 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         app:cardBackgroundColor="@color/card_dark"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
@@ -84,7 +82,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@color/background_dark"
+        android:background="?attr/colorSurface"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerCard"

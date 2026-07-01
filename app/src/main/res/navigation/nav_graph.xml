@@ -11,7 +11,11 @@
         android:label="@string/dashboard">
         <action
             android:id="@+id/action_dashboardFragment_to_receiptsFragment"
-            app:destination="@id/receiptsFragment" />
+            app:destination="@id/receiptsFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
     </fragment>
 
     <!-- Sessions Fragment -->
@@ -21,7 +25,11 @@
         android:label="@string/sessions">
         <action
             android:id="@+id/action_sessionsFragment_to_sessionDetailsFragment"
-            app:destination="@id/sessionDetailsFragment" />
+            app:destination="@id/sessionDetailsFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
     </fragment>
 
     <!-- Session Details Fragment -->
@@ -47,10 +55,18 @@
         android:label="@string/reports">
         <action
             android:id="@+id/action_reportsFragment_to_receiptsFragment"
-            app:destination="@id/receiptsFragment" />
+            app:destination="@id/receiptsFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
         <action
             android:id="@+id/action_reportsFragment_to_expensesFragment"
-            app:destination="@id/expensesFragment" />
+            app:destination="@id/expensesFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
     </fragment>
 
     <!-- Receipts Fragment -->

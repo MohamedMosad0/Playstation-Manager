@@ -41,6 +41,7 @@ class ReceiptAdapter(
                 tvDuration.text = model.durationAndRange
                 tvTotal.text = model.totalAmount
                 chipPaymentMethod.text = model.paymentMethod
+                chipPaymentMethod.isVisible = model.paymentMethod.isNotEmpty()
                 
                 tvProductsSummary.isVisible = model.hasProducts
                 tvProductsSummary.text = model.productsSummary

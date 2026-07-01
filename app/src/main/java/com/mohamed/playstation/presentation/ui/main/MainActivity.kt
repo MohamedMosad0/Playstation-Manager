@@ -61,6 +61,30 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            val builder = androidx.navigation.NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setRestoreState(true)
+                .setEnterAnim(R.anim.nav_fade_enter)
+                .setExitAnim(R.anim.nav_fade_exit)
+                .setPopEnterAnim(R.anim.nav_fade_enter)
+                .setPopExitAnim(R.anim.nav_fade_exit)
+
+            if (item.order and android.view.Menu.CATEGORY_SECONDARY == 0) {
+                builder.setPopUpTo(
+                    navController.graph.startDestinationId,
+                    inclusive = false,
+                    saveState = true
+                )
+            }
+            val options = builder.build()
+            try {
+                navController.navigate(item.itemId, null, options)
+                true
+            } catch (e: IllegalArgumentException) {
+                false
+            }
+        }
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Timber.d(
                 "DESTINATION = ${resources.getResourceEntryName(destination.id)}"

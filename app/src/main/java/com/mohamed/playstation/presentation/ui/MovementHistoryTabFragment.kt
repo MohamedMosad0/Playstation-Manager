@@ -48,12 +48,8 @@ class MovementHistoryTabFragment : Fragment() {
         adapter = MovementsAdapter()
         binding.rvMovements.layoutManager = LinearLayoutManager(requireContext())
         binding.rvMovements.adapter = adapter
-        
         binding.emptyState.visibility = View.GONE
         binding.rvMovements.visibility = View.VISIBLE
-        
-        val controller = android.view.animation.AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.layout_animation_slide_up)
-        binding.rvMovements.layoutAnimation = controller
 
         binding.etSearch.doAfterTextChanged { text ->
             viewModel.setMovementSearchQuery(text?.toString() ?: "")
@@ -69,7 +65,6 @@ class MovementHistoryTabFragment : Fragment() {
                         } else {
                             binding.emptyState.visibility = View.GONE
                             binding.rvMovements.visibility = View.VISIBLE
-                            binding.rvMovements.scheduleLayoutAnimation()
                         }
                     }
                 }

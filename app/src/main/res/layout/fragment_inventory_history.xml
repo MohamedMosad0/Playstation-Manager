@@ -5,19 +5,25 @@
     android:layout_height="match_parent"
     android:background="?android:colorBackground">
 
-    <!-- Search Bar -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="@string/app_name"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/inventory_search_product"
         app:startIconDrawable="@drawable/ic_search"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp"
+        app:startIconTint="@color/text_secondary"
+        app:boxCornerRadiusTopStart="28dp"
+        app:boxCornerRadiusTopEnd="28dp"
+        app:boxCornerRadiusBottomStart="28dp"
+        app:boxCornerRadiusBottomEnd="28dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="1.5dp"
+        app:boxStrokeColor="@color/ps_blue_primary"
+        app:boxBackgroundColor="@color/surface_variant"
+        app:hintTextColor="@color/ps_blue_primary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -27,7 +33,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:paddingStart="8dp"
+            android:paddingEnd="16dp"
+            android:textSize="15sp"
+            android:textColor="@color/text_primary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

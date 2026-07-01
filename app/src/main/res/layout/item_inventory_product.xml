@@ -5,11 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp"
+    android:layout_marginHorizontal="@dimen/spacing_medium"
+    android:layout_marginVertical="@dimen/spacing_small"
+    style="@style/Widget.PlayStation.Card"
     android:clickable="true"
     android:focusable="true"
     app:rippleColor="?attr/colorControlHighlight">
@@ -17,64 +15,82 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp">
+        android:padding="16dp">
 
-        <!-- Icon -->
-        <ImageView
-            android:id="@+id/ivIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_package"
-            android:background="@drawable/bg_circle"
-            android:backgroundTint="?attr/colorSecondaryContainer"
-            android:padding="10dp"
-            app:tint="?attr/colorSecondary"
+        <!-- Product Hero Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:cardCornerRadius="12dp"
+            app:cardBackgroundColor="@color/surface_variant"
+            app:strokeWidth="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Product Name -->
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp"
+                android:src="@drawable/ic_package"
+                app:tint="@color/ps_blue_primary" />
+        </com.google.android.material.card.MaterialCardView>
+
         <TextView
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            tools:text="Product Name"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textStyle="bold"
+            tools:text="V Cola 250ml"
+            android:textSize="20sp"
+            android:textColor="@color/text_primary"
+            android:fontFamily="sans-serif-medium"
             android:ellipsize="end"
             android:maxLines="1"
-            app:layout_constraintStart_toEndOf="@id/ivIcon"
-            app:layout_constraintEnd_toStartOf="@id/btnOptions"
-            app:layout_constraintTop_toTopOf="@id/ivIcon"
-            app:layout_constraintBottom_toTopOf="@id/tvTypeBadge"
-            app:layout_constraintVertical_chainStyle="packed" />
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/cardIcon"
+            app:layout_constraintEnd_toStartOf="@id/layoutActions"
+            app:layout_constraintTop_toTopOf="@id/cardIcon" />
 
-        <!-- Type Badge -->
         <TextView
             android:id="@+id/tvTypeBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="منتج"
-            android:textAppearance="?attr/textAppearanceLabelSmall"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:background="@drawable/bg_mode_badge"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="2dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
+            tools:text="منتج عادي"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
             app:layout_constraintStart_toStartOf="@id/tvName"
-            app:layout_constraintTop_toBottomOf="@id/tvName"
-            app:layout_constraintBottom_toBottomOf="@id/ivIcon" />
+            app:layout_constraintTop_toBottomOf="@id/tvName" />
 
-        <!-- Options Menu -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipStatus"
+            style="@style/Widget.Material3.Chip.Assist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            tools:text="متوفر"
+            android:clickable="false"
+            app:chipMinHeight="20dp"
+            app:ensureMinTouchTargetSize="false"
+            app:chipCornerRadius="10dp"
+            android:textSize="10sp"
+            app:chipStartPadding="6dp"
+            app:chipEndPadding="6dp"
+            app:layout_constraintStart_toEndOf="@id/tvTypeBadge"
+            app:layout_constraintTop_toTopOf="@id/tvTypeBadge"
+            app:layout_constraintBottom_toBottomOf="@id/tvTypeBadge" />
+
+        <!-- Quick Actions -->
         <LinearLayout
-            android:id="@+id/btnOptions"
+            android:id="@+id/layoutActions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ivIcon"
-            app:layout_constraintBottom_toBottomOf="@id/ivIcon">
+            app:layout_constraintTop_toTopOf="@id/cardIcon">
 
             <ImageButton
                 android:id="@+id/btnEdit"
@@ -82,7 +98,8 @@
                 android:layout_height="36dp"
                 android:src="@drawable/ic_edit"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant" />
+                app:tint="@color/text_secondary"
+                android:padding="8dp" />
 
             <ImageButton
                 android:id="@+id/btnDelete"
@@ -90,151 +107,164 @@
                 android:layout_height="36dp"
                 android:src="@drawable/ic_delete"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorError" />
+                app:tint="@color/text_secondary"
+                android:padding="8dp" />
         </LinearLayout>
 
-        <!-- Divider 1 -->
         <View
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
+            android:id="@+id/divider"
+            android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:background="?attr/colorSurfaceVariant"
-            app:layout_constraintTop_toBottomOf="@id/ivIcon" />
-
-        <!-- Price Section -->
-        <TextView
-            android:id="@+id/tvSellPriceLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/product_sale_price"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/divider"
+            android:alpha="0.4"
+            app:layout_constraintTop_toBottomOf="@id/cardIcon"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider1" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/tvPrice"
-            android:layout_width="wrap_content"
+        <!-- Info Horizontal Row -->
+        <LinearLayout
+            android:id="@+id/layoutInfo"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="15.0 ج"
-            android:textAppearance="?attr/textAppearanceTitleSmall"
-            android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@id/tvSellPriceLabel"
-            app:layout_constraintBaseline_toBaselineOf="@id/tvSellPriceLabel" />
-
-        <!-- Unit Cost -->
-        <TextView
-            android:id="@+id/tvUnitCostLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/product_cost"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            app:layout_constraintTop_toBottomOf="@id/divider"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSellPriceLabel" />
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/tvUnitCost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="10.0 ج.م"
-            android:textAppearance="?attr/textAppearanceTitleSmall"
-            android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@id/tvUnitCostLabel"
-            app:layout_constraintBaseline_toBaselineOf="@id/tvUnitCostLabel" />
+            <!-- Sell Price -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:orientation="vertical">
 
-        <!-- Profit -->
-        <TextView
-            android:id="@+id/tvProfitLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/product_unit_profit"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvUnitCostLabel" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/inventory_sale_price"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary" />
 
-        <TextView
-            android:id="@+id/tvProfit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="5.0 ج.م"
-            android:textAppearance="?attr/textAppearanceTitleSmall"
-            android:textColor="?attr/colorTertiary"
-            android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@id/tvProfitLabel"
-            app:layout_constraintBaseline_toBaselineOf="@id/tvProfitLabel" />
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    tools:text="15.00 ج.م"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-        <!-- Divider 2 -->
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:background="?attr/colorSurfaceVariant"
-            app:layout_constraintTop_toBottomOf="@id/tvProfitLabel" />
+            <!-- Profit -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <!-- Stock Section -->
-        <TextView
-            android:id="@+id/tvStockLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/product_available"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider2" />
+                <TextView
+                    android:id="@+id/tvProfitLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/product_unit_profit"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary" />
 
-        <TextView
-            android:id="@+id/tvQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="24"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textStyle="bold"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toEndOf="@id/tvStockLabel"
-            app:layout_constraintBaseline_toBaselineOf="@id/tvStockLabel" />
+                <TextView
+                    android:id="@+id/tvProfit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    tools:text="+5.00 ج.م"
+                    android:textSize="15sp"
+                    android:textColor="@color/chart_green"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvUnitLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/product_unit"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginStart="4dp"
-            app:layout_constraintStart_toEndOf="@id/tvQuantity"
-            app:layout_constraintBaseline_toBaselineOf="@id/tvQuantity" />
+            <!-- Stock -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/tvStockLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/product_available"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:orientation="horizontal">
+                    
+                    <TextView
+                        android:id="@+id/tvQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="24"
+                        android:textSize="15sp"
+                        android:textColor="@color/ps_blue_primary"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold" />
+                        
+                    <TextView
+                        android:id="@+id/tvUnitLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@string/product_unit"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_gravity="bottom"
+                        android:paddingBottom="1dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Cost (De-emphasized) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/tvUnitCostLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/product_cost"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary" />
+
+                <TextView
+                    android:id="@+id/tvUnitCost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    tools:text="10.00 ج.م"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_disabled" />
+            </LinearLayout>
+        </LinearLayout>
+        
         <TextView
             android:id="@+id/tvMinQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="0" />
-
-        <!-- Status Chip -->
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="متوفر"
-            android:clickable="false"
-            app:chipSurfaceColor="?attr/colorSurface"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvStockLabel"
-            app:layout_constraintBottom_toBottomOf="@id/tvStockLabel" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

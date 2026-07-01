@@ -66,9 +66,6 @@ class ProductsTabFragment : Fragment() {
         
         binding.emptyState.visibility = View.GONE
         binding.rvProducts.visibility = View.VISIBLE
-        
-        val controller = android.view.animation.AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.layout_animation_slide_up)
-        binding.rvProducts.layoutAnimation = controller
 
         binding.etSearch.doAfterTextChanged { text ->
             viewModel.setSearchQuery(text?.toString() ?: "")
@@ -100,7 +97,6 @@ class ProductsTabFragment : Fragment() {
                             } else {
                                 binding.emptyState.visibility = View.GONE
                                 binding.rvProducts.visibility = View.VISIBLE
-                                binding.rvProducts.scheduleLayoutAnimation()
                             }
                         }
                     }
@@ -205,7 +201,7 @@ class ProductsTabFragment : Fragment() {
                     return@setPositiveButton
                 }
 
-                val unitLabel = if (isPrepared) requireContext().getString(R.string.unit_cup) else requireContext().getString(R.string.unit_piece)
+                val unitLabel = if (isPrepared) com.mohamed.playstation.core.utils.UnitType.CUP.rawDbValue else com.mohamed.playstation.core.utils.UnitType.PIECE.rawDbValue
 
                 viewModel.addNewProduct(name, price, costPerUnit, qty, minQty, isPrepared, unitLabel)
                 d.dismiss()
@@ -242,8 +238,8 @@ class ProductsTabFragment : Fragment() {
             tilNewPreparedQty.isVisible = true
             tvPreparedQtyPreview.isVisible = true
             
-            val unitName = product.unitLabel
-            val pluralUnitRes = com.mohamed.playstation.core.utils.UnitFormatUtils.getPluralUnitRes(unitName)
+            val unitName = com.mohamed.playstation.core.utils.UnitFormatUtils.getLocalizedName(requireContext(), product.unitLabel)
+            val pluralUnitRes = com.mohamed.playstation.core.utils.UnitFormatUtils.getPluralUnitRes(product.unitLabel)
             val pluralUnit = requireContext().getString(pluralUnitRes)
             tvAvailable.text = requireContext().getString(R.string.currently_available_format, product.quantity.toString(), pluralUnit)
             
@@ -376,25 +372,17 @@ class ProductsAdapter(
             tvUnitCostLabel.text = itemView.context.getString(R.string.cost_of_unit, definiteUnit)
             tvProfitLabel.text = itemView.context.getString(R.string.profit_of_unit, definiteUnit)
             
-            // Quantity transition animation logic
-            if (tvQuantity.text.toString().isNotEmpty() && tvQuantity.text.toString() != item.quantity.toString()) {
-                tvQuantity.animate().alpha(0f).scaleX(0.8f).scaleY(0.8f).setDuration(150).withEndAction {
-                    tvQuantity.text = item.quantity.toString()
-                    tvQuantity.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(150).start()
-                }.start()
-            } else {
-                tvQuantity.text = item.quantity.toString()
-            }
+            tvQuantity.text = item.quantity.toString()
 
             if (isPrepared) {
-                val icon = if (unitName == itemView.context.getString(R.string.unit_pack)) "🍜" else "☕"
+                val icon = if (unitName == com.mohamed.playstation.core.utils.UnitType.PACK.rawDbValue) "🍜" else "☕"
                 tvStockLabel.text = "$icon ${itemView.context.getString(R.string.available_label)}"
                 tvTypeBadge.text = itemView.context.getString(R.string.prepared_product_badge)
-                itemView.findViewById<TextView>(R.id.tvUnitLabel).text = unitName
+                itemView.findViewById<TextView>(R.id.tvUnitLabel).text = com.mohamed.playstation.core.utils.UnitFormatUtils.getLocalizedName(itemView.context, unitName)
             } else {
                 tvStockLabel.text = "📦 ${itemView.context.getString(R.string.available_label)}"
                 tvTypeBadge.text = itemView.context.getString(R.string.normal_product_label)
-                itemView.findViewById<TextView>(R.id.tvUnitLabel).text = unitName
+                itemView.findViewById<TextView>(R.id.tvUnitLabel).text = com.mohamed.playstation.core.utils.UnitFormatUtils.getLocalizedName(itemView.context, unitName)
             }
 
             // 3 States Status Logic
@@ -407,12 +395,12 @@ class ProductsAdapter(
 
             if (item.quantity == 0) {
                 chipStatus.text = itemView.context.getString(R.string.inventory_status_out_of_stock)
-                chipStatus.setChipBackgroundColorResource(R.color.status_paused)
+                chipStatus.setChipBackgroundColorResource(R.color.status_error)
                 chipStatus.setTextColor(itemView.context.getColor(R.color.white))
                 tvQuantity.setTextColor(ContextCompat.getColor(itemView.context, R.color.error))
             } else if (item.quantity <= item.minimumQuantity) {
                 chipStatus.text = itemView.context.getString(R.string.inventory_status_low_stock)
-                chipStatus.setChipBackgroundColorResource(R.color.status_error)
+                chipStatus.setChipBackgroundColorResource(R.color.status_paused)
                 chipStatus.setTextColor(itemView.context.getColor(R.color.white))
                 tvQuantity.setTextColor(ContextCompat.getColor(itemView.context, R.color.status_paused))
             } else {

@@ -1,55 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary Colors - PlayStation Blue -->
-    <color name="ps_blue_primary">#0070CC</color>
-    <color name="ps_blue_light">#3D9FFF</color>
-    <color name="ps_blue_dark">#004C99</color>
-
-    <!-- PlayStation Button Colors -->
-    <color name="ps_button_cross">#00A3E0</color>
-    <color name="ps_button_circle">#E74C3C</color>
-    <color name="ps_button_square">#E91E63</color>
-    <color name="ps_button_triangle">#00D9A3</color>
-
-    <!-- Background Colors - Light Theme -->
-    <color name="background_dark">#F0F2F8</color>
+    <!-- Background & Surfaces (Premium Light) -->
+    <color name="background_dark">#F8FAFC</color>
     <color name="surface_dark">#FFFFFF</color>
+    <color name="surface_variant">#F1F5F9</color>
     <color name="card_dark">#FFFFFF</color>
-    <color name="card_elevated">#EEF1FA</color>
 
-    <!-- Text Colors - Light -->
-    <color name="text_primary">#0D1033</color>
-    <color name="text_secondary">#455080</color>
-    <color name="text_disabled">#9EA8C5</color>
+    <!-- Primary Colors -->
+    <color name="colorPrimary">#1E3A8A</color>
+    <color name="colorPrimaryContainer">#DBEAFE</color>
+    <color name="colorSecondary">#64748B</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#475569</color>
+    <color name="text_disabled">#94A3B8</color>
+
+    <!-- Borders & Dividers -->
+    <color name="card_border">#E2E8F0</color>
+    <color name="divider">#E2E8F0</color>
 
     <!-- Status Colors -->
-    <color name="status_active">#00A854</color>
-    <color name="status_paused">#E6A800</color>
-    <color name="status_ended">#78909C</color>
-    <color name="status_error">#D32F2F</color>
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
+    <color name="error">#EF4444</color>
 
-    <!-- Gradient Colors -->
-    <color name="gradient_start">#0070CC</color>
-    <color name="gradient_end">#00D9A3</color>
-
-    <!-- Divider & Border - Light -->
-    <color name="divider">#D8DDEF</color>
-    <color name="border">#BEC8E4</color>
-
-    <!-- Overlay - Light -->
-    <color name="overlay_dark">#99000000</color>
-    <color name="overlay_light">#55FFFFFF</color>
+    <!-- Backward Compatibility (Avoid breaking existing hardcoded colors until fully migrated) -->
+    <color name="ps_blue_primary">@color/colorPrimary</color>
+    <color name="ps_blue_dark">@color/colorPrimary</color>
+    <color name="ps_blue_light">@color/colorPrimaryContainer</color>
+    <color name="ps_button_triangle">@color/surface_variant</color>
+    <color name="ps_button_square">@color/divider</color>
+    <color name="status_active">@color/success</color>
+    <color name="status_paused">@color/warning</color>
+    <color name="status_ended">@color/text_disabled</color>
+    <color name="status_error">@color/error</color>
 
     <!-- System Colors -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="overlay_dark">#B3000000</color>
+    <color name="overlay_light">#33FFFFFF</color>
+
+    <!-- Navigation & FAB -->
+    <color name="fab_background">@color/colorPrimary</color>
+    <color name="nav_indicator">@color/colorPrimaryContainer</color>
 
     <!-- Chart Colors -->
-    <color name="chart_green">#388E3C</color>
-    <color name="chart_blue">#1976D2</color>
-    <color name="chart_yellow">#F9A825</color>
-    <color name="chart_red">#D32F2F</color>
-    <color name="chart_purple">#7B1FA2</color>
-    <color name="error">#D32F2F</color>
+    <color name="chart_blue">@color/colorPrimary</color>
+    <color name="chart_green">@color/success</color>
+    <color name="chart_yellow">@color/warning</color>
+    <color name="chart_red">@color/error</color>
+    <color name="chart_purple">@color/colorSecondary</color>
+
+    <!-- Switch Premium States -->
+    <color name="switch_off_track">#CBD5E1</color>
+    <color name="switch_off_thumb">#FFFFFF</color>
 </resources>

@@ -5,39 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingVertical="12dp"
+    android:paddingVertical="10dp"
     android:paddingHorizontal="16dp"
     android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/tvRank"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:background="@drawable/bg_circle"
         android:backgroundTint="?attr/colorPrimaryContainer"
         android:textColor="?attr/colorOnPrimaryContainer"
         android:textAlignment="center"
         android:gravity="center"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
-        tools:text="1️⃣" />
+        tools:text="1" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="16dp">
+        android:layout_marginStart="12dp">
 
         <TextView
             android:id="@+id/tvProductName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textColor="?attr/colorOnSurface"
             android:fontFamily="sans-serif-medium"
-            android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="Coffee" />
@@ -46,21 +45,21 @@
             android:id="@+id/tvQuantitySold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="14sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text="☕ تم بيع: 2 كوب" />
-
-        <TextView
-            android:id="@+id/tvProductRevenue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:textSize="13sp"
-            android:textColor="?attr/colorTertiary"
-            android:fontFamily="sans-serif-medium"
-            tools:text="💰 الإيراد: 64 ج.م" />
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="تم بيع: 2 كوب" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvProductRevenue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="?attr/colorPrimary"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="bold"
+        tools:text="64 ج.م" />
 
 </LinearLayout>

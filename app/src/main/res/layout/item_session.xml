@@ -5,25 +5,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
+    android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="8dp"
     style="@style/Widget.PlayStation.Card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="24dp">
 
-        <!-- Device Badge -->
+        <!-- Decorative Console Icon -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardDeviceBadge"
-            android:layout_width="56dp"
-            android:layout_height="64dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             app:strokeWidth="0dp"
+            app:cardCornerRadius="6dp"
             app:cardBackgroundColor="@color/ps_blue_primary"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvDeviceName"
+            app:layout_constraintBottom_toBottomOf="@id/tvDeviceName"
             app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
@@ -35,104 +35,105 @@
 
                 <ImageView
                     android:id="@+id/ivDeviceIconBadge"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_ps_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_gamepad"
                     app:tint="@color/white" />
 
+                <!-- Preserving ID, but hiding as it clutters the new design -->
                 <TextView
                     android:id="@+id/tvDeviceTypeBadge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    tools:text="PS4" />
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Device Name -->
         <TextView
             android:id="@+id/tvDeviceName"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:textSize="18sp"
             android:textColor="@color/text_primary"
             android:fontFamily="sans-serif-medium"
             tools:text="PS4 #1"
-            app:layout_constraintTop_toTopOf="@id/cardDeviceBadge"
-            app:layout_constraintStart_toEndOf="@id/cardDeviceBadge"
-            app:layout_constraintEnd_toStartOf="@id/tvDuration" />
-
-        <!-- Session Type -->
-        <TextView
-            android:id="@+id/tvSessionType"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="14sp"
-            android:textColor="@color/text_secondary"
-            tools:text="لاعب واحد"
-            app:layout_constraintTop_toBottomOf="@id/tvDeviceName"
-            app:layout_constraintStart_toStartOf="@id/tvDeviceName"
-            app:layout_constraintEnd_toEndOf="@id/tvDeviceName" />
-
-        <!-- Duration -->
-        <TextView
-            android:id="@+id/tvDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textColor="@color/ps_blue_primary"
-            android:fontFamily="sans-serif-medium"
-            tools:text="01:23:45"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/cardDeviceBadge" />
 
         <!-- Status Badge -->
         <TextView
             android:id="@+id/tvSessionMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="4dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:minHeight="32dp"
+            android:gravity="center"
             android:background="@drawable/bg_rounded_status"
             tools:text="يعمل"
             tools:backgroundTint="#1A4CAF50"
             tools:textColor="#4CAF50"
-            app:layout_constraintTop_toBottomOf="@id/tvSessionType"
-            app:layout_constraintStart_toStartOf="@id/tvDeviceName" />
+            app:layout_constraintTop_toTopOf="@id/tvDeviceName"
+            app:layout_constraintBottom_toBottomOf="@id/tvDeviceName"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Hero Timer -->
+        <TextView
+            android:id="@+id/tvDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:textSize="52sp"
+            android:textStyle="bold"
+            android:textColor="@color/ps_blue_primary"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"
+            tools:text="01:23:45"
+            app:layout_constraintTop_toBottomOf="@id/tvDeviceName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Session Type -->
+        <TextView
+            android:id="@+id/tvSessionType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            tools:text="لاعب واحد"
+            app:layout_constraintTop_toBottomOf="@id/tvDuration"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Divider -->
         <View
             android:id="@+id/divider"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:background="@color/divider"
-            app:layout_constraintTop_toBottomOf="@id/tvSessionMode"
+            app:layout_constraintTop_toBottomOf="@id/tvSessionType"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Price Label -->
+        <!-- Pricing Block (Left Aligned Flow) -->
         <TextView
             android:id="@+id/tvPriceLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="20dp"
             android:text="@string/rate"
             android:textSize="12sp"
             android:textColor="@color/text_secondary"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Price Value -->
         <TextView
             android:id="@+id/tvPriceValue"
             android:layout_width="wrap_content"
@@ -146,7 +147,7 @@
             app:layout_constraintStart_toEndOf="@id/tvPriceLabel"
             android:layout_marginStart="8dp" />
 
-        <!-- Total Label -->
+        <!-- Total Label & Value (Right Aligned Flow) -->
         <TextView
             android:id="@+id/tvTotalLabel"
             android:layout_width="wrap_content"
@@ -155,54 +156,53 @@
             android:textSize="12sp"
             android:textColor="@color/text_secondary"
             app:layout_constraintTop_toTopOf="@id/tvPriceLabel"
-            app:layout_constraintEnd_toStartOf="@id/tvTotalValue" />
+            app:layout_constraintBottom_toBottomOf="@id/tvPriceLabel"
+            app:layout_constraintEnd_toStartOf="@id/tvTotalValue"
+            android:layout_marginEnd="8dp" />
 
-        <!-- Total Value -->
         <TextView
             android:id="@+id/tvTotalValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/ps_button_triangle"
+            android:textSize="20sp"
+            android:textColor="@color/ps_blue_primary"
+            android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
             tools:text="45.50 ج.م"
             app:layout_constraintTop_toTopOf="@id/tvTotalLabel"
             app:layout_constraintBottom_toBottomOf="@id/tvTotalLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="8dp" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Action Buttons -->
         <LinearLayout
             android:id="@+id/layoutActions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal"
             android:gravity="end"
-            app:layout_constraintTop_toBottomOf="@id/tvPriceLabel"
+            app:layout_constraintTop_toBottomOf="@id/tvTotalValue"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Pause/Resume Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPauseResume"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
                 android:text="@string/pause_session"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 style="@style/Widget.PlayStation.Button.Outlined"
-                android:paddingHorizontal="16dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="12dp" />
 
-            <!-- End Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEnd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
                 android:text="@string/end_session"
-                android:textSize="12sp"
-                style="@style/Widget.PlayStation.Button"
-                android:paddingHorizontal="16dp" />
+                android:textSize="14sp"
+                style="@style/Widget.PlayStation.Button" />
 
         </LinearLayout>
 

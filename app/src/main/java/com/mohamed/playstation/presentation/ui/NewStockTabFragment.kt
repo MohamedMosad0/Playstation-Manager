@@ -71,7 +71,7 @@ class NewStockTabFragment : Fragment() {
                 val definitePlural = requireContext().getString(UnitFormatUtils.getDefinitePluralUnitRes(unitName))
                 
                 if (match.isPrepared) {
-                    val icon = if (unitName == binding.root.context.getString(com.mohamed.playstation.R.string.unit_pack)) "🍜" else "☕"
+                    val icon = if (unitName == com.mohamed.playstation.core.utils.UnitType.PACK.rawDbValue) "🍜" else "☕"
                     binding.tvCurrentAvailable.text = "$icon ${getString(com.mohamed.playstation.R.string.currently_available_format, match.quantity.toString(), pluralUnit)}"
                     binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.new_quantity_hint, definitePlural)
                     binding.btnSave.text = getString(com.mohamed.playstation.R.string.action_add)
@@ -132,7 +132,7 @@ class NewStockTabFragment : Fragment() {
                 }
 
                 // create new product and add initial stock
-                viewModel.addNewProduct(name, price, 0.0, qty, minQty, false, getString(com.mohamed.playstation.R.string.unit_piece))
+                viewModel.addNewProduct(name, price, 0.0, qty, minQty, false, com.mohamed.playstation.core.utils.UnitType.PIECE.rawDbValue)
 
                 // clear fields
                 binding.actProductSearch.setText("")

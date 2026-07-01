@@ -44,4 +44,9 @@ object UnitFormatUtils {
     fun getDefiniteSingularUnitRes(unitLabel: String): Int {
         return UnitType.fromRaw(unitLabel)?.defSingularRes ?: R.string.unit_unit_def_sing
     }
+
+    fun getLocalizedName(context: android.content.Context, rawDbValue: String): String {
+        val resId = UnitType.fromRaw(rawDbValue)?.singularRes
+        return if (resId != null) context.getString(resId) else rawDbValue
+    }
 }

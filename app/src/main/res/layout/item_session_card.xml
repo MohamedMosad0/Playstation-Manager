@@ -6,7 +6,8 @@
     android:id="@+id/cardSession"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="8dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
@@ -15,96 +16,132 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="24dp">
 
         <!-- Device Badge -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardDeviceBadge"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            app:cardCornerRadius="14dp"
-            app:cardElevation="2dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             app:strokeWidth="0dp"
+            app:cardCornerRadius="6dp"
             app:cardBackgroundColor="@color/ps_blue_primary"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvDeviceName"
+            app:layout_constraintBottom_toBottomOf="@id/tvDeviceName"
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:id="@+id/ivDeviceIconBadge"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
                 android:src="@drawable/ic_gamepad"
-                app:tint="@android:color/white"/>
+                app:tint="@color/white" />
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Device Name -->
         <TextView
             android:id="@+id/tvDeviceName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:fontFamily="sans-serif-medium"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="8dp"
-            tools:text="PS4 #1"
-            app:layout_constraintTop_toTopOf="@id/cardDeviceBadge"
-            app:layout_constraintBottom_toBottomOf="@id/cardDeviceBadge"
-            app:layout_constraintVertical_bias="0.25"
-            app:layout_constraintStart_toEndOf="@id/cardDeviceBadge"
-            app:layout_constraintEnd_toStartOf="@id/tvTimer" />
-
-        <!-- Session mode badge -->
-        <TextView
-            android:id="@+id/tvSessionMode"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            tools:text="مفتوحة • لاعب واحد"
-            app:layout_constraintTop_toBottomOf="@id/tvDeviceName"
-            app:layout_constraintStart_toStartOf="@id/tvDeviceName"
-            app:layout_constraintEnd_toStartOf="@id/tvTimer" />
-
-        <!-- Status Label -->
-        <TextView
-            android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textSize="11sp"
-            android:textColor="@color/status_active"
-            android:textStyle="bold"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="3dp"
-            android:background="@drawable/bg_rounded_status"
-            tools:text="يعمل"
-            tools:backgroundTint="#1A4CAF50"
-            app:layout_constraintTop_toBottomOf="@id/tvSessionMode"
-            app:layout_constraintStart_toStartOf="@id/tvDeviceName" />
+            android:layout_marginStart="12dp"
+            android:textSize="18sp"
+            android:textColor="@color/text_primary"
+            android:fontFamily="sans-serif-medium"
+            tools:text="PS4 #1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cardDeviceBadge" />
 
-        <!-- Timer -->
+        <!-- Status Chip -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tvStatus"
+            style="@style/Widget.Material3.Chip.Assist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            app:chipMinHeight="32dp"
+            app:chipCornerRadius="16dp"
+            app:ensureMinTouchTargetSize="false"
+            tools:text="يعمل"
+            app:layout_constraintTop_toTopOf="@id/tvDeviceName"
+            app:layout_constraintBottom_toBottomOf="@id/tvDeviceName"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Hero Timer -->
         <TextView
             android:id="@+id/tvTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:layout_marginTop="24dp"
+            android:textSize="52sp"
             android:textStyle="bold"
             android:textColor="@color/ps_blue_primary"
             android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.03"
+            android:letterSpacing="0.02"
             tools:text="01:23:45"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDeviceName"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Session Mode Info -->
+        <TextView
+            android:id="@+id/tvSessionMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            tools:text="مفتوحة • لاعب واحد"
+            app:layout_constraintTop_toBottomOf="@id/tvTimer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Divider -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/divider"
+            app:layout_constraintTop_toBottomOf="@id/tvSessionMode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Actions (Placeholder for future use) -->
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPauseResume"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:text="@string/pause_session"
+                android:textSize="14sp"
+                style="@style/Widget.PlayStation.Button.Outlined"
+                android:layout_marginEnd="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEnd"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:text="@string/end_session"
+                android:textSize="14sp"
+                style="@style/Widget.PlayStation.Button" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
