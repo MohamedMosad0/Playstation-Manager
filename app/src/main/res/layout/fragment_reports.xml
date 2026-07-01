@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_medium">
 
             <!-- Date Range Selector -->
         <com.google.android.material.card.MaterialCardView
@@ -37,17 +37,17 @@
             style="@style/Widget.PlayStation.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_medium"
             android:clickable="true"
             android:focusable="true"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="@dimen/spacing_medium"
             app:cardElevation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_medium">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -56,8 +56,8 @@
                     android:gravity="center_vertical">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="@dimen/spacing_large"
                         android:src="@drawable/ic_calendar"
                         app:tint="@color/ps_blue_primary"
                         tools:ignore="ContentDescription" />
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
-                app:contentPadding="16dp">
+                app:contentPadding="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -158,14 +158,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reports_total_revenue"
                         app:drawableStartCompat="@drawable/ic_receipt"
-                        android:drawablePadding="8dp"
-                        android:textSize="14sp"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
                         android:textColor="@color/text_secondary" />
                     <TextView
                         android:id="@+id/tvTotalRevenue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="?attr/colorPrimary"
@@ -180,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
-                app:contentPadding="16dp">
+                app:contentPadding="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -190,14 +190,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reports_total_expenses"
                         app:drawableStartCompat="@drawable/ic_expenses"
-                        android:drawablePadding="8dp"
-                        android:textSize="14sp"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
                         android:textColor="@color/text_secondary" />
                     <TextView
                         android:id="@+id/tvTotalExpenses"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/chart_red"
@@ -212,7 +212,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
-                app:contentPadding="16dp">
+                app:contentPadding="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -222,14 +222,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reports_sessions_revenue"
                         app:drawableStartCompat="@drawable/ic_gamepad"
-                        android:drawablePadding="8dp"
-                        android:textSize="14sp"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
                         android:textColor="@color/text_secondary" />
                     <TextView
                         android:id="@+id/tvSessionRevenue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         tools:text="0.0 EGP" />
@@ -243,7 +243,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
-                app:contentPadding="16dp">
+                app:contentPadding="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -253,14 +253,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reports_products_revenue"
                         app:drawableStartCompat="@drawable/ic_package"
-                        android:drawablePadding="8dp"
-                        android:textSize="14sp"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
                         android:textColor="@color/text_secondary" />
                     <TextView
                         android:id="@+id/tvProductRevenue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         tools:text="0.0 EGP" />
@@ -274,7 +274,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
-                app:contentPadding="16dp">
+                app:contentPadding="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -284,14 +284,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reports_total_sessions"
                         app:drawableStartCompat="@drawable/ic_gamepad"
-                        android:drawablePadding="8dp"
-                        android:textSize="14sp"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
                         android:textColor="@color/text_secondary" />
                     <TextView
                         android:id="@+id/tvTotalSessions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         tools:text="0" />
@@ -305,7 +305,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
-                app:contentPadding="16dp">
+                app:contentPadding="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -315,14 +315,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reports_average_duration"
                         app:drawableStartCompat="@drawable/ic_timer"
-                        android:drawablePadding="8dp"
-                        android:textSize="14sp"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
                         android:textColor="@color/text_secondary" />
                     <TextView
                         android:id="@+id/tvAvgDuration"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         tools:text="0 دقيقة" />
@@ -338,8 +338,8 @@
             style="@style/Widget.PlayStation.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginBottom="@dimen/spacing_small"
             android:visibility="gone"
             app:cardBackgroundColor="#1AE6A800">
             <LinearLayout
@@ -360,8 +360,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:textSize="12sp"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
                     android:textColor="@color/status_paused"
                     android:text="@string/reports_old_products_warning" />
             </LinearLayout>
@@ -374,8 +374,8 @@
             android:columnCount="2"
             android:useDefaultMargins="true"
             android:layout_marginHorizontal="-4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginBottom="@dimen/spacing_medium">
 
             <!-- Product Cost -->
             <com.google.android.material.card.MaterialCardView
@@ -384,7 +384,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
-                app:contentPadding="16dp">
+                app:contentPadding="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -394,14 +394,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reports_products_cost"
                         app:drawableStartCompat="@drawable/ic_expenses"
-                        android:drawablePadding="8dp"
-                        android:textSize="14sp"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
                         android:textColor="@color/text_secondary" />
                     <TextView
                         android:id="@+id/tvProductCost"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/chart_red"
@@ -416,7 +416,7 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="4dp"
-                app:contentPadding="16dp">
+                app:contentPadding="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -426,14 +426,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/reports_products_profit"
                         app:drawableStartCompat="@drawable/ic_purchases"
-                        android:drawablePadding="8dp"
-                        android:textSize="14sp"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
                         android:textColor="@color/text_secondary" />
                     <TextView
                         android:id="@+id/tvProductProfit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/chart_green"
@@ -453,7 +453,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="@dimen/spacing_medium"
                     android:gravity="center_vertical">
                     <ImageView
                         android:layout_width="28dp"
@@ -472,7 +472,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/reports_net_profit"
                             android:textColor="@color/white"
-                            android:textSize="13sp" />
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
                         <TextView
                             android:id="@+id/tvNetProfit"
                             android:layout_width="wrap_content"
@@ -494,12 +494,12 @@
             style="@style/Widget.PlayStation.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/spacing_medium">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_medium">
                 <TextView
                     style="@style/TextAppearance.PlayStation.Title"
                     android:layout_width="wrap_content"
@@ -510,15 +510,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="@string/reports_chart_subtitle_period"
-                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
                     android:textColor="@color/text_disabled" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:layout_marginEnd="@dimen/spacing_medium"
                     android:background="@color/divider"
                     android:alpha="0.4" />
 
@@ -535,12 +535,12 @@
             style="@style/Widget.PlayStation.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/spacing_medium">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_medium">
                 <TextView
                     style="@style/TextAppearance.PlayStation.Title"
                     android:layout_width="wrap_content"
@@ -551,15 +551,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="@string/reports_chart_subtitle_distribution"
-                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
                     android:textColor="@color/text_disabled" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:layout_marginEnd="@dimen/spacing_medium"
                     android:background="@color/divider"
                     android:alpha="0.4" />
 
@@ -576,12 +576,12 @@
             style="@style/Widget.PlayStation.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/spacing_medium">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_medium">
                 <TextView
                     style="@style/TextAppearance.PlayStation.Title"
                     android:layout_width="wrap_content"
@@ -592,15 +592,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="@string/reports_chart_subtitle_devices"
-                    android:textSize="12sp"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
                     android:textColor="@color/text_disabled" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:layout_marginEnd="@dimen/spacing_medium"
                     android:background="@color/divider"
                     android:alpha="0.4" />
 
@@ -617,7 +617,7 @@
                 style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="@dimen/spacing_medium">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -626,14 +626,14 @@
                         style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
+                        android:padding="@dimen/spacing_medium"
                         android:text="@string/reports_top_products" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="@dimen/spacing_medium"
+                        android:layout_marginEnd="@dimen/spacing_medium"
                         android:background="@color/divider"
                         android:alpha="0.4" />
 
@@ -642,7 +642,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clipToPadding="false"
-                        android:paddingBottom="8dp"
+                        android:paddingBottom="@dimen/spacing_small"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="5"
                         tools:listitem="@layout/item_top_product" />
@@ -652,7 +652,7 @@
                         android:id="@+id/layoutEmpty"
                         style="@style/Widget.PlayStation.EmptyStateContainer"
                         android:visibility="gone"
-                        android:padding="24dp">
+                        android:padding="@dimen/spacing_large">
 
                         <ImageView
                             style="@style/Widget.PlayStation.EmptyStateIcon"
@@ -676,7 +676,7 @@
         <!-- Extra spacing -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="32dp" />
+            android:layout_height="@dimen/spacing_xlarge" />
 
     </LinearLayout>
     </LinearLayout>

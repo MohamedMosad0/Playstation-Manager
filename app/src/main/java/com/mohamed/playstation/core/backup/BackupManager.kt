@@ -155,7 +155,7 @@ class BackupManager @Inject constructor(
 
             val backupData = BackupData(
                 backupVersion = 1,
-                schemaVersion = BuildConfig.DB_VERSION,
+                schemaVersion = 1,
                 appVersion = BuildConfig.VERSION_NAME,
                 packageName = BuildConfig.APPLICATION_ID,
                 deviceName = Build.MODEL,
@@ -200,7 +200,7 @@ class BackupManager @Inject constructor(
             if (backupData.backupVersion > 1) { // SUPPORTED_VERSION
                 return@withContext BackupResult.UnsupportedVersion
             }
-            if (backupData.schemaVersion > BuildConfig.DB_VERSION) {
+            if (backupData.schemaVersion > 1) {
                 return@withContext BackupResult.UnsupportedVersion
             }
 

@@ -8,15 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="@dimen/spacing_large">
 
         <!-- Product Type Toggle -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/spacing_small"
             android:text="@string/product_type_label"
-            android:textSize="13sp"
+            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
             android:textColor="@color/text_secondary" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
@@ -50,7 +50,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/product_name">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -68,7 +68,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/product_price">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -86,7 +86,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/quantity">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -104,7 +104,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/minimum_quantity">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -122,7 +122,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/unit_cost_label"
             android:visibility="visible">
 
@@ -141,7 +141,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/preparation_cost_label"
             android:visibility="gone">
 
@@ -160,7 +160,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/resulting_units_label"
             android:visibility="gone">
 
@@ -178,8 +178,8 @@
             android:id="@+id/tvComputedCost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="13sp"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
             android:textColor="@color/ps_blue_primary"
             android:visibility="gone" />
 

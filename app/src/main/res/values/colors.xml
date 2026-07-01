@@ -29,23 +29,16 @@
     <color name="ps_blue_primary">@color/colorPrimary</color>
     <color name="ps_blue_dark">@color/colorPrimary</color>
     <color name="ps_blue_light">@color/colorPrimaryContainer</color>
-    <color name="ps_button_triangle">@color/surface_variant</color>
-    <color name="ps_button_square">@color/divider</color>
     <color name="status_active">@color/success</color>
     <color name="status_paused">@color/warning</color>
     <color name="status_ended">@color/text_disabled</color>
     <color name="status_error">@color/error</color>
 
     <!-- System Colors -->
-    <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="transparent">#00000000</color>
-    <color name="overlay_dark">#B3000000</color>
     <color name="overlay_light">#33FFFFFF</color>
 
     <!-- Navigation & FAB -->
-    <color name="fab_background">@color/colorPrimary</color>
-    <color name="nav_indicator">@color/colorPrimaryContainer</color>
 
     <!-- Chart Colors -->
     <color name="chart_blue">@color/colorPrimary</color>

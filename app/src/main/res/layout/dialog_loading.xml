@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="24dp"
+    android:padding="@dimen/spacing_large"
     android:gravity="center_vertical">
 
     <ProgressBar
@@ -16,7 +16,7 @@
         style="@style/TextAppearance.PlayStation.Body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/spacing_medium"
         android:layout_weight="1"
         android:text="@string/loading" />
 

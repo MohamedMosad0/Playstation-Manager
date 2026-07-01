@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="@dimen/spacing_large">
 
     <!-- Device Number -->
     <TextView
@@ -14,13 +14,13 @@
         android:layout_height="wrap_content"
         android:text="@string/device_number"
         android:textColor="@color/text_primary"
-        android:textSize="14sp"
+        android:textAppearance="@style/TextAppearance.PlayStation.Body"
         android:fontFamily="sans-serif-medium" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_small"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
         <androidx.appcompat.widget.AppCompatSpinner
@@ -38,14 +38,14 @@
         android:layout_marginTop="20dp"
         android:text="@string/console_type"
         android:textColor="@color/text_primary"
-        android:textSize="14sp"
+        android:textAppearance="@style/TextAppearance.PlayStation.Body"
         android:fontFamily="sans-serif-medium" />
 
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/toggleConsoleType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_small"
         app:singleSelection="true"
         app:selectionRequired="true">
 
@@ -76,14 +76,14 @@
         android:layout_marginTop="20dp"
         android:text="@string/session_mode"
         android:textColor="@color/text_primary"
-        android:textSize="14sp"
+        android:textAppearance="@style/TextAppearance.PlayStation.Body"
         android:fontFamily="sans-serif-medium" />
 
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/toggleSessionMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_small"
         app:singleSelection="true"
         app:selectionRequired="true">
 
@@ -113,7 +113,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/spacing_medium"
         android:visibility="gone"
         android:hint="@string/session_duration_minutes"
         app:boxStrokeColor="@color/ps_blue_light"
@@ -145,7 +145,7 @@
             android:layout_weight="1"
             android:text="@string/multiplayer"
             android:textColor="@color/text_primary"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.PlayStation.Body"
             android:fontFamily="sans-serif-medium" />
 
         <com.google.android.material.materialswitch.MaterialSwitch
@@ -168,14 +168,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_medium">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/price_preview"
                 android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
+                android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
 
             <TextView
                 android:id="@+id/tvPricePreview"

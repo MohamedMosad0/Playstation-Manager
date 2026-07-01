@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_medium">
 
             <!-- Device Info Header -->
             <LinearLayout
@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="@dimen/spacing_large">
 
                 <!-- Decorative Device Badge -->
                 <com.google.android.material.card.MaterialCardView
@@ -43,8 +43,8 @@
 
                         <ImageView
                             android:id="@+id/ivDeviceIconBadge"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
+                            android:layout_width="@dimen/spacing_medium"
+                            android:layout_height="@dimen/spacing_medium"
                             android:src="@drawable/ic_gamepad"
                             app:tint="@color/white" />
                     </LinearLayout>
@@ -77,7 +77,7 @@
                             android:id="@+id/tvStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             android:paddingHorizontal="10dp"
@@ -92,7 +92,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:textSize="12sp"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
                             android:textColor="@color/text_secondary"
                             tools:text="مفتوحة" />
                     </LinearLayout>
@@ -104,29 +104,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.PlayStation.Card"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="@dimen/spacing_medium">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:paddingVertical="24dp"
-                    android:paddingHorizontal="16dp">
+                    android:paddingVertical="@dimen/spacing_large"
+                    android:paddingHorizontal="@dimen/spacing_medium">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="@dimen/spacing_small">
                         
                         <TextView
                             android:id="@+id/tvTimerLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/elapsed_time"
-                            android:textSize="14sp"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body"
                             android:textColor="@color/text_secondary"
                             android:fontFamily="sans-serif-medium"
                             android:textAllCaps="true"
@@ -134,9 +134,9 @@
                             
                         <ProgressBar
                             android:id="@+id/progressAutoEnd"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginStart="8dp"
+                            android:layout_width="@dimen/spacing_medium"
+                            android:layout_height="@dimen/spacing_medium"
+                            android:layout_marginStart="@dimen/spacing_small"
                             android:visibility="gone" />
                     </LinearLayout>
 
@@ -159,7 +159,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.PlayStation.Card"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="@dimen/spacing_medium">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -174,7 +174,7 @@
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:fontFamily="sans-serif-medium"
-                        android:layout_marginBottom="16dp" />
+                        android:layout_marginBottom="@dimen/spacing_medium" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -186,14 +186,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/play_cost"
-                            android:textSize="14sp"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body"
                             android:textColor="@color/text_secondary" />
                             
                         <TextView
                             android:id="@+id/tvPlayCost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body"
                             android:textColor="@color/text_primary"
                             android:fontFamily="sans-serif-medium"
                             tools:text="30.00 ج.م" />
@@ -210,14 +210,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/session_products_cost"
-                            android:textSize="14sp"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body"
                             android:textColor="@color/text_secondary" />
                             
                         <TextView
                             android:id="@+id/tvProductCost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body"
                             android:textColor="@color/text_primary"
                             android:fontFamily="sans-serif-medium"
                             android:text="0.00" />
@@ -262,7 +262,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.PlayStation.Card"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="@dimen/spacing_large">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -277,22 +277,22 @@
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:fontFamily="sans-serif-medium"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="@dimen/spacing_small" />
 
                     <TextView
                         android:id="@+id/tvNoProducts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:text="@string/no_products_added"
                         android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvProducts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/spacing_small"
                         android:nestedScrollingEnabled="false"
                         android:visibility="gone"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -314,7 +314,7 @@
                     android:layout_height="56dp"
                     android:text="@string/add_product"
                     style="@style/Widget.PlayStation.Button.Outlined"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="@dimen/spacing_medium"
                     app:icon="@drawable/ic_add"
                     app:iconGravity="textStart"
                     android:textSize="16sp" />
@@ -325,7 +325,7 @@
                     android:layout_height="56dp"
                     android:text="@string/pause_session"
                     style="@style/Widget.PlayStation.Button.Outlined"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="@dimen/spacing_medium"
                     app:iconGravity="textStart"
                     android:textSize="16sp" />
 

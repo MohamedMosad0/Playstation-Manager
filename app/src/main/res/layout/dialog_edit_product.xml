@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="@dimen/spacing_large">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilName"
@@ -30,7 +30,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/sale_price_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -46,7 +46,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/current_quantity_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -62,7 +62,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/min_quantity_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -78,7 +78,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:hint="@string/unit_cost_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -93,8 +93,8 @@
             android:id="@+id/tvAvailableStock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textSize="14sp"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:textAppearance="@style/TextAppearance.PlayStation.Body"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:visibility="gone" />
 
@@ -103,7 +103,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/spacing_small"
             android:visibility="gone"
             android:hint="@string/new_prepared_qty_label">
 
@@ -119,8 +119,8 @@
             android:id="@+id/tvPreparedQtyPreview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="14sp"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:textAppearance="@style/TextAppearance.PlayStation.Body"
             android:textColor="?attr/colorPrimary"
             android:visibility="gone" />
 
