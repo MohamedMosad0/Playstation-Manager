@@ -17,7 +17,26 @@ class DashboardExpenseAdapter(
     private val currency: String
 ) : ListAdapter<Expense, DashboardExpenseAdapter.ViewHolder>(DiffCallback()) {
 
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private var isInitialized = false
+    private var strCategoryElectricity = ""
+    private var strCategoryInternet = ""
+    private var strCategoryMaintenance = ""
+    private var strCategoryPurchases = ""
+    private var strCategoryWater = ""
+    private var strCategoryOther = ""
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        if (!isInitialized) {
+            val context = parent.context
+            strCategoryElectricity = context.getString(R.string.category_electricity)
+            strCategoryInternet = context.getString(R.string.category_internet)
+            strCategoryMaintenance = context.getString(R.string.category_maintenance)
+            strCategoryPurchases = context.getString(R.string.category_purchases)
+            strCategoryWater = context.getString(R.string.category_water)
+            strCategoryOther = context.getString(R.string.category_other)
+            isInitialized = true
+        }
         val binding = ItemExpenseBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
@@ -35,18 +54,18 @@ class DashboardExpenseAdapter(
             binding.tvCategoryName.text = getCategoryName(expense.category)
             binding.tvAmount.text = CurrencyUtils.formatAmount(binding.root.context, expense.amount, currency)
             binding.tvDescription.text = expense.description
-            binding.tvDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(expense.expenseDate)
+            binding.tvDate.text = dateFormat.format(expense.expenseDate)
             binding.ivCategory.setImageResource(getCategoryIcon(expense.category))
         }
 
         private fun getCategoryName(category: ExpenseCategory): String {
             return when (category) {
-                ExpenseCategory.ELECTRICITY -> binding.root.context.getString(R.string.category_electricity)
-                ExpenseCategory.INTERNET -> binding.root.context.getString(R.string.category_internet)
-                ExpenseCategory.MAINTENANCE -> binding.root.context.getString(R.string.category_maintenance)
-                ExpenseCategory.PURCHASES -> binding.root.context.getString(R.string.category_purchases)
-                ExpenseCategory.WATER -> binding.root.context.getString(R.string.category_water)
-                ExpenseCategory.OTHER -> binding.root.context.getString(R.string.category_other)
+                ExpenseCategory.ELECTRICITY -> strCategoryElectricity
+                ExpenseCategory.INTERNET -> strCategoryInternet
+                ExpenseCategory.MAINTENANCE -> strCategoryMaintenance
+                ExpenseCategory.PURCHASES -> strCategoryPurchases
+                ExpenseCategory.WATER -> strCategoryWater
+                ExpenseCategory.OTHER -> strCategoryOther
             }
         }
 

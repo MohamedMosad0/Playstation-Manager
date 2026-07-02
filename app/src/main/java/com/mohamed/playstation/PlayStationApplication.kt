@@ -47,7 +47,9 @@ class PlayStationApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Timber.plant(Timber.DebugTree())
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
 
         // Keep watching for runtime changes (user toggles the switch while the app is running)
         // This will also asynchronously apply the initial dark mode state upon app launch.

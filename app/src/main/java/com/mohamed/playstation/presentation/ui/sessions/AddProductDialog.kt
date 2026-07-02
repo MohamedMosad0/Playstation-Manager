@@ -118,11 +118,14 @@ class AddProductDialog : DialogFragment() {
         selectedProduct = null
     }
 
+    private var productWatcher: android.text.TextWatcher? = null
+    private var qtyWatcher: android.text.TextWatcher? = null
+
     private fun clearErrorsOnInput() {
-        binding.actInventoryProduct.doAfterTextChanged {
+        productWatcher = binding.actInventoryProduct.doAfterTextChanged {
             binding.tilInventoryProduct.error = null
         }
-        binding.etRequestedQuantity.doAfterTextChanged {
+        qtyWatcher = binding.etRequestedQuantity.doAfterTextChanged {
             binding.tilRequestedQuantity.error = null
         }
     }
@@ -156,7 +159,7 @@ class AddProductDialog : DialogFragment() {
             quantity = quantity,
             onSuccess = {
                 if (isAdded) {
-                    dismiss()
+                    dismissAllowingStateLoss()
                 }
             },
             onError = { error ->
@@ -175,8 +178,12 @@ class AddProductDialog : DialogFragment() {
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        productWatcher?.let { binding.actInventoryProduct.removeTextChangedListener(it) }
+        qtyWatcher?.let { binding.etRequestedQuantity.removeTextChangedListener(it) }
+        productWatcher = null
+        qtyWatcher = null
+        super.onDestroyView()
         _binding = null
     }
 

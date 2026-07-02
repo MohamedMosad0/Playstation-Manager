@@ -79,6 +79,7 @@ class AddExpenseDialog : DialogFragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvCategories.adapter = null
         super.onDestroyView()
         _binding = null
     }

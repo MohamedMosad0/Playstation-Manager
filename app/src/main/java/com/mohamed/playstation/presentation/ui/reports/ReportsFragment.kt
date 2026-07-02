@@ -289,6 +289,7 @@ class ReportsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvTopProducts.adapter = null
         super.onDestroyView()
         _binding = null
     }

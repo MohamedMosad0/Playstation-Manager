@@ -250,6 +250,7 @@ class SessionDetailsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvProducts.adapter = null
         super.onDestroyView()
         _binding = null
     }

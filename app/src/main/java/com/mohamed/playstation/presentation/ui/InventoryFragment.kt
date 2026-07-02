@@ -66,6 +66,7 @@ class InventoryFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.viewPager.adapter = null
         super.onDestroyView()
         _binding = null
     }

@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var settingsManager: SettingsManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        android.util.Log.d("SettingsAudit", "MainActivity.onCreate: savedInstanceState is ${if (savedInstanceState == null) "null" else "NOT null"}")
+        
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -40,17 +40,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-        android.util.Log.d("SettingsAudit", "MainActivity.onStart")
+        
         super.onStart()
     }
 
     override fun onResume() {
-        android.util.Log.d("SettingsAudit", "MainActivity.onResume")
+        
         super.onResume()
     }
 
     override fun onDestroy() {
-        android.util.Log.d("SettingsAudit", "MainActivity.onDestroy")
+        
         super.onDestroy()
     }
 

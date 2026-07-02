@@ -124,7 +124,10 @@ class DashboardFragment : Fragment() {
             requireActivity().findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigationView).selectedItemId = R.id.inventoryFragment
         }
         binding.btnReceipts.setOnClickListener {
-            findNavController().navigate(R.id.action_dashboardFragment_to_receiptsFragment)
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.dashboardFragment) {
+                navController.navigate(R.id.action_dashboardFragment_to_receiptsFragment)
+            }
         }
     }
 
@@ -247,6 +250,8 @@ class DashboardFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvRecentSessions.adapter = null
+        binding.rvRecentExpenses.adapter = null
         super.onDestroyView()
         _binding = null
     }

@@ -54,11 +54,14 @@ class NewSessionDialog : DialogFragment() {
         dialog.setOnShowListener {
             dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 lifecycleScope.launch {
+                    if (_binding == null) return@launch
                     try {
                         if (startSession()) {
-                            checkExactAlarmAndDismiss(dialog)
+                            if (_binding == null) return@launch
+                            checkExactAlarmAndDismiss()
                         }
                     } catch (duplicateSession: DuplicateDeviceSessionException) {
+                        if (_binding == null) return@launch
                         Snackbar.make(
                             binding.root,
                             getString(
@@ -68,6 +71,7 @@ class NewSessionDialog : DialogFragment() {
                             Snackbar.LENGTH_LONG
                         ).show()
                     } catch (error: Exception) {
+                        if (_binding == null) return@launch
                         Snackbar.make(
                             binding.root,
                             error.message ?: getString(R.string.error_occurred),
@@ -79,10 +83,10 @@ class NewSessionDialog : DialogFragment() {
         }
         return dialog
     }
-    private fun checkExactAlarmAndDismiss(parentDialog: Dialog) {
+    private fun checkExactAlarmAndDismiss() {
         val sessionMode = getSelectedSessionMode()
         if (sessionMode != AppConstants.SESSION_MODE_FIXED || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
-            parentDialog.dismiss()
+            dismissAllowingStateLoss()
             return
         }
 
@@ -99,18 +103,18 @@ class NewSessionDialog : DialogFragment() {
                             android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
                         )
                         startActivity(intent)
-                        parentDialog.dismiss()
+                        dismissAllowingStateLoss()
                     }
                     .setNegativeButton(getString(com.mohamed.playstation.R.string.action_cancel)) { _, _ ->
                         lifecycleScope.launch {
                             settingsManager.setExactAlarmPromptDismissed(true)
-                            parentDialog.dismiss()
+                            dismissAllowingStateLoss()
                         }
                     }
                     .setCancelable(false)
                     .show()
             } else {
-                parentDialog.dismiss()
+                dismissAllowingStateLoss()
             }
         }
     }
@@ -260,6 +264,7 @@ class NewSessionDialog : DialogFragment() {
     }
 
     override fun onDestroyView() {
+        binding.switchMultiPlayer.setOnCheckedChangeListener(null)
         super.onDestroyView()
         _binding = null
     }

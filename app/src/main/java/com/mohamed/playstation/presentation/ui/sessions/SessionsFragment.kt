@@ -66,13 +66,12 @@ class SessionsFragment : Fragment() {
                 val bundle = Bundle().apply {
                     putLong("sessionId", session.id)
                 }
-                try {
-                    findNavController().navigate(
+                val navController = findNavController()
+                if (navController.currentDestination?.id == com.mohamed.playstation.R.id.sessionsFragment) {
+                    navController.navigate(
                         com.mohamed.playstation.R.id.action_sessionsFragment_to_sessionDetailsFragment,
                         bundle
                     )
-                } catch (e: Exception) {
-                    // ignore duplicate navigation
                 }
             }
         )
@@ -215,6 +214,8 @@ class SessionsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvSessions.adapter = null
+        binding.rvCompletedSessions.adapter = null
         super.onDestroyView()
         _binding = null
     }

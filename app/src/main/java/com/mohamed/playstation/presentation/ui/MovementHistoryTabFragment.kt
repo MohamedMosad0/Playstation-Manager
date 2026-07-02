@@ -51,7 +51,7 @@ class MovementHistoryTabFragment : Fragment() {
         binding.emptyState.visibility = View.GONE
         binding.rvMovements.visibility = View.VISIBLE
 
-        binding.etSearch.doAfterTextChanged { text ->
+        searchWatcher = binding.etSearch.doAfterTextChanged { text ->
             viewModel.setMovementSearchQuery(text?.toString() ?: "")
         }
 
@@ -72,7 +72,12 @@ class MovementHistoryTabFragment : Fragment() {
         }
     }
 
+    private var searchWatcher: android.text.TextWatcher? = null
+
     override fun onDestroyView() {
+        searchWatcher?.let { binding.etSearch.removeTextChangedListener(it) }
+        searchWatcher = null
+        binding.rvMovements.adapter = null
         super.onDestroyView()
         _binding = null
     }

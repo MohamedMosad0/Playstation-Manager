@@ -44,14 +44,14 @@ class EndSessionDialog : DialogFragment() {
             val session = viewModel.getSessionById(sessionId)
             if (session != null) {
                 viewModel.endSession(session) { receiptId ->
-                    dismiss()
+                    dismissAllowingStateLoss()
                     if (isAdded) {
                         ReceiptDetailDialog.newInstance(receiptId)
                             .show(parentFragmentManager, "ReceiptDetailDialog")
                     }
                 }
             } else {
-                dismiss()
+                dismissAllowingStateLoss()
             }
         }
     }

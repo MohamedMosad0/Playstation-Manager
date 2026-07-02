@@ -19,25 +19,17 @@
         android:padding="24dp">
 
         <!-- Device Badge -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardDeviceBadge"
+        <ImageView
+            android:id="@+id/ivDeviceIconBadge"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            app:strokeWidth="0dp"
-            app:cardCornerRadius="6dp"
-            app:cardBackgroundColor="@color/ps_blue_primary"
+            android:background="@drawable/bg_device_badge"
+            android:padding="4dp"
+            android:src="@drawable/ic_gamepad"
+            app:tint="@color/white"
             app:layout_constraintTop_toTopOf="@id/tvDeviceName"
             app:layout_constraintBottom_toBottomOf="@id/tvDeviceName"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <ImageView
-                android:id="@+id/ivDeviceIconBadge"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="4dp"
-                android:src="@drawable/ic_gamepad"
-                app:tint="@color/white" />
-        </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Device Name -->
         <TextView
@@ -50,7 +42,7 @@
             android:fontFamily="sans-serif-medium"
             tools:text="PS4 #1"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cardDeviceBadge" />
+            app:layout_constraintStart_toEndOf="@id/ivDeviceIconBadge" />
 
         <!-- Status Chip -->
         <com.google.android.material.chip.Chip

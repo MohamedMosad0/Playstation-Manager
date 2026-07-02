@@ -147,6 +147,7 @@ class ReceiptsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvReceipts.adapter = null
         super.onDestroyView()
         _binding = null
     }

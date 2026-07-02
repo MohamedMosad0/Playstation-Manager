@@ -1,8 +1,10 @@
 package com.mohamed.playstation.presentation.ui.dashboard
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +18,45 @@ class DashboardSessionAdapter(
     private val onItemClick: (Session) -> Unit
 ) : ListAdapter<Session, DashboardSessionAdapter.ViewHolder>(DiffCallback()) {
 
+    // Cached resources to prevent allocations in bind()
+    private var isInitialized = false
+    private var colorStatusPaused = 0
+    private var colorStatusActive = 0
+    private var colorTextSecondary = 0
+    private var bgStatusPaused: ColorStateList? = null
+    private var bgStatusActive: ColorStateList? = null
+    private var bgStatusAvailable: ColorStateList? = null
+    private var strStatusRunning: String = ""
+    private var strStatusPaused: String = ""
+    private var strStatusAvailable: String = ""
+    private var strModeFixed: String = ""
+    private var strModeOpen: String = ""
+    private var strMultiplayer: String = ""
+    private var strSinglePlayer: String = ""
+    
+    private val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        if (!isInitialized) {
+            val context = parent.context
+            colorStatusPaused = context.getColor(R.color.status_paused)
+            colorStatusActive = context.getColor(R.color.status_active)
+            colorTextSecondary = context.getColor(R.color.text_secondary)
+            
+            bgStatusPaused = ColorStateList.valueOf(ColorUtils.setAlphaComponent(colorStatusPaused, 38))
+            bgStatusActive = ColorStateList.valueOf(ColorUtils.setAlphaComponent(colorStatusActive, 38))
+            bgStatusAvailable = ColorStateList.valueOf(ColorUtils.setAlphaComponent(colorTextSecondary, 25))
+            
+            strStatusRunning = context.getString(R.string.status_running)
+            strStatusPaused = context.getString(R.string.status_paused)
+            strStatusAvailable = context.getString(R.string.status_available)
+            strModeFixed = context.getString(R.string.session_mode_fixed)
+            strModeOpen = context.getString(R.string.session_mode_open)
+            strMultiplayer = context.getString(R.string.multiplayer)
+            strSinglePlayer = context.getString(R.string.single_player)
+            isInitialized = true
+        }
+
         val binding = ItemSessionCardBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
@@ -29,8 +69,6 @@ class DashboardSessionAdapter(
 
     inner class ViewHolder(private val binding: ItemSessionCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        private val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
 
         fun bind(session: Session) {
             with(binding) {
@@ -49,44 +87,33 @@ class DashboardSessionAdapter(
                     append(session.deviceNumber)
                 }
 
-                val modeText = if (session.isFixed()) {
-                    root.context.getString(R.string.session_mode_fixed)
-                } else {
-                    root.context.getString(R.string.session_mode_open)
-                }
-                
-                val playerText = if (session.isMultiPlayer) root.context.getString(R.string.multiplayer) else root.context.getString(R.string.single_player)
+                val modeText = if (session.isFixed()) strModeFixed else strModeOpen
+                val playerText = if (session.isMultiPlayer) strMultiplayer else strSinglePlayer
                 tvSessionMode.text = "$modeText • $playerText"
 
                 when {
                     session.isActive() -> {
-                        tvStatus.text = root.context.getString(R.string.status_running)
-                        tvStatus.setTextColor(root.context.getColor(R.color.status_active))
-                        tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                            androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.status_active), 38)
-                        )
+                        tvStatus.text = strStatusRunning
+                        tvStatus.setTextColor(colorStatusActive)
+                        tvStatus.backgroundTintList = bgStatusActive
                         tvTimer.text = timeFormat.format(session.startTime)
                         tvTimer.textSize = 14f
-                        tvTimer.setTextColor(root.context.getColor(R.color.text_secondary))
+                        tvTimer.setTextColor(colorTextSecondary)
                         tvTimer.visibility = View.VISIBLE
                     }
                     session.isPaused() -> {
-                        tvStatus.text = root.context.getString(R.string.status_paused)
-                        tvStatus.setTextColor(root.context.getColor(R.color.status_paused))
-                        tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                            androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.status_paused), 38)
-                        )
+                        tvStatus.text = strStatusPaused
+                        tvStatus.setTextColor(colorStatusPaused)
+                        tvStatus.backgroundTintList = bgStatusPaused
                         tvTimer.text = timeFormat.format(session.startTime)
                         tvTimer.textSize = 14f
-                        tvTimer.setTextColor(root.context.getColor(R.color.text_secondary))
+                        tvTimer.setTextColor(colorTextSecondary)
                         tvTimer.visibility = View.VISIBLE
                     }
                     else -> {
-                        tvStatus.text = root.context.getString(R.string.status_available)
-                        tvStatus.setTextColor(root.context.getColor(R.color.text_secondary))
-                        tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
-                            androidx.core.graphics.ColorUtils.setAlphaComponent(root.context.getColor(R.color.text_secondary), 25)
-                        )
+                        tvStatus.text = strStatusAvailable
+                        tvStatus.setTextColor(colorTextSecondary)
+                        tvStatus.backgroundTintList = bgStatusAvailable
                         tvTimer.visibility = View.GONE
                     }
                 }

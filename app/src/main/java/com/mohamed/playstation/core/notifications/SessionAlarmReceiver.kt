@@ -118,7 +118,8 @@ class SessionAlarmReceiver : BroadcastReceiver() {
             Timber.d("End alarm delivered for session ${session.id}")
         } catch (e: Exception) {
             sessionAlarmScheduler.syncSession(sessionId)
-            throw e
+            Timber.e(e, "Failed to end session ${session.id}")
+            return
         }
     }
 }

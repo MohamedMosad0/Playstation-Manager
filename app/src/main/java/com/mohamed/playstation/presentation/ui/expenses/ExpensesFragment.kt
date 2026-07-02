@@ -102,6 +102,7 @@ class ExpensesFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvExpenses.adapter = null
         super.onDestroyView()
         _binding = null
     }

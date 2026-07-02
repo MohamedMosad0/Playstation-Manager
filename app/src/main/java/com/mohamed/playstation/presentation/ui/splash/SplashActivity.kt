@@ -35,10 +35,13 @@ class SplashActivity : AppCompatActivity() {
 
         Timber.d("Splash Screen Started")
 
-        // Start animations and sound
+        // Start animations
         startAnimations()
-        playStartupSound()
-        navigateToMainAfterDelay()
+        
+        // Defer sound until after first frame layout to prevent blocking Main Thread
+        binding.root.post {
+            playStartupSound()
+        }
     }
 
     /**
@@ -71,6 +74,18 @@ class SplashActivity : AppCompatActivity() {
                 .setStartDelay(300)
                 .setDuration(600)
                 .setInterpolator(AccelerateDecelerateInterpolator())
+                .withEndAction {
+                    // Fade out animation before navigation
+                    binding.root.animate()
+                        .alpha(0f)
+                        .setDuration(300)
+                        .setListener(object : AnimatorListenerAdapter() {
+                            override fun onAnimationEnd(animation: Animator) {
+                                navigateToMain()
+                            }
+                        })
+                        .start()
+                }
                 .start()
         }
 
@@ -112,26 +127,6 @@ class SplashActivity : AppCompatActivity() {
             Timber.d("Startup sound playing")
         } catch (e: Exception) {
             Timber.e(e, "Error playing startup sound")
-        }
-    }
-
-    /**
-     * الانتقال للشاشة الرئيسية بعد 2.5 ثانية
-     */
-    private fun navigateToMainAfterDelay() {
-        lifecycleScope.launch {
-            delay(900)
-
-            // Fade out animation before navigation
-            binding.root.animate()
-                .alpha(0f)
-                .setDuration(300)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        navigateToMain()
-                    }
-                })
-                .start()
         }
     }
 

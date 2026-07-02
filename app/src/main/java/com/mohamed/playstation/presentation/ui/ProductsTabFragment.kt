@@ -41,6 +41,7 @@ class ProductsTabFragment : Fragment() {
     private val viewModel: InventoryViewModel by viewModels({ requireParentFragment() })
     private val settingsViewModel: SettingsViewModel by activityViewModels()
 
+    private var scrollListener: RecyclerView.OnScrollListener? = null
     private lateinit var adapter: ProductsAdapter
 
     override fun onCreateView(
@@ -67,7 +68,7 @@ class ProductsTabFragment : Fragment() {
         binding.emptyState.visibility = View.GONE
         binding.rvProducts.visibility = View.VISIBLE
 
-        binding.etSearch.doAfterTextChanged { text ->
+        searchWatcher = binding.etSearch.doAfterTextChanged { text ->
             viewModel.setSearchQuery(text?.toString() ?: "")
         }
 
@@ -76,7 +77,7 @@ class ProductsTabFragment : Fragment() {
         }
         
         // Hide/Show FAB on scroll
-        binding.rvProducts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 && binding.btnNewProduct.isShown) {
                     binding.btnNewProduct.hide()
@@ -84,7 +85,8 @@ class ProductsTabFragment : Fragment() {
                     binding.btnNewProduct.show()
                 }
             }
-        })
+        }
+        binding.rvProducts.addOnScrollListener(scrollListener!!)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -321,7 +323,14 @@ class ProductsTabFragment : Fragment() {
             .show()
     }
 
+    private var searchWatcher: android.text.TextWatcher? = null
+
     override fun onDestroyView() {
+        searchWatcher?.let { binding.etSearch.removeTextChangedListener(it) }
+        searchWatcher = null
+        scrollListener?.let { binding.rvProducts.removeOnScrollListener(it) }
+        scrollListener = null
+        binding.rvProducts.adapter = null
         super.onDestroyView()
         _binding = null
     }

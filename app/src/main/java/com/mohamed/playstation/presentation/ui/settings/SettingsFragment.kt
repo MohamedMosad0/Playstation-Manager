@@ -38,7 +38,8 @@ class SettingsFragment : Fragment() {
     lateinit var localeManager: LocaleManager
 
     private var isUpdatingUi = false
-    private var progressDialog: android.app.Dialog? = null
+    private var progressDialog: androidx.appcompat.app.AlertDialog? = null
+    private var restoreDialog: androidx.appcompat.app.AlertDialog? = null
 
     private val exportLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         uri?.let {
@@ -323,7 +324,7 @@ class SettingsFragment : Fragment() {
     private fun showRestoreConfirmation(uri: android.net.Uri) {
         viewLifecycleOwner.lifecycleScope.launch {
             if (viewModel.hasActiveSessions()) {
-                MaterialAlertDialogBuilder(requireContext())
+                restoreDialog = MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.active_sessions_warning)
                     .setMessage(R.string.restore_confirmation)
                     .setPositiveButton(R.string.restore_backup_button) { _, _ ->
@@ -332,7 +333,7 @@ class SettingsFragment : Fragment() {
                     .setNegativeButton(R.string.cancel, null)
                     .show()
             } else {
-                MaterialAlertDialogBuilder(requireContext())
+                restoreDialog = MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.restore)
                     .setMessage(R.string.restore_confirmation)
                     .setPositiveButton(R.string.restore_backup_button) { _, _ ->
@@ -352,6 +353,8 @@ class SettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         dismissLoadingDialog()
+        restoreDialog?.dismiss()
+        restoreDialog = null
         _binding = null
     }
 }
