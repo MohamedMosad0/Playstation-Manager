@@ -68,10 +68,10 @@
     <string name="no_inventory_products">No inventory products available</string>
 
     <!-- Device Types -->
-    <string name="ps4_standard">بلايستيشن 4 عادي</string>
-    <string name="ps4_pro">بلايستيشن 4 برو</string>
-    <string name="ps5_standard">بلايستيشن 5 عادي</string>
-    <string name="ps5_digital">بلايستيشن 5 ديجيتال</string>
+    <string name="ps4_standard">PS4 - قياسي</string>
+    <string name="ps4_pro">PS4 - متقدم</string>
+    <string name="ps5_standard">PS5 - قياسي</string>
+    <string name="ps5_digital">PS5 - رقمي</string>
 
     <!-- Session Types -->
     <string name="single_player">لاعب واحد</string>
@@ -133,7 +133,7 @@
     <string name="restore">استعادة</string>
     <string name="per_hour">/ الساعة</string>
     <string name="select_currency">اختر العملة</string>
-    <string name="settings_saved">تم حفظ الإعدادات</string>
+    <string name="settings_saved">✓ تم الحفظ</string>
     <string name="settings_general">عام</string>
     <string name="settings_dark_mode">الوضع الداكن</string>
     <string name="settings_notifications">الإشعارات</string>
@@ -153,10 +153,6 @@
     <string name="settings_backup">نسخ احتياطي</string>
     <string name="settings_restore">استعادة</string>
     <string name="settings_about">حول التطبيق</string>
-    <string name="settings_reset">إعادة ضبط الإعدادات</string>
-    <string name="settings_reset_confirm_title">إعادة ضبط الإعدادات؟</string>
-    <string name="settings_reset_confirm_message">هل أنت متأكد من إعادة ضبط جميع الإعدادات لقيمها الافتراضية؟ لا يمكن التراجع عن هذا الإجراء.</string>
-    <string name="settings_reset_success">تمت إعادة ضبط الإعدادات بنجاح</string>
     <string name="settings_version">الإصدار: %1$s</string>
     <string name="settings_developer">المطور: %1$s</string>
     <string name="settings_version_title">الإصدار</string>
@@ -282,8 +278,8 @@
     <string name="product_unit_profit">📈 ربح الوحدة:</string>
     <string name="product_available">📦 المتاح:</string>
     <string name="product_unit">وحدة</string>
-    <string name="ps4">PlayStation 4</string>
-    <string name="ps5">PlayStation 5</string>
+    <string name="ps4">PS4</string>
+    <string name="ps5">PS5</string>
     <string name="last_7_days">آخر 7 أيام</string>
     <string name="this_month">هذا الشهر</string>
     <string name="last_30_days">آخر 30 يوم</string>
@@ -475,5 +471,19 @@
     <string name="settings_developer_label">المطور</string>
     <string name="settings_dark_mode_subtitle">استخدام الوضع الداكن</string>
     <string name="settings_notifications_subtitle">تفعيل تنبيهات الجلسات</string>
+    <string name="dashboard_empty_expense_chart_title">لا توجد بيانات مصروفات</string>
+    <string name="dashboard_empty_expense_chart_subtitle">أضف أول مصروف لرؤية الإحصائيات هنا.</string>
+    <string name="expense_history">سجل المصروفات</string>
+    <string name="receipt_history">سجل الفواتير</string>
+    <string name="filter_this_week">هذا الأسبوع</string>
+    <string name="filter_last_month">الشهر الماضي</string>
+    <string name="filter_last_3_months">آخر 3 أشهر</string>
+    <string name="action_edit_product">تعديل المنتج</string>
+    <string name="action_archive_product">أرشفة المنتج</string>
+    <string name="delete_expense_title">حذف المصروف</string>
+    <string name="delete_expense_message">هل أنت متأكد من حذف \"%1$s\"؟\nهذا الإجراء لا يمكن التراجع عنه.</string>
+    <string name="invalid_expense_amount">أدخل مبلغاً أكبر من صفر</string>
+    <string name="select_expense_category">اختر فئة للمصروف</string>
+    <string name="end_session_failed">تعذر إنهاء الجلسة. حاول مرة أخرى.</string>
 </resources>
 

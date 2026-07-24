@@ -54,6 +54,4 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setSessionMode(mode: String) = settingsManager.setSessionMode(mode)
     override val defaultFixedMinutesFlow: Flow<Int> = settingsManager.defaultFixedMinutesFlow
     override suspend fun setDefaultFixedMinutes(minutes: Int) = settingsManager.setDefaultFixedMinutes(minutes)
-
-    override suspend fun resetSettings() = settingsManager.clearAll()
 }

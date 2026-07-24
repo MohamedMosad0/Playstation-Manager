@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamed.playstation.core.utils.CurrencyUtils
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.ItemCompletedSessionBinding
 import com.mohamed.playstation.domain.model.Session
-import java.text.SimpleDateFormat
-import java.util.Locale
+import android.text.BidiFormatter
 
 /**
  * Adapter for completed (ended) sessions.
@@ -21,7 +21,6 @@ class CompletedSessionAdapter(
     private val currency: String
 ) : ListAdapter<Session, CompletedSessionAdapter.CompletedViewHolder>(CompletedDiffCallback()) {
 
-    private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompletedViewHolder {
         val binding = ItemCompletedSessionBinding.inflate(
@@ -43,21 +42,27 @@ class CompletedSessionAdapter(
         fun bind(session: Session) {
             with(binding) {
                 // Device name
-                tvCompletedDeviceName.text = buildString {
+                val deviceString = buildString {
                     append(session.deviceType)
                     append(" #")
                     append(session.deviceNumber)
                 }
+                tvCompletedDeviceName.text = BidiFormatter.getInstance().unicodeWrap(deviceString)
 
                 // Start time
-                tvCompletedStartTime.text = timeFormat.format(session.startTime)
+                tvCompletedStartTime.text = AppFormatters.formatTwentyFourHourTime(binding.root.context, session.startTime)
 
                 // End time
-                tvCompletedEndTime.text = session.endTime?.let { timeFormat.format(it) } ?: "--:--"
+                tvCompletedEndTime.text = session.endTime?.let {
+                    AppFormatters.formatTwentyFourHourTime(binding.root.context, it)
+                } ?: "--:--"
 
                 // Duration — use endTime so static, no clock tick needed
                 val endMs = session.endTime?.time ?: System.currentTimeMillis()
-                tvCompletedDuration.text = session.getFormattedDuration(endMs)
+                tvCompletedDuration.text = AppFormatters.formatDuration(
+                    binding.root.context,
+                    session.getDurationMinutes(endMs)
+                )
 
                 // Total price
                 val total = session.calculateTotal(endMs)

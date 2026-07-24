@@ -25,7 +25,6 @@ import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.FragmentDashboardBinding
 import com.mohamed.playstation.domain.model.dashboard.DashboardData
 import com.mohamed.playstation.presentation.ui.UiState
-import com.mohamed.playstation.presentation.ui.expenses.AddExpenseDialog
 import com.mohamed.playstation.presentation.ui.sessions.NewSessionDialog
 import com.mohamed.playstation.presentation.viewmodel.dashboard.DashboardViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -66,10 +65,12 @@ class DashboardFragment : Fragment() {
             }
         )
         binding.rvRecentSessions.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvRecentSessions.setHasFixedSize(true)
         binding.rvRecentSessions.adapter = sessionAdapter
 
         expenseAdapter = DashboardExpenseAdapter(viewModel.currency.value)
         binding.rvRecentExpenses.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvRecentExpenses.setHasFixedSize(true)
         binding.rvRecentExpenses.adapter = expenseAdapter
     }
 
@@ -117,13 +118,13 @@ class DashboardFragment : Fragment() {
         binding.btnNewSession.setOnClickListener {
             NewSessionDialog().show(childFragmentManager, "NewSessionDialog")
         }
-        binding.btnAddExpense.setOnClickListener {
-            AddExpenseDialog.newInstance().show(childFragmentManager, "AddExpenseDialog")
+        binding.cardExpensesAction.setOnClickListener {
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.dashboardFragment) {
+                navController.navigate(R.id.action_dashboardFragment_to_expensesFragment)
+            }
         }
-        binding.btnInventory.setOnClickListener {
-            requireActivity().findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigationView).selectedItemId = R.id.inventoryFragment
-        }
-        binding.btnReceipts.setOnClickListener {
+        binding.cardReceiptsAction.setOnClickListener {
             val navController = findNavController()
             if (navController.currentDestination?.id == R.id.dashboardFragment) {
                 navController.navigate(R.id.action_dashboardFragment_to_receiptsFragment)
@@ -169,9 +170,11 @@ class DashboardFragment : Fragment() {
         binding.tvRevenue.text = CurrencyUtils.formatAmount(requireContext(), data.todayRevenue, currencyStr)
         binding.tvExpenses.text = CurrencyUtils.formatAmount(requireContext(), data.todayExpenses, currencyStr)
         binding.tvNetProfit.text = CurrencyUtils.formatAmount(requireContext(), data.netProfit, currencyStr)
-        binding.tvSessions.text = data.sessionsToday.toString()
-        binding.tvTotalProducts.text = data.totalProducts.toString()
-        binding.tvLowStock.text = data.lowStockProducts.toString()
+        val profitColor = if (data.netProfit >= 0) R.color.chart_green else R.color.chart_red
+        binding.tvNetProfit.setTextColor(requireContext().getColor(profitColor))
+        binding.tvSessions.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), data.sessionsToday)
+        binding.tvTotalProducts.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), data.totalProducts)
+        binding.tvLowStock.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), data.lowStockProducts)
 
         sessionAdapter.submitList(data.recentSessions)
         binding.tvEmptySessions.isVisible = data.recentSessions.isEmpty()
@@ -181,7 +184,19 @@ class DashboardFragment : Fragment() {
         binding.tvEmptyExpenses.isVisible = data.recentExpenses.isEmpty()
         binding.rvRecentExpenses.isVisible = data.recentExpenses.isNotEmpty()
 
-        bindCharts(data)
+        // Premium cards date label — reuses Reports filter_today string
+        val todayLabel = getString(R.string.filter_today)
+        val formattedDate = com.mohamed.playstation.core.utils.AppFormatters.formatLongDate(requireContext(), java.util.Date())
+        val dateText = "$todayLabel · $formattedDate"
+        binding.tvExpenseCardDate.text = dateText
+        binding.tvReceiptCardDate.text = dateText
+
+        // Defer chart binding to after the first frame
+        binding.root.post {
+            if (_binding != null) {
+                bindCharts(data)
+            }
+        }
     }
 
     private fun bindCharts(data: DashboardData) {
@@ -212,6 +227,8 @@ class DashboardFragment : Fragment() {
         }
 
         if (data.expenseChartData.isNotEmpty()) {
+            binding.expensePieChart.isVisible = true
+            binding.layoutEmptyExpenseChart.isVisible = false
             val pieEntries = data.expenseChartData.map { point ->
                 PieEntry(point.value, getCategoryFriendlyName(point.label))
             }
@@ -237,15 +254,17 @@ class DashboardFragment : Fragment() {
                 binding.expensePieChart.invalidate()
             }
         } else {
+            binding.expensePieChart.isVisible = false
+            binding.layoutEmptyExpenseChart.isVisible = true
             binding.expensePieChart.clear()
         }
     }
 
     private fun animateUiIn() {
         if (binding.gridKpi.alpha == 0f) {
-            binding.gridKpi.animate().alpha(1f).setDuration(500).start()
-            binding.layoutCharts.animate().alpha(1f).setStartDelay(200).setDuration(500).start()
-            binding.layoutRecent.animate().alpha(1f).setStartDelay(400).setDuration(500).start()
+            binding.gridKpi.animate().alpha(1f).setDuration(200).start()
+            binding.layoutCharts.animate().alpha(1f).setStartDelay(50).setDuration(200).start()
+            binding.layoutRecent.animate().alpha(1f).setStartDelay(100).setDuration(200).start()
         }
     }
 

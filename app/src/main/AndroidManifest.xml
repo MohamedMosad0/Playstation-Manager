@@ -21,7 +21,7 @@
         android:theme="@style/Theme.PlayStation"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.ui.splash.SplashActivity"
+            android:name=".presentation.ui.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.PlayStation.Splash">
             <intent-filter>
@@ -30,11 +30,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- Main Activity -->
-        <activity
-            android:name=".presentation.ui.main.MainActivity"
-            android:exported="false"
-            android:theme="@style/Theme.PlayStation" />
 
         <receiver
             android:name=".core.notifications.SessionAlarmReceiver"

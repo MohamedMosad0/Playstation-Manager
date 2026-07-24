@@ -12,6 +12,7 @@ import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.databinding.ItemSessionCardBinding
 import com.mohamed.playstation.domain.model.Session
+import android.text.BidiFormatter
 
 class SessionAdapter(
     private var tick: Long = 0L,
@@ -102,12 +103,16 @@ class SessionAdapter(
         }
 
         fun bind(session: Session, currentTick: Long) {
+            // Pre-compute once — was called 3 times per bind
+            val remainingMs = if (session.isFixed()) SessionTimer.getRemainingMs(session, currentTick) ?: 0L else Long.MAX_VALUE
+
             with(binding) {
-                tvDeviceName.text = buildString {
+                val deviceString = buildString {
                     append(session.deviceType)
                     append(" #")
                     append(session.deviceNumber)
                 }
+                tvDeviceName.text = BidiFormatter.getInstance().unicodeWrap(deviceString)
 
                 val modeText = if (session.isFixed()) strModeFixed else strModeOpen
                 val playerText = if (session.isMultiPlayer) strMultiplayer else strSinglePlayer
@@ -115,7 +120,7 @@ class SessionAdapter(
 
                 when {
                     session.isActive() -> {
-                        val isAutoEnding = session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
+                        val isAutoEnding = session.isFixed() && remainingMs <= 0L
                         if (isAutoEnding) {
                             tvStatus.text = strFinishingProgress
                             tvStatus.setTextColor(colorStatusPaused)
@@ -143,15 +148,14 @@ class SessionAdapter(
                 }
 
                 if (tvTimer.visibility == View.VISIBLE) {
-                    val isAutoEnding = session.isActive() && session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
+                    val isAutoEnding = session.isActive() && session.isFixed() && remainingMs <= 0L
                     if (isAutoEnding) {
                         tvTimer.text = "00:00:00"
                         tvTimer.setTextColor(colorStatusPaused)
                     } else {
-                        tvTimer.text = SessionTimer.formatForSession(session, currentTick)
+                        tvTimer.text = SessionTimer.formatForSession(itemView.context, session, currentTick)
                         if (session.isFixed() && session.isActive()) {
-                            val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
-                            tvTimer.setTextColor(if (remaining <= 5 * 60_000) colorStatusPaused else colorPsBluePrimary)
+                            tvTimer.setTextColor(if (remainingMs <= 5 * 60_000) colorStatusPaused else colorPsBluePrimary)
                         } else {
                             tvTimer.setTextColor(colorPsBluePrimary)
                         }
@@ -163,32 +167,30 @@ class SessionAdapter(
         fun bindTimerOnly(session: Session, currentTick: Long) {
             with(binding) {
                 if (session.isActive()) {
-                    val isAutoEnding = session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
+                    // Compute once — was called up to 3 times per tick per session
+                    val remainingMs = if (session.isFixed()) SessionTimer.getRemainingMs(session, currentTick) ?: 0L else Long.MAX_VALUE
+                    val isAutoEnding = session.isFixed() && remainingMs <= 0L
+
                     if (isAutoEnding) {
                         tvStatus.text = strFinishingProgress
                         tvStatus.setTextColor(colorStatusPaused)
                         tvStatus.backgroundTintList = bgStatusPaused
+                        tvTimer.text = "00:00:00"
+                        tvTimer.setTextColor(colorStatusPaused)
                     } else {
                         tvStatus.text = strStatusRunning
                         tvStatus.setTextColor(colorStatusActive)
                         tvStatus.backgroundTintList = bgStatusActive
+                        tvTimer.text = SessionTimer.formatForSession(itemView.context, session, currentTick)
+                        tvTimer.setTextColor(
+                            if (session.isFixed() && remainingMs <= 5 * 60_000) colorStatusPaused else colorPsBluePrimary
+                        )
                     }
-                }
-
-                if (tvTimer.visibility == View.VISIBLE) {
-                    val isAutoEnding = session.isActive() && session.isFixed() && (SessionTimer.getRemainingMs(session, currentTick) ?: 0L) <= 0L
-                    if (isAutoEnding) {
-                        tvTimer.text = "00:00:00"
-                        tvTimer.setTextColor(colorStatusPaused)
-                    } else {
-                        tvTimer.text = SessionTimer.formatForSession(session, currentTick)
-                        if (session.isFixed() && session.isActive()) {
-                            val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
-                            tvTimer.setTextColor(if (remaining <= 5 * 60_000) colorStatusPaused else colorPsBluePrimary)
-                        } else {
-                            tvTimer.setTextColor(colorPsBluePrimary)
-                        }
-                    }
+                } else if (session.isPaused() && tvTimer.visibility == View.VISIBLE) {
+                    // Paused sessions only need timer text update (elapsed time doesn't change while paused,
+                    // but keep consistent with bind() which shows timer for paused sessions)
+                    tvTimer.text = SessionTimer.formatForSession(itemView.context, session, currentTick)
+                    tvTimer.setTextColor(colorPsBluePrimary)
                 }
             }
         }

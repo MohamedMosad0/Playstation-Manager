@@ -40,7 +40,8 @@ class ProductAdapter(
             binding.tvProductName.text = product.nameSnapshot
             val unitPrice = CurrencyUtils.formatAmount(itemView.context, product.sellPriceSnapshot, currencyCode)
             val lineTotal = CurrencyUtils.formatAmount(itemView.context, product.getLineTotal(), currencyCode)
-            binding.tvProductQuantity.text = binding.root.context.getString(com.mohamed.playstation.R.string.product_quantity_format, unitPrice, product.quantitySold)
+            binding.tvProductQuantity.text = "×${product.quantitySold}"
+            binding.tvProductUnitPrice.text = unitPrice
             binding.tvProductPrice.text = lineTotal
         }
     }

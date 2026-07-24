@@ -1,5 +1,7 @@
 package com.mohamed.playstation.data.repository
 
+import androidx.room.withTransaction
+import com.mohamed.playstation.data.local.AppDatabase
 import com.mohamed.playstation.data.local.dao.SessionDao
 import com.mohamed.playstation.data.mapper.SessionMapper
 import com.mohamed.playstation.domain.model.Session
@@ -10,12 +12,20 @@ import javax.inject.Singleton
 
 @Singleton
 class SessionRepository @Inject constructor(
-    private val sessionDao: SessionDao
+    private val sessionDao: SessionDao,
+    private val database: AppDatabase
 ) {
 
-    suspend fun insertSession(session: Session): Long {
-        val entity = SessionMapper.toEntity(session)
-        return sessionDao.insert(entity)
+    suspend fun insertSessionIfDeviceAvailable(session: Session): Long? = database.withTransaction {
+        val blockingSession = sessionDao.getBlockingSessionForDevice(
+            deviceType = session.deviceType,
+            deviceNumber = session.deviceNumber
+        )
+        if (blockingSession != null) {
+            null
+        } else {
+            sessionDao.insert(SessionMapper.toEntity(session))
+        }
     }
 
     suspend fun getBlockingSessionForDevice(

@@ -105,8 +105,8 @@ class AddProductDialog : DialogFragment() {
         if (updateName) {
             binding.actInventoryProduct.setText(product.name, false)
         }
-        binding.etProductPrice.setText(product.sellPrice.toString())
-        binding.etAvailableQuantity.setText(product.quantity.toString())
+        binding.etProductPrice.setText(com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), product.sellPrice))
+        binding.etAvailableQuantity.setText(com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), product.quantity))
         binding.tilInventoryProduct.error = null
         binding.tilRequestedQuantity.error = null
     }
@@ -133,7 +133,7 @@ class AddProductDialog : DialogFragment() {
     private fun submitProduct(dialog: AlertDialog) {
 
         val product = selectedProduct
-        val quantity = binding.etRequestedQuantity.text?.toString()?.toIntOrNull()
+        val quantity = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(binding.etRequestedQuantity.text)
 
         var isValid = true
 

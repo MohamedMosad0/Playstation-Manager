@@ -27,6 +27,12 @@ interface InventoryItemDao {
     @Query("SELECT * FROM inventory_items WHERE isActive = 1")
     fun getActiveInventoryItems(): Flow<List<InventoryItemEntity>>
 
+    @Query("SELECT COUNT(*) FROM inventory_items WHERE isActive = 1")
+    fun getActiveInventoryItemsCount(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM inventory_items WHERE isActive = 1 AND quantity <= minimumQuantity AND quantity > 0")
+    fun getLowStockInventoryItemsCount(): Flow<Int>
+
     @Query("SELECT * FROM inventory_items WHERE isActive = 1 ORDER BY name")
     fun getAllActiveItems(): Flow<List<InventoryItemEntity>>
 

@@ -39,6 +39,8 @@
             android:fontFamily="sans-serif-medium"
             android:maxLines="1"
             android:ellipsize="end"
+            android:textAlignment="viewStart"
+            android:textDirection="locale"
             tools:text="Coffee" />
 
         <TextView
@@ -48,6 +50,8 @@
             android:layout_marginTop="2dp"
             android:textSize="13sp"
             android:textColor="?attr/colorOnSurfaceVariant"
+            android:textAlignment="viewStart"
+            android:textDirection="locale"
             tools:text="تم بيع: 2 كوب" />
 
     </LinearLayout>

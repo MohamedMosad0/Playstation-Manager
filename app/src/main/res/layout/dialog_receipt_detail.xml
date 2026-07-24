@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/surface_dark">
+    android:background="?attr/colorSurface">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_large">
+        android:paddingHorizontal="@dimen/spacing_large"
+        android:paddingVertical="@dimen/spacing_medium">
 
         <TextView
             android:id="@+id/tvReceiptTitle"
@@ -17,9 +18,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/app_name"
-            android:textColor="@color/text_primary"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.PlayStation.Headline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -294,25 +293,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/labelProducts" />
 
-        <TextView
-            android:id="@+id/tvProductsList"
+        <LinearLayout
+            android:id="@+id/llProductsList"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_marginTop="@dimen/spacing_small"
-            android:textColor="@color/text_primary"
-            android:textAppearance="@style/TextAppearance.PlayStation.Body"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/labelProducts"
-            tools:text="كوكاكولا ×2 = 40.00 ج.م" />
+            app:layout_constraintTop_toBottomOf="@id/labelProducts" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/productsBarrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="tvNoProducts,tvProductsList" />
+            app:constraint_referenced_ids="tvNoProducts,llProductsList" />
 
         <TextView
             android:id="@+id/labelTotal"
@@ -331,7 +328,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:textColor="@color/ps_blue_light"
+            android:textColor="?attr/colorPrimary"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBaseline_toBaselineOf="@id/labelTotal"
@@ -374,19 +371,17 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipCash"
-                style="@style/Widget.Material3.Chip.Filter"
+                style="@style/Widget.PlayStation.Selection.FilterChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cash"
-                android:textColor="@color/text_primary" />
+                android:text="@string/cash" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipCard"
-                style="@style/Widget.Material3.Chip.Filter"
+                style="@style/Widget.PlayStation.Selection.FilterChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/card"
-                android:textColor="@color/text_primary" />
+                android:text="@string/card" />
 
         </com.google.android.material.chip.ChipGroup>
 
@@ -394,7 +389,7 @@
             android:id="@+id/actionLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_large"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -418,37 +413,31 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnPrint"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    style="@style/Widget.PlayStation.Dialog.ActionButton.Outlined"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/spacing_small"
                     android:layout_weight="1"
-                    android:text="@string/print"
-                    android:textColor="@color/ps_blue_light"
-                    app:strokeColor="@color/ps_blue_light" />
+                    android:text="@string/print" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnShare"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    style="@style/Widget.PlayStation.Dialog.ActionButton.Outlined"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
                     android:layout_weight="1"
-                    android:text="@string/share"
-                    android:textColor="@color/ps_blue_light"
-                    app:strokeColor="@color/ps_blue_light" />
+                    android:text="@string/share" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnClose"
-                    style="@style/Widget.Material3.Button"
+                    style="@style/Widget.PlayStation.Dialog.ActionButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_small"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/ps_blue_primary"
-                    android:text="@string/close"
-                    android:textColor="@color/text_primary" />
+                    android:text="@string/close" />
 
             </LinearLayout>
         </LinearLayout>

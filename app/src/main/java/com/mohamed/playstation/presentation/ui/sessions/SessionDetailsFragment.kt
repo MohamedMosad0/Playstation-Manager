@@ -52,6 +52,7 @@ class SessionDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.loadProductsForSession(sessionId)
         setupProductsList()
         setupClickListeners()
         observeData()
@@ -78,36 +79,35 @@ class SessionDetailsFragment : Fragment() {
                         viewModel.activeSessions,
                         viewModel.pausedSessions,
                         viewModel.currency,
-                        viewModel.pricingSettings
-                    ) { activeState, pausedState, currency, pricing ->
-                        BaseSessionUIData(activeState, pausedState, currency, pricing)
-                    }.combine(viewModel.getProductsForSession(sessionId)) { baseData, products ->
-                        val activeSessions = if (baseData.activeState is UiState.Success) {
-                            baseData.activeState.data.first
+                        viewModel.pricingSettings,
+                        viewModel.sessionProducts
+                    ) { activeState, pausedState, currency, pricing, products ->
+                        val activeSessions = if (activeState is UiState.Success) {
+                            activeState.data.first
                         } else {
                             emptyList()
                         }
-                        val activeTick = if (baseData.activeState is UiState.Success) {
-                            baseData.activeState.data.second
+                        val activeTick = if (activeState is UiState.Success) {
+                            activeState.data.second
                         } else {
                             0L
                         }
-                        val pausedSessions = if (baseData.pausedState is UiState.Success) {
-                            baseData.pausedState.data.first
+                        val pausedSessions = if (pausedState is UiState.Success) {
+                            pausedState.data.first
                         } else {
                             emptyList()
                         }
                         val currentTick = if (activeTick > 0L) activeTick else System.currentTimeMillis()
                         val session = (activeSessions + pausedSessions).find { it.id == sessionId }
-                        val isLoading = baseData.activeState is UiState.Loading ||
-                            baseData.pausedState is UiState.Loading
+                        val isLoading = activeState is UiState.Loading ||
+                            pausedState is UiState.Loading
 
                         SessionUIData(
                             isLoading = isLoading,
                             session = session,
                             currentTick = currentTick,
-                            currency = baseData.currency,
-                            pricing = baseData.pricing,
+                            currency = currency,
+                            pricing = pricing,
                             products = products
                         )
                     }.collect { data -> updateUI(data) }
@@ -208,7 +208,7 @@ class SessionDetailsFragment : Fragment() {
 
         productAdapter.updateCurrency(data.currency)
         productAdapter.submitList(data.products)
-        binding.tvNoProducts.isVisible = data.products.isEmpty()
+        binding.layoutEmptyProducts.isVisible = data.products.isEmpty()
         binding.rvProducts.isVisible = data.products.isNotEmpty()
 
         binding.tvPlayCost.text = CurrencyUtils.formatAmount(requireContext(), playCost, data.currency)
@@ -225,7 +225,7 @@ class SessionDetailsFragment : Fragment() {
             binding.tvTimerLabel.text = getString(com.mohamed.playstation.R.string.finishing_session_progress)
             binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.status_paused))
         } else {
-            binding.tvLargeTimer.text = SessionTimer.formatForSession(session, currentTick)
+            binding.tvLargeTimer.text = SessionTimer.formatForSession(requireContext(), session, currentTick)
             if (session.isFixed()) {
                 binding.tvTimerLabel.text = getString(R.string.time_remaining)
                 binding.tvLargeTimer.setTextColor(
@@ -264,10 +264,4 @@ class SessionDetailsFragment : Fragment() {
         val products: List<SessionProduct>
     )
 
-    private data class BaseSessionUIData(
-        val activeState: UiState<Pair<List<Session>, Long>>,
-        val pausedState: UiState<Pair<List<Session>, Long>>,
-        val currency: String,
-        val pricing: com.mohamed.playstation.core.utils.SessionPricing.PricingSettings
-    )
 }

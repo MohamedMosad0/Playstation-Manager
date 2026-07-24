@@ -6,8 +6,8 @@
     android:id="@+id/cardSession"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="4dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
@@ -16,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:padding="16dp">
 
         <!-- Device Badge -->
         <ImageView
@@ -26,23 +26,29 @@
             android:background="@drawable/bg_device_badge"
             android:padding="4dp"
             android:src="@drawable/ic_gamepad"
+            android:contentDescription="@null"
             app:tint="@color/white"
             app:layout_constraintTop_toTopOf="@id/tvDeviceName"
             app:layout_constraintBottom_toBottomOf="@id/tvDeviceName"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Device Name -->
         <TextView
             android:id="@+id/tvDeviceName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
             android:textSize="18sp"
             android:textColor="@color/text_primary"
             android:fontFamily="sans-serif-medium"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textDirection="firstStrong"
+            android:textAlignment="viewStart"
             tools:text="PS4 #1"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ivDeviceIconBadge" />
+            app:layout_constraintStart_toEndOf="@id/ivDeviceIconBadge"
+            app:layout_constraintEnd_toStartOf="@id/tvStatus" />
 
         <!-- Status Chip -->
         <com.google.android.material.chip.Chip
@@ -66,7 +72,7 @@
             android:id="@+id/tvTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:textSize="52sp"
             android:textStyle="bold"
             android:textColor="@color/ps_blue_primary"
@@ -95,7 +101,7 @@
             android:id="@+id/divider"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:background="@color/divider"
             app:layout_constraintTop_toBottomOf="@id/tvSessionMode"
             app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +112,7 @@
             android:id="@+id/layoutActions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
             android:gravity="end"
             android:visibility="gone"

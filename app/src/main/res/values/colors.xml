@@ -48,6 +48,6 @@
     <color name="chart_purple">@color/colorSecondary</color>
 
     <!-- Switch Premium States -->
-    <color name="switch_off_track">#CBD5E1</color>
+    <color name="switch_off_track">#94A3B8</color>
     <color name="switch_off_thumb">#FFFFFF</color>
 </resources>

@@ -27,6 +27,14 @@ class InventoryRepository @Inject constructor(
         return inventoryItemDao.getAllArchivedItems().map { it.map { entity -> entity.toDomainModel() } }
     }
 
+    fun getActiveInventoryItemsCount(): Flow<Int> {
+        return inventoryItemDao.getActiveInventoryItemsCount()
+    }
+
+    fun getLowStockInventoryItemsCount(): Flow<Int> {
+        return inventoryItemDao.getLowStockInventoryItemsCount()
+    }
+
     suspend fun insertItem(item: InventoryItem): Long {
         return database.withTransaction {
             val id = inventoryItemDao.insert(item.toEntity())

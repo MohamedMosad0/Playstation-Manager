@@ -9,6 +9,7 @@ import com.mohamed.playstation.domain.usecase.InventoryUseCases
 import com.mohamed.playstation.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -49,7 +50,8 @@ class InventoryViewModel @Inject constructor(
         val list = if (showArchived) archived else active
         if (query.isBlank()) list
         else list.filter { it.name.contains(query, ignoreCase = true) }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    }.flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val movementsWithNames: StateFlow<List<StockMovementView>> = combine(
         stockMovementRepository.getAllMovementsWithNames(),
@@ -70,7 +72,8 @@ class InventoryViewModel @Inject constructor(
         }
         if (query.isBlank()) mapped
         else mapped.filter { it.productName.contains(query, ignoreCase = true) }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    }.flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun setSearchQuery(query: String) { _searchQuery.value = query }
     fun setMovementSearchQuery(query: String) { _movementSearchQuery.value = query }

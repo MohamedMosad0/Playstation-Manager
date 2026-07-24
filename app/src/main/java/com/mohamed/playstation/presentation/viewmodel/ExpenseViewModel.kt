@@ -21,46 +21,71 @@ class ExpenseViewModel @Inject constructor(
     val currency: StateFlow<String> = settingsManager.currencyFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "EGP")
 
-    private val _expenses = MutableStateFlow<List<Expense>>(emptyList())
-    val expenses: StateFlow<List<Expense>> = _expenses.asStateFlow()
+    private val _dateFilterFlow = MutableStateFlow(com.mohamed.playstation.domain.model.filter.DateRangeFilter.TODAY)
+    val dateFilterFlow: StateFlow<com.mohamed.playstation.domain.model.filter.DateRangeFilter> = _dateFilterFlow.asStateFlow()
 
-    private val _totalAmount = MutableStateFlow(0.0)
-    val totalAmount: StateFlow<Double> = _totalAmount.asStateFlow()
+    private val _customStart = MutableStateFlow<Long>(0L)
+    private val _customEnd = MutableStateFlow<Long>(0L)
 
-    private val _monthlyTotal = MutableStateFlow(0.0)
-    val monthlyTotal: StateFlow<Double> = _monthlyTotal.asStateFlow()
-
-    private val _expenseCount = MutableStateFlow(0)
-    val expenseCount: StateFlow<Int> = _expenseCount.asStateFlow()
-
-    private val _categoryTotals = MutableStateFlow<Map<ExpenseCategory, Double>>(emptyMap())
-    val categoryTotals: StateFlow<Map<ExpenseCategory, Double>> = _categoryTotals.asStateFlow()
-
-    init {
-        loadExpenses()
+    private val filterTrigger = combine(
+        dateFilterFlow,
+        _customStart,
+        _customEnd
+    ) { filter, start, end ->
+        Triple(filter, start, end)
     }
 
-    private fun loadExpenses() {
-        viewModelScope.launch {
-            expenseUseCases.getAllExpenses().collect { list ->
-                _expenses.value = list
-                _totalAmount.value = list.sumOf { it.amount }
-                _expenseCount.value = list.size
-                
-                // Calculate Category Totals
-                _categoryTotals.value = list.groupBy { it.category }
-                    .mapValues { (_, expenses) -> expenses.sumOf { it.amount } }
+    val expenses: StateFlow<List<Expense>> = filterTrigger.flatMapLatest { (filter, customStart, customEnd) ->
+        val (start, end) = getRangeForFilter(filter, customStart, customEnd)
+        expenseUseCases.getExpensesInRange(start, end)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-                // Calculate Monthly Total (Current Month)
-                val calendar = Calendar.getInstance()
-                val currentMonth = calendar.get(Calendar.MONTH)
-                val currentYear = calendar.get(Calendar.YEAR)
-                
-                _monthlyTotal.value = list.filter {
-                    val expCal = Calendar.getInstance()
-                    expCal.time = it.expenseDate
-                    expCal.get(Calendar.MONTH) == currentMonth && expCal.get(Calendar.YEAR) == currentYear
-                }.sumOf { it.amount }
+    val totalAmount: StateFlow<Double> = expenses.map { list ->
+        list.sumOf { it.amount }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+
+    val expenseCount: StateFlow<Int> = expenses.map { it.size }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    val categoryTotals: StateFlow<Map<ExpenseCategory, Double>> = expenses.map { list ->
+        list.groupBy { it.category }.mapValues { (_, expenses) -> expenses.sumOf { it.amount } }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+    
+    fun setDateFilter(filter: com.mohamed.playstation.domain.model.filter.DateRangeFilter) {
+        _dateFilterFlow.value = filter
+    }
+
+    fun setCustomDateRange(start: Long, end: Long) {
+        _customStart.value = start
+        _customEnd.value = end
+        setDateFilter(com.mohamed.playstation.domain.model.filter.DateRangeFilter.CUSTOM)
+    }
+
+    private fun getRangeForFilter(
+        range: com.mohamed.playstation.domain.model.filter.DateRangeFilter,
+        customStart: Long,
+        customEnd: Long
+    ): Pair<Long, Long> {
+        return when (range) {
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.TODAY -> com.mohamed.playstation.core.utils.DateUtils.todayRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.THIS_WEEK -> com.mohamed.playstation.core.utils.DateUtils.thisWeekRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_7_DAYS -> com.mohamed.playstation.core.utils.DateUtils.last7DaysRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.THIS_MONTH -> com.mohamed.playstation.core.utils.DateUtils.thisMonthRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_MONTH -> com.mohamed.playstation.core.utils.DateUtils.lastMonthRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_30_DAYS -> com.mohamed.playstation.core.utils.DateUtils.last30DaysRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_3_MONTHS -> com.mohamed.playstation.core.utils.DateUtils.last3MonthsRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.ALL_TIME -> Pair(0L, Long.MAX_VALUE)
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.CUSTOM -> {
+                val endCal = Calendar.getInstance()
+                endCal.timeInMillis = customEnd
+                if (endCal.get(Calendar.HOUR_OF_DAY) == 0 && endCal.get(Calendar.MINUTE) == 0) {
+                    endCal.add(Calendar.DAY_OF_YEAR, 1)
+                    endCal.set(Calendar.HOUR_OF_DAY, 0)
+                    endCal.set(Calendar.MINUTE, 0)
+                    endCal.set(Calendar.SECOND, 0)
+                    endCal.set(Calendar.MILLISECOND, 0)
+                }
+                Pair(customStart, endCal.timeInMillis)
             }
         }
     }
@@ -69,13 +94,16 @@ class ExpenseViewModel @Inject constructor(
         amount: Double,
         category: ExpenseCategory,
         description: String?,
-        date: Date
+        date: Date,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
     ) {
         viewModelScope.launch {
             try {
                 expenseUseCases.addExpense(amount, category, description, date)
+                onSuccess()
             } catch (e: Exception) {
-                // Log error
+                onError()
             }
         }
     }

@@ -21,6 +21,9 @@ interface SessionProductDao {
     @Query("SELECT * FROM session_products WHERE sessionId = :sessionId")
     fun getProductsBySessionId(sessionId: Long): Flow<List<SessionProductEntity>>
 
+    @Query("SELECT * FROM session_products WHERE sessionId IN (:sessionIds)")
+    fun getProductsBySessionIds(sessionIds: List<Long>): Flow<List<SessionProductEntity>>
+
     @Query("SELECT * FROM session_products WHERE sessionId = :sessionId")
     suspend fun getProductsBySessionIdOnce(sessionId: Long): List<SessionProductEntity>
 

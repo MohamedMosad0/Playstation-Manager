@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.ItemSessionCardBinding
 import com.mohamed.playstation.domain.model.Session
-import java.text.SimpleDateFormat
-import java.util.Locale
+import android.text.BidiFormatter
 
 class DashboardSessionAdapter(
     private val onItemClick: (Session) -> Unit
@@ -34,7 +34,6 @@ class DashboardSessionAdapter(
     private var strMultiplayer: String = ""
     private var strSinglePlayer: String = ""
     
-    private val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         if (!isInitialized) {
@@ -81,11 +80,12 @@ class DashboardSessionAdapter(
                 root.isClickable = true
                 root.isFocusable = true
                 
-                tvDeviceName.text = buildString {
+                val deviceString = buildString {
                     append(session.deviceType)
                     append(" #")
                     append(session.deviceNumber)
                 }
+                tvDeviceName.text = BidiFormatter.getInstance().unicodeWrap(deviceString)
 
                 val modeText = if (session.isFixed()) strModeFixed else strModeOpen
                 val playerText = if (session.isMultiPlayer) strMultiplayer else strSinglePlayer
@@ -96,7 +96,7 @@ class DashboardSessionAdapter(
                         tvStatus.text = strStatusRunning
                         tvStatus.setTextColor(colorStatusActive)
                         tvStatus.backgroundTintList = bgStatusActive
-                        tvTimer.text = timeFormat.format(session.startTime)
+                        tvTimer.text = AppFormatters.formatTime(itemView.context, session.startTime)
                         tvTimer.textSize = 14f
                         tvTimer.setTextColor(colorTextSecondary)
                         tvTimer.visibility = View.VISIBLE
@@ -105,7 +105,7 @@ class DashboardSessionAdapter(
                         tvStatus.text = strStatusPaused
                         tvStatus.setTextColor(colorStatusPaused)
                         tvStatus.backgroundTintList = bgStatusPaused
-                        tvTimer.text = timeFormat.format(session.startTime)
+                        tvTimer.text = AppFormatters.formatTime(itemView.context, session.startTime)
                         tvTimer.textSize = 14f
                         tvTimer.setTextColor(colorTextSecondary)
                         tvTimer.visibility = View.VISIBLE

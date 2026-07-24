@@ -35,7 +35,7 @@ data class ReportsUiState(
     val isProfitAvailable: Boolean = true,
     
     // Historical gap warning: some products have costPerUnit == 0
-    val hasHistoricalCostGap: Boolean = false,
+
     
     // Currency
     val currency: String = "EGP"

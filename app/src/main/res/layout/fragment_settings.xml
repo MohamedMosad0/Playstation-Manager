@@ -39,7 +39,7 @@
                 style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                         style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="16dp"
                         android:text="@string/settings_general" />
 
                     <!-- Dark Mode -->
@@ -82,7 +82,8 @@
                             android:id="@+id/switchDarkMode"
                             style="@style/Widget.PlayStation.Switch"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:saveEnabled="false" />
                     </LinearLayout>
 
                     <!-- Notifications -->
@@ -113,7 +114,8 @@
                             android:id="@+id/switchNotifications"
                             style="@style/Widget.PlayStation.Switch"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:saveEnabled="false" />
                     </LinearLayout>
 
                     <!-- Language -->
@@ -181,7 +183,7 @@
                 style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -193,7 +195,7 @@
                         style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="16dp"
                         android:text="@string/ps4" />
 
                     <LinearLayout
@@ -219,6 +221,18 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/tvPs4HourPriceSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -245,6 +259,18 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/tvPs4MultiExtraSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -255,7 +281,7 @@
                 style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -267,7 +293,7 @@
                         style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="16dp"
                         android:text="@string/ps5" />
 
                     <LinearLayout
@@ -293,6 +319,18 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/tvPs5HourPriceSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -319,6 +357,18 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="numberDecimal" />
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/tvPs5MultiExtraSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -329,7 +379,7 @@
                 style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -341,7 +391,7 @@
                         style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="16dp"
                         android:text="@string/settings_alerts" />
 
                     <LinearLayout
@@ -354,13 +404,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:text="@string/settings_reminder_minutes" />
-                            
-                        <TextView
-                            style="@style/TextAppearance.PlayStation.Body.Small"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="12dp"
-                            android:text="@string/settings_reminder_helper" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/tilReminderMinutes"
@@ -375,6 +418,18 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="number" />
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/tvReminderMinutesSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -385,7 +440,7 @@
                 style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -397,7 +452,7 @@
                         style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="16dp"
                         android:text="@string/settings_data" />
 
                     <com.google.android.material.button.MaterialButton
@@ -425,7 +480,7 @@
                 style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -437,19 +492,12 @@
                         style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="16dp"
                         android:text="@string/settings_about" />
 
                     <LinearLayout
                         style="@style/Widget.PlayStation.Preference.Vertical"
-                        android:layout_marginBottom="16dp">
-                        
-                        <TextView
-                            style="@style/TextAppearance.PlayStation.Body.Small"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:text="@string/settings_version_label" />
+                        android:layout_marginBottom="8dp">
                             
                         <TextView
                             android:id="@+id/tvAppVersion"
@@ -463,13 +511,6 @@
                     <LinearLayout
                         style="@style/Widget.PlayStation.Preference.Vertical"
                         android:layout_marginBottom="0dp">
-
-                        <TextView
-                            style="@style/TextAppearance.PlayStation.Body.Small"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp"
-                            android:text="@string/settings_developer_label" />
                             
                         <TextView
                             android:id="@+id/tvDeveloper"
@@ -482,18 +523,6 @@
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- Reset Section -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnReset"
-                style="@style/Widget.PlayStation.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="@color/error"
-                android:text="@string/settings_reset"
-                app:icon="@drawable/ic_reset"
-                app:iconTint="@color/white" />
 
             <!-- Extra spacing -->
             <View

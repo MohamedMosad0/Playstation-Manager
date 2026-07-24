@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_medium"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
         android:hint="@string/inventory_search_product"
         app:startIconDrawable="@drawable/ic_search"
         app:startIconTint="@color/text_secondary"
@@ -36,6 +36,8 @@
             android:maxLines="1"
             android:paddingStart="@dimen/spacing_small"
             android:paddingEnd="@dimen/spacing_medium"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:textSize="15sp"
             android:textColor="@color/text_primary" />
 

@@ -47,6 +47,4 @@ interface SettingsRepository {
     suspend fun setSessionMode(mode: String)
     val defaultFixedMinutesFlow: Flow<Int>
     suspend fun setDefaultFixedMinutes(minutes: Int)
-
-    suspend fun resetSettings()
 }

@@ -10,19 +10,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.FragmentReceiptsBinding
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.SessionProductSummary
+import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import com.mohamed.playstation.presentation.ui.UiState
 import com.mohamed.playstation.presentation.viewmodel.ReceiptViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 @AndroidEntryPoint
 class ReceiptsFragment : Fragment() {
@@ -32,8 +31,6 @@ class ReceiptsFragment : Fragment() {
 
     private val viewModel: ReceiptViewModel by viewModels()
     private lateinit var receiptAdapter: ReceiptAdapter
-
-    private val _selectedTab = MutableStateFlow(0)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,9 +43,8 @@ class ReceiptsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
-        setupTabs()
+        setupDateFilter()
         observeData()
     }
 
@@ -56,48 +52,85 @@ class ReceiptsFragment : Fragment() {
         receiptAdapter = ReceiptAdapter { receiptId ->
             showReceiptDetail(receiptId)
         }
-
         binding.rvReceipts.adapter = receiptAdapter
     }
 
-    private fun setupTabs() {
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                _selectedTab.value = tab?.position ?: 0
-            }
+    private fun setupDateFilter() {
+        binding.cardDateRange.setOnClickListener {
+            showDateRangePicker()
+        }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
+        binding.chipGroupDateFilters.setOnCheckedStateChangeListener { _, checkedIds ->
+            if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
+            
+            when (checkedIds.first()) {
+                R.id.chipToday -> viewModel.setDateFilter(DateRangeFilter.TODAY)
+                R.id.chipThisWeek -> viewModel.setDateFilter(DateRangeFilter.THIS_WEEK)
+                R.id.chipThisMonth -> viewModel.setDateFilter(DateRangeFilter.THIS_MONTH)
+                R.id.chipLastMonth -> viewModel.setDateFilter(DateRangeFilter.LAST_MONTH)
+                R.id.chipLast3Months -> viewModel.setDateFilter(DateRangeFilter.LAST_3_MONTHS)
+            }
+        }
     }
 
-    /**
-     * مراقبة البيانات — reactive بالكامل
-     * يجمع todayRevenue + currency معاً حتى يتحدث العرض عند تغيير أي منهما.
-     */
+    private fun showDateRangePicker() {
+        val picker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText(getString(R.string.filter_custom))
+            .build()
+            
+        picker.addOnPositiveButtonClickListener { selection ->
+            val start = selection.first
+            val end = selection.second
+            if (start != null && end != null) {
+                binding.chipGroupDateFilters.clearCheck()
+                viewModel.setCustomDateRange(start, end)
+            }
+        }
+        
+        picker.show(parentFragmentManager, "DATE_PICKER")
+    }
+
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // Revenue + Currency — combined reactively
+                // Revenue + Currency
                 launch {
                     combine(
-                        viewModel.todayRevenue,
+                        viewModel.periodRevenue,
                         viewModel.currency
                     ) { revenue, currency -> revenue to currency }
                         .collect { (revenue, currency) ->
-                            val symbol = CurrencyUtils.getCurrencySymbol(requireContext(), currency)
-                            binding.tvTodayRevenue.text = com.mohamed.playstation.core.utils.CurrencyFormatter.formatCurrency(revenue, symbol)
+                            binding.tvTodayRevenue.text = CurrencyUtils.formatAmount(requireContext(), revenue, currency)
                         }
                 }
 
+                // Receipts + Summaries
                 launch {
                     combine(
-                        _selectedTab.flatMapLatest { tab -> if (tab == 0) viewModel.todayReceipts else viewModel.allReceipts },
+                        viewModel.receipts,
                         viewModel.productSummaries
                     ) { state, summaries -> state to summaries }
                         .collect { (state, summaries) ->
                             handleUiState(state, summaries)
                         }
+                }
+                
+                // Date Filter Title
+                launch {
+                    viewModel.dateFilterFlow.collect { filter ->
+                        val titleRes = when (filter) {
+                            DateRangeFilter.TODAY -> R.string.today
+                            DateRangeFilter.THIS_WEEK -> R.string.filter_this_week
+                            DateRangeFilter.LAST_7_DAYS -> R.string.filter_last_7_days
+                            DateRangeFilter.THIS_MONTH -> R.string.this_month
+                            DateRangeFilter.LAST_MONTH -> R.string.filter_last_month
+                            DateRangeFilter.LAST_30_DAYS -> R.string.filter_last_30_days
+                            DateRangeFilter.LAST_3_MONTHS -> R.string.filter_last_3_months
+                            DateRangeFilter.ALL_TIME -> R.string.all
+                            DateRangeFilter.CUSTOM -> R.string.filter_custom
+                        }
+                        binding.tvDateRange.text = getString(titleRes)
+                    }
                 }
             }
         }
@@ -106,9 +139,11 @@ class ReceiptsFragment : Fragment() {
     private fun handleUiState(state: UiState<List<Receipt>>, summaries: Map<Long, SessionProductSummary>) {
         when (state) {
             is UiState.Loading -> {
-                binding.progressBar.isVisible = true
+                if (receiptAdapter.itemCount == 0) {
+                    binding.progressBar.isVisible = true
+                    binding.rvReceipts.isVisible = false
+                }
                 binding.emptyState.isVisible = false
-                binding.rvReceipts.isVisible = false
             }
 
             is UiState.Success -> {

@@ -29,10 +29,7 @@ class CategoryGridAdapter(
             binding.tvCategoryName.text = getCategoryName(category)
             binding.ivCategory.setImageResource(getCategoryIcon(category))
             
-            // Highlight selected category
-            binding.container.setBackgroundResource(
-                if (isSelected) R.color.overlay_light else 0
-            )
+            binding.container.isSelected = isSelected
 
             binding.root.setOnClickListener {
                 val previousSelected = selectedPosition

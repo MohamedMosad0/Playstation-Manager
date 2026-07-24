@@ -43,7 +43,6 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/bg_segmented_control"
             android:padding="4dp"
             app:singleSelection="true"
             app:selectionRequired="true"
@@ -51,31 +50,27 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/chipRunning"
-                style="@style/Widget.Material3.Button.TextButton"
+                style="@style/Widget.PlayStation.Selection.SegmentedButton"
                 android:layout_width="0dp"
-                android:layout_height="44dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:gravity="center"
                 android:text="@string/tab_running"
-                android:textColor="@color/segmented_chip_text_color"
-                app:backgroundTint="@color/segmented_chip_background"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent" />
+                />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/chipCompleted"
-                style="@style/Widget.Material3.Button.TextButton"
+                style="@style/Widget.PlayStation.Selection.SegmentedButton"
                 android:layout_width="0dp"
-                android:layout_height="44dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:gravity="center"
                 android:text="@string/tab_completed"
-                android:textColor="@color/segmented_chip_text_color"
-                app:backgroundTint="@color/segmented_chip_background"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent" />
+                />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -91,6 +86,7 @@
                 android:id="@+id/tvEmptyState"
                 style="@style/Widget.PlayStation.EmptyStateContainer"
                 android:layout_gravity="center"
+                android:layout_marginBottom="64dp"
                 android:visibility="gone">
 
                 <ImageView
@@ -136,6 +132,7 @@
                 android:id="@+id/layoutEmptyCompleted"
                 style="@style/Widget.PlayStation.EmptyStateContainer"
                 android:layout_gravity="center"
+                android:layout_marginBottom="64dp"
                 android:visibility="gone">
 
                 <ImageView

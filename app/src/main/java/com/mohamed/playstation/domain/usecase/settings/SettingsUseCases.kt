@@ -48,5 +48,4 @@ class UpdateSettingsUseCase @Inject constructor(
     suspend fun setPs5MultiplayerPrice(price: Double) = repository.setPs5MultiplayerPrice(price)
     
     suspend fun setPs5MultiExtra(price: Double) = repository.setPs5MultiExtra(price)
-    suspend fun resetSettings() = repository.resetSettings()
 }

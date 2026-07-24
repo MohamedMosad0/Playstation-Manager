@@ -120,6 +120,13 @@ class ReceiptUseCases @Inject constructor(
     }
 
     /**
+     * الحصول على فواتير في فترة زمنية
+     */
+    fun getReceiptsInRange(startTime: Long, endTime: Long): Flow<List<Receipt>> {
+        return receiptRepository.getReceiptsInRange(startTime, endTime)
+    }
+
+    /**
      * الحصول على فواتير اليوم
      */
     fun getTodayReceipts(): Flow<List<Receipt>> {
@@ -131,5 +138,12 @@ class ReceiptUseCases @Inject constructor(
      */
     fun getTodayTotalRevenue(): Flow<Double> {
         return receiptRepository.getTodayTotalRevenue()
+    }
+
+    /**
+     * الحصول على إجمالي الإيرادات في فترة زمنية
+     */
+    fun getTotalRevenueInRange(startTime: Long, endTime: Long): Flow<Double> {
+        return receiptRepository.getTotalRevenueInRange(startTime, endTime)
     }
 }

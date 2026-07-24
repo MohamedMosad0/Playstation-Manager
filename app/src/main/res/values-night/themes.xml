@@ -6,4 +6,12 @@
         are overridden in values-night/colors.xml, so no extra style overrides
         are needed here. The DayNight theme engine picks them up automatically.
     -->
+    
+    <style name="Widget.PlayStation.FAB" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="elevation">4dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.FAB.Extended" parent="Widget.Material3.ExtendedFloatingActionButton.Primary">
+        <item name="elevation">4dp</item>
+    </style>
 </resources>

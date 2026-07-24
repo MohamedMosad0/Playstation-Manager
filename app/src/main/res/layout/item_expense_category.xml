@@ -5,26 +5,30 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/bg_expense_category"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="4dp">
 
     <ImageView
         android:id="@+id/ivCategory"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="12dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="10dp"
         android:background="@drawable/bg_circle"
+        android:contentDescription="@null"
         tools:src="@drawable/ic_electricity" />
 
     <TextView
         android:id="@+id/tvCategoryName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="12sp"
         android:textAppearance="?attr/textAppearanceCaption"
         tools:text="Electricity" />
 

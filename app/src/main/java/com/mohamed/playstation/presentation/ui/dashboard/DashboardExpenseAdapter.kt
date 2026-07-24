@@ -6,18 +6,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.ItemExpenseBinding
 import com.mohamed.playstation.domain.model.Expense
 import com.mohamed.playstation.domain.model.ExpenseCategory
-import java.text.SimpleDateFormat
-import java.util.Locale
+import android.text.BidiFormatter
 
 class DashboardExpenseAdapter(
     private val currency: String
 ) : ListAdapter<Expense, DashboardExpenseAdapter.ViewHolder>(DiffCallback()) {
 
-    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private var isInitialized = false
     private var strCategoryElectricity = ""
     private var strCategoryInternet = ""
@@ -51,10 +50,10 @@ class DashboardExpenseAdapter(
             binding.root.setOnLongClickListener(null)
             binding.root.isLongClickable = false
 
-            binding.tvCategoryName.text = getCategoryName(expense.category)
+            binding.tvCategoryName.text = BidiFormatter.getInstance().unicodeWrap(getCategoryName(expense.category))
             binding.tvAmount.text = CurrencyUtils.formatAmount(binding.root.context, expense.amount, currency)
-            binding.tvDescription.text = expense.description
-            binding.tvDate.text = dateFormat.format(expense.expenseDate)
+            binding.tvDescription.text = BidiFormatter.getInstance().unicodeWrap(expense.description)
+            binding.tvDate.text = AppFormatters.formatDate(binding.root.context, expense.expenseDate)
             binding.ivCategory.setImageResource(getCategoryIcon(expense.category))
         }
 

@@ -62,8 +62,8 @@ class NewStockTabFragment : Fragment() {
             val match = viewModel.products.value.firstOrNull { it.name == name }
             selectedProductId = match?.id
             if (match != null) {
-                binding.etPrice.setText(match.sellPrice.toString())
-                binding.etMinQty.setText(match.minimumQuantity.toString())
+                binding.etPrice.setText(com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), match.sellPrice))
+                binding.etMinQty.setText(com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), match.minimumQuantity))
                 
                 binding.tvCurrentAvailable.visibility = View.VISIBLE
                 val unitName = match.unitLabel
@@ -72,12 +72,12 @@ class NewStockTabFragment : Fragment() {
                 
                 if (match.isPrepared) {
                     val icon = if (unitName == com.mohamed.playstation.core.utils.UnitType.PACK.rawDbValue) "🍜" else "☕"
-                    binding.tvCurrentAvailable.text = "$icon ${getString(com.mohamed.playstation.R.string.currently_available_format, match.quantity.toString(), pluralUnit)}"
+                binding.tvCurrentAvailable.text = "$icon ${getString(com.mohamed.playstation.R.string.currently_available_format, com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), match.quantity), pluralUnit)}"
                     binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.new_quantity_hint, definitePlural)
                     binding.btnSave.text = getString(com.mohamed.playstation.R.string.action_add)
                     binding.etMinQty.visibility = View.GONE
                 } else {
-                    binding.tvCurrentAvailable.text = "📦 ${getString(com.mohamed.playstation.R.string.currently_available_format, match.quantity.toString(), pluralUnit)}"
+                binding.tvCurrentAvailable.text = "📦 ${getString(com.mohamed.playstation.R.string.currently_available_format, com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), match.quantity), pluralUnit)}"
                     binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.new_quantity_hint, definitePlural)
                     binding.btnSave.text = getString(com.mohamed.playstation.R.string.action_add)
                     binding.etMinQty.visibility = View.VISIBLE
@@ -93,9 +93,9 @@ class NewStockTabFragment : Fragment() {
         binding.btnSave.setOnClickListener {
             val rawName = binding.actProductSearch.text.toString()
             val name = rawName.trim()
-            val price = binding.etPrice.text.toString().toDoubleOrNull() ?: 0.0
-            val minQty = binding.etMinQty.text.toString().toIntOrNull() ?: 0
-            val qty = binding.etInitialQty.text.toString().toIntOrNull() ?: 0
+            val price = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(binding.etPrice.text) ?: 0.0
+            val minQty = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(binding.etMinQty.text) ?: 0
+            val qty = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(binding.etInitialQty.text) ?: 0
             if (selectedProductId == null) {
                 // creating new product: validate name, price, minQty, qty
                 if (name.isBlank()) {

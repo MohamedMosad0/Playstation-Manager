@@ -3,6 +3,7 @@ package com.mohamed.playstation.presentation.ui.main
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -11,10 +12,11 @@ import com.mohamed.playstation.core.notifications.NotificationPermissionHelper
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import com.mohamed.playstation.core.localization.LocaleManager
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -24,8 +26,22 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var settingsManager: SettingsManager
 
+    @Inject
+    lateinit var localeManager: LocaleManager
+
+    private fun applyDarkMode(isDark: Boolean) {
+        val mode = if (isDark) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        val currentMode = AppCompatDelegate.getDefaultNightMode()
+
+        if (mode == currentMode) {
+            return
+        }
+
+        AppCompatDelegate.setDefaultNightMode(mode)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        
+        installSplashScreen()
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -36,22 +52,14 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigation()
 
-        Timber.d("Main Activity Started")
-    }
-
-    override fun onStart() {
-        
-        super.onStart()
-    }
-
-    override fun onResume() {
-        
-        super.onResume()
-    }
-
-    override fun onDestroy() {
-        
-        super.onDestroy()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingsManager.appConfigFlow.collect { config ->
+                    localeManager.applyLanguage(config.language)
+                    applyDarkMode(config.isDark)
+                }
+            }
+        }
     }
 
     private fun setupNavigation() {
@@ -84,11 +92,6 @@ class MainActivity : AppCompatActivity() {
             } catch (e: IllegalArgumentException) {
                 false
             }
-        }
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            Timber.d(
-                "DESTINATION = ${resources.getResourceEntryName(destination.id)}"
-            )
         }
     }
 

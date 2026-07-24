@@ -6,7 +6,9 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -16,15 +18,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.BuildConfig
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
-import com.mohamed.playstation.core.localization.LocaleManager
 import com.mohamed.playstation.databinding.FragmentSettingsBinding
 import com.mohamed.playstation.domain.model.CurrencyList
 import com.mohamed.playstation.presentation.viewmodel.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.activity.result.contract.ActivityResultContracts
-import com.mohamed.playstation.presentation.ui.settings.BackupUiState
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -34,12 +35,10 @@ class SettingsFragment : Fragment() {
 
     private val viewModel: SettingsViewModel by viewModels()
 
-    @Inject
-    lateinit var localeManager: LocaleManager
-
     private var isUpdatingUi = false
     private var progressDialog: androidx.appcompat.app.AlertDialog? = null
     private var restoreDialog: androidx.appcompat.app.AlertDialog? = null
+    private var savedIndicatorJob: Job? = null
 
     private val exportLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         uri?.let {
@@ -78,14 +77,14 @@ class SettingsFragment : Fragment() {
     private fun setupListeners() {
         // Dark Mode
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            if (!isUpdatingUi) {
+            if (viewModel.darkMode.value != isChecked) {
                 viewModel.setDarkMode(isChecked)
             }
         }
 
         // Notifications
         binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
-            if (!isUpdatingUi) {
+            if (viewModel.notificationsEnabled.value != isChecked) {
                 viewModel.setNotificationsEnabled(isChecked)
             }
         }
@@ -110,7 +109,6 @@ class SettingsFragment : Fragment() {
             if (!isUpdatingUi) {
                 val selectedCode = languageItems[position].code
                 viewModel.setLanguage(selectedCode)
-                localeManager.applyLanguage(selectedCode)
             }
         }
 
@@ -126,7 +124,8 @@ class SettingsFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 if (!isUpdatingUi) {
-                    val value = s?.toString()?.toIntOrNull()
+                    hideSavedIndicator()
+                    val value = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(s)
                     viewModel.setReminderMinutes(value ?: 0)
                 }
             }
@@ -142,10 +141,6 @@ class SettingsFragment : Fragment() {
             importLauncher.launch(arrayOf("application/json", "*/*"))
         }
 
-        // Reset
-        binding.btnReset.setOnClickListener {
-            showResetConfirmation()
-        }
     }
 
     private fun setupPriceInput(editText: com.google.android.material.textfield.TextInputEditText, onSave: (Double?) -> Unit) {
@@ -154,7 +149,8 @@ class SettingsFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 if (!isUpdatingUi) {
-                    val value = s?.toString()?.toDoubleOrNull()
+                    hideSavedIndicator()
+                    val value = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(s)
                     onSave(value)
                 }
             }
@@ -219,6 +215,7 @@ class SettingsFragment : Fragment() {
                         }
                     }
                 }
+
                 // Prices
                 launch {
                     viewModel.ps4HourPrice.collect { price ->
@@ -243,9 +240,10 @@ class SettingsFragment : Fragment() {
                 // Reminder
                 launch {
                     viewModel.reminderMinutes.collect { minutes ->
-                        if (binding.etReminderMinutes.text.toString() != minutes.toString() && !binding.etReminderMinutes.hasFocus()) {
+                        val formattedMinutes = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), minutes)
+                        if (binding.etReminderMinutes.text.toString() != formattedMinutes && !binding.etReminderMinutes.hasFocus()) {
                             isUpdatingUi = true
-                            binding.etReminderMinutes.setText(minutes.toString())
+                            binding.etReminderMinutes.setText(formattedMinutes)
                             isUpdatingUi = false
                         }
                     }
@@ -258,6 +256,12 @@ class SettingsFragment : Fragment() {
                         binding.tilPs5HourPrice.error = errors.ps5HourError?.let { getString(it) }
                         binding.tilPs5MultiExtra.error = errors.ps5MultiError?.let { getString(it) }
                         binding.tilReminderMinutes.error = errors.reminderError?.let { getString(it) }
+                    }
+                }
+                // Editable settings acknowledgement
+                launch {
+                    viewModel.editableSettingSaved.collect { setting ->
+                        showSavedIndicator(setting)
                     }
                 }
                 // Backup State
@@ -277,7 +281,6 @@ class SettingsFragment : Fragment() {
                                 dismissLoadingDialog()
                                 Toast.makeText(requireContext(), R.string.restore_success, Toast.LENGTH_LONG).show()
                                 viewModel.resetBackupUiState()
-                                state.language?.let { localeManager.applyLanguage(it) }
                                 requireActivity().recreate()
                             }
                             is BackupUiState.Error -> {
@@ -294,14 +297,12 @@ class SettingsFragment : Fragment() {
 
     private fun updateSwitchState(switch: com.google.android.material.materialswitch.MaterialSwitch, state: Boolean) {
         if (switch.isChecked != state) {
-            isUpdatingUi = true
             switch.isChecked = state
-            isUpdatingUi = false
         }
     }
 
     private fun updatePriceEditText(editText: com.google.android.material.textfield.TextInputEditText, price: Double) {
-        val priceStr = if (price == price.toLong().toDouble()) price.toLong().toString() else price.toString()
+        val priceStr = com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), price)
         if (editText.text.toString() != priceStr && !editText.hasFocus()) {
             isUpdatingUi = true
             editText.setText(priceStr)
@@ -309,16 +310,32 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun showResetConfirmation() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.settings_reset_confirm_title)
-            .setMessage(R.string.settings_reset_confirm_message)
-            .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.confirm) { _, _ ->
-                viewModel.resetSettings()
-                Toast.makeText(requireContext(), R.string.settings_reset_success, Toast.LENGTH_SHORT).show()
-            }
-            .show()
+    private fun showSavedIndicator(setting: SettingsViewModel.EditableSetting) {
+        hideSavedIndicator()
+        savedIndicatorFor(setting).isVisible = true
+        savedIndicatorJob = viewLifecycleOwner.lifecycleScope.launch {
+            delay(SAVED_INDICATOR_DURATION_MS)
+            savedIndicatorFor(setting).isVisible = false
+            savedIndicatorJob = null
+        }
+    }
+
+    private fun hideSavedIndicator() {
+        savedIndicatorJob?.cancel()
+        savedIndicatorJob = null
+        binding.tvPs4HourPriceSaved.isVisible = false
+        binding.tvPs4MultiExtraSaved.isVisible = false
+        binding.tvPs5HourPriceSaved.isVisible = false
+        binding.tvPs5MultiExtraSaved.isVisible = false
+        binding.tvReminderMinutesSaved.isVisible = false
+    }
+
+    private fun savedIndicatorFor(setting: SettingsViewModel.EditableSetting): TextView = when (setting) {
+        SettingsViewModel.EditableSetting.PS4_HOUR_PRICE -> binding.tvPs4HourPriceSaved
+        SettingsViewModel.EditableSetting.PS4_MULTI_EXTRA -> binding.tvPs4MultiExtraSaved
+        SettingsViewModel.EditableSetting.PS5_HOUR_PRICE -> binding.tvPs5HourPriceSaved
+        SettingsViewModel.EditableSetting.PS5_MULTI_EXTRA -> binding.tvPs5MultiExtraSaved
+        SettingsViewModel.EditableSetting.REMINDER_MINUTES -> binding.tvReminderMinutesSaved
     }
 
     private fun showRestoreConfirmation(uri: android.net.Uri) {
@@ -352,9 +369,15 @@ class SettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        savedIndicatorJob?.cancel()
+        savedIndicatorJob = null
         dismissLoadingDialog()
         restoreDialog?.dismiss()
         restoreDialog = null
         _binding = null
+    }
+
+    private companion object {
+        const val SAVED_INDICATOR_DURATION_MS = 1_500L
     }
 }

@@ -15,8 +15,6 @@ class BootCompletedReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-            Timber.d("Boot completed received. Re-initializing session alarms.")
-            
             val pendingResult = goAsync()
             val job = sessionAlarmScheduler.initialize()
             

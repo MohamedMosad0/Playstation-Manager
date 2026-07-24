@@ -2,7 +2,6 @@ package com.mohamed.playstation.core.utils
 
 import android.content.Context
 import com.mohamed.playstation.domain.model.CurrencyList
-import java.text.DecimalFormat
 
 /**
  * Helper functions للعملات
@@ -19,8 +18,8 @@ object CurrencyUtils {
      */
     fun formatAmount(context: Context, amount: Double, currencyCode: String): String {
         val symbol = getCurrencySymbol(context, currencyCode)
-        val formatter = DecimalFormat("#,##0.00")
-        return "${formatter.format(amount)} $symbol"
+        val formatted = AppFormatters.formatAmount(context, amount)
+        return "$formatted $symbol"
     }
 
     /**
@@ -29,9 +28,8 @@ object CurrencyUtils {
      * @param amount المبلغ
      * @return المبلغ منسق مثل: "30.00"
      */
-    fun formatAmountOnly(amount: Double): String {
-        val formatter = DecimalFormat("#,##0.00")
-        return formatter.format(amount)
+    fun formatAmountOnly(context: Context, amount: Double): String {
+        return AppFormatters.formatAmount(context, amount)
     }
 
     /**

@@ -43,6 +43,7 @@ object AppConstants {
     // System / App State
     const val KEY_EXACT_ALARM_PROMPT_DISMISSED = "exact_alarm_prompt_dismissed"
 
+
     // Default Values — existing (kept for backward compatibility)
     const val DEFAULT_SINGLE_PRICE = 30.0  // EGP
     const val DEFAULT_MULTI_PRICE = 20.0   // EGP
@@ -97,7 +98,7 @@ object AppConstants {
 
     // Notification
     const val NOTIFICATION_CHANNEL_ID = "playstation_notifications"
-    const val NOTIFICATION_CHANNEL_NAME = "PlayStation Notifications"
+    const val NOTIFICATION_CHANNEL_NAME = "Arena Manager Notifications"
     const val NOTIFICATION_REQUEST_CODE_OPEN_APP = 1001
     const val ACTION_SESSION_WARNING_ALARM = "com.mohamed.playstation.action.SESSION_WARNING_ALARM"
     const val ACTION_SESSION_END_ALARM = "com.mohamed.playstation.action.SESSION_END_ALARM"

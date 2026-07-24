@@ -11,6 +11,7 @@ import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.model.InventoryItem
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
+import com.mohamed.playstation.domain.model.aggregate
 import com.mohamed.playstation.domain.usecase.InventoryUseCases
 import com.mohamed.playstation.domain.usecase.SessionProductUseCases
 import com.mohamed.playstation.domain.usecase.SessionUseCases
@@ -42,6 +43,9 @@ class SessionViewModel @Inject constructor(
 
     private val _activeSessionsCount = MutableStateFlow(0)
     val activeSessionsCount: StateFlow<Int> = _activeSessionsCount.asStateFlow()
+
+    private val _sessionProducts = MutableStateFlow<List<SessionProduct>>(emptyList())
+    val sessionProducts: StateFlow<List<SessionProduct>> = _sessionProducts.asStateFlow()
 
     /** Completed sessions — reuses existing getEndedSessions() flow. No new architecture. */
     val completedSessions: StateFlow<List<Session>> = sessionUseCases.getEndedSessions()
@@ -200,7 +204,6 @@ class SessionViewModel @Inject constructor(
             try {
                 sessionUseCases.pauseSession(session)
                 sessionAlarmScheduler.cancelSessionAlarms(session.id)
-                Timber.d("Session paused: ${session.id}")
             } catch (e: Exception) {
                 Timber.e(e, "Error pausing session")
             }
@@ -211,8 +214,7 @@ class SessionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 sessionUseCases.resumeSession(session)
-                sessionAlarmScheduler.syncSession(session.id)
-                Timber.d("Session resumed: ${session.id}")
+                sessionAlarmScheduler.syncSession(session.id, allowImmediateWarning = false)
             } catch (e: Exception) {
                 Timber.e(e, "Error resuming session")
             }
@@ -221,7 +223,8 @@ class SessionViewModel @Inject constructor(
 
     fun endSession(
         session: Session,
-        onReceiptCreated: (Long) -> Unit = {}
+        onReceiptCreated: (Long) -> Unit = {},
+        onError: (Throwable) -> Unit = {}
     ) {
         viewModelScope.launch {
             try {
@@ -233,10 +236,10 @@ class SessionViewModel @Inject constructor(
                 sessionAlarmScheduler.cancelSessionAlarms(session.id)
                 sessionNotificationHelper.cancelSessionNotifications(session.id)
 
-                Timber.d("Session ended and receipt created: $receiptId")
                 onReceiptCreated(receiptId)
             } catch (e: Exception) {
                 Timber.e(e, "Error ending session")
+                onError(e)
             }
         }
     }
@@ -247,7 +250,6 @@ class SessionViewModel @Inject constructor(
                 sessionUseCases.deleteSession(session)
                 sessionAlarmScheduler.cancelSessionAlarms(session.id)
                 sessionNotificationHelper.cancelSessionNotifications(session.id)
-                Timber.d("Session deleted: ${session.id}")
             } catch (e: Exception) {
                 Timber.e(e, "Error deleting session")
             }
@@ -272,7 +274,6 @@ class SessionViewModel @Inject constructor(
                     inventoryItemId = inventoryProductId,
                     quantity = quantity
                 )
-                Timber.d("Inventory product added to session: $sessionId")
                 onSuccess()
             } catch (e: Exception) {
                 Timber.e(e, "Error adding inventory product to session")
@@ -281,8 +282,14 @@ class SessionViewModel @Inject constructor(
         }
     }
 
-    fun getProductsForSession(sessionId: Long): Flow<List<SessionProduct>> {
-        return sessionProductUseCases.getProductsBySessionId(sessionId)
+    fun loadProductsForSession(sessionId: Long) {
+        viewModelScope.launch {
+            sessionProductUseCases.getProductsBySessionId(sessionId)
+                .distinctUntilChanged()
+                .collect { products ->
+                    _sessionProducts.value = products.aggregate()
+                }
+        }
     }
 
     fun removeSessionProduct(sessionProductId: Long) {

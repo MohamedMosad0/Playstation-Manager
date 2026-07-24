@@ -40,6 +40,8 @@
                 android:textSize="15sp"
                 android:textColor="@color/text_primary"
                 android:fontFamily="sans-serif-medium"
+                android:textDirection="firstStrong"
+                android:textAlignment="viewStart"
                 tools:text="PS5 #2" />
 
             <!-- Completed badge -->

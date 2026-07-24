@@ -16,6 +16,13 @@
             app:exitAnim="@anim/nav_fade_exit"
             app:popEnterAnim="@anim/nav_fade_enter"
             app:popExitAnim="@anim/nav_fade_exit" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_expensesFragment"
+            app:destination="@id/expensesFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
     </fragment>
 
     <!-- Sessions Fragment -->

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.FragmentInventoryHistoryBinding
 import com.mohamed.playstation.domain.model.StockMovement
 import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
@@ -47,6 +48,7 @@ class MovementHistoryTabFragment : Fragment() {
 
         adapter = MovementsAdapter()
         binding.rvMovements.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvMovements.setHasFixedSize(true)
         binding.rvMovements.adapter = adapter
         binding.emptyState.visibility = View.GONE
         binding.rvMovements.visibility = View.VISIBLE
@@ -129,11 +131,11 @@ class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmo
                 }
             }
 
-            tvMovementDetail.text = "$typeText • $sign${item.quantityChange}"
+            tvMovementDetail.text = "$typeText • $sign${AppFormatters.formatInteger(itemView.context, item.quantityChange)}"
             tvMovementDetail.setTextColor(ContextCompat.getColor(itemView.context, colorRes))
 
             tvProduct.text = item.productName
-            tvTime.text = android.text.format.DateFormat.format("dd MMM yyyy • HH:mm", item.timestamp).toString()
+            tvTime.text = AppFormatters.formatDateTimeWithMonth(itemView.context, item.timestamp)
         }
     }
 

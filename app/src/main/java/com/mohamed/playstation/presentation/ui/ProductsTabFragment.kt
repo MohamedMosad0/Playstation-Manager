@@ -23,6 +23,7 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import android.text.BidiFormatter
 import com.mohamed.playstation.R
 import com.mohamed.playstation.databinding.FragmentInventoryProductsBinding
 import com.mohamed.playstation.domain.model.InventoryItem
@@ -56,13 +57,13 @@ class ProductsTabFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         adapter = ProductsAdapter(onEdit = { product ->
             showEditDialog(product)
         }, onDelete = { product ->
             showDeleteDialog(product)
         })
 
-        binding.rvProducts.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProducts.adapter = adapter
         
         binding.emptyState.visibility = View.GONE
@@ -134,8 +135,8 @@ class ProductsTabFragment : Fragment() {
         toggleType.check(R.id.btnTypeNormal)
 
         val updatePreview = {
-            val pc = etPreparationCost.text.toString().toDoubleOrNull() ?: 0.0
-            val pu = etProduced.text.toString().toIntOrNull() ?: 0
+            val pc = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(etPreparationCost.text) ?: 0.0
+            val pu = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(etProduced.text) ?: 0
             if (pc > 0 && pu > 0) {
                 tvComputed.text = requireContext().getString(R.string.computed_unit_cost, pc / pu)
                 tvComputed.visibility = View.VISIBLE
@@ -164,7 +165,7 @@ class ProductsTabFragment : Fragment() {
             .setView(dialogView)
             .setPositiveButton(R.string.save) { d, _ ->
                 val name   = etName.text.toString().trim()
-                val price  = etPrice.text.toString().toDoubleOrNull() ?: -1.0
+                val price  = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(etPrice.text) ?: -1.0
                 
                 val isPrepared = toggleType.checkedButtonId == R.id.btnTypePrepared
 
@@ -173,8 +174,8 @@ class ProductsTabFragment : Fragment() {
                 val costPerUnit: Double
 
                 if (isPrepared) {
-                    val prepCost = etPreparationCost.text.toString().toDoubleOrNull() ?: 0.0
-                    val produced = etProduced.text.toString().toIntOrNull() ?: 0
+                    val prepCost = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(etPreparationCost.text) ?: 0.0
+                    val produced = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(etProduced.text) ?: 0
                     qty = produced
                     minQty = 0 // By rule
                     costPerUnit = if (produced > 0) prepCost / produced else 0.0
@@ -184,9 +185,9 @@ class ProductsTabFragment : Fragment() {
                         return@setPositiveButton
                     }
                 } else {
-                    qty = etQty.text.toString().toIntOrNull() ?: -1
-                    minQty = etMinQty.text.toString().toIntOrNull() ?: -1
-                    costPerUnit = etUnitCost.text.toString().toDoubleOrNull() ?: 0.0
+                    qty = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(etQty.text) ?: -1
+                    minQty = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(etMinQty.text) ?: -1
+                    costPerUnit = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(etUnitCost.text) ?: 0.0
                     
                     if (qty < 0 || minQty < 0) {
                         Toast.makeText(requireContext(), getString(R.string.invalid_quantity), Toast.LENGTH_SHORT).show()
@@ -228,8 +229,14 @@ class ProductsTabFragment : Fragment() {
         val tvPreparedQtyPreview = dialogView.findViewById<TextView>(R.id.tvPreparedQtyPreview)
 
         etName.setText(product.name)
-        etPrice.setText(product.sellPrice.toString())
-        etCostPerUnit.setText(if (product.costPerUnit > 0) product.costPerUnit.toString() else "")
+        etPrice.setText(com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), product.sellPrice))
+        etCostPerUnit.setText(
+            if (product.costPerUnit > 0) {
+                com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), product.costPerUnit)
+            } else {
+                ""
+            }
+        )
 
         val isPrepared = product.isPrepared
 
@@ -243,16 +250,24 @@ class ProductsTabFragment : Fragment() {
             val unitName = com.mohamed.playstation.core.utils.UnitFormatUtils.getLocalizedName(requireContext(), product.unitLabel)
             val pluralUnitRes = com.mohamed.playstation.core.utils.UnitFormatUtils.getPluralUnitRes(product.unitLabel)
             val pluralUnit = requireContext().getString(pluralUnitRes)
-            tvAvailable.text = requireContext().getString(R.string.currently_available_format, product.quantity.toString(), pluralUnit)
+            tvAvailable.text = requireContext().getString(
+                R.string.currently_available_format,
+                com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), product.quantity),
+                pluralUnit
+            )
             
             etNewPreparedQty.doAfterTextChanged { text ->
-                val delta = text?.toString()?.toIntOrNull() ?: 0
+                val delta = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(text) ?: 0
                 val newTotal = product.quantity + delta
-                tvPreparedQtyPreview.text = requireContext().getString(R.string.will_be_available_format, newTotal.toString(), pluralUnit)
+                tvPreparedQtyPreview.text = requireContext().getString(
+                    R.string.will_be_available_format,
+                    com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), newTotal),
+                    pluralUnit
+                )
             }
         } else {
-            etMinQty.setText(product.minimumQuantity.toString())
-            etCurrentQty.setText(product.quantity.toString())
+            etMinQty.setText(com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), product.minimumQuantity))
+            etCurrentQty.setText(com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), product.quantity))
         }
 
         val builder = MaterialAlertDialogBuilder(requireContext())
@@ -260,19 +275,19 @@ class ProductsTabFragment : Fragment() {
             .setView(dialogView)
             .setPositiveButton(R.string.save_changes) { d, _ ->
                 val newName        = etName.text.toString().trim()
-                val newPrice       = etPrice.text.toString().toDoubleOrNull() ?: -1.0
-                val newCostPerUnit = etCostPerUnit.text.toString().toDoubleOrNull() ?: 0.0
+                val newPrice       = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(etPrice.text) ?: -1.0
+                val newCostPerUnit = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(etCostPerUnit.text) ?: 0.0
 
                 val newMin: Int
                 val newQty: Int
                 
                 if (isPrepared) {
                     newMin = product.minimumQuantity
-                    val delta = etNewPreparedQty.text.toString().toIntOrNull() ?: 0
+                    val delta = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(etNewPreparedQty.text) ?: 0
                     newQty = product.quantity + delta
                 } else {
-                    newMin = etMinQty.text.toString().toIntOrNull() ?: -1
-                    newQty = etCurrentQty.text.toString().toIntOrNull() ?: -1
+                    newMin = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(etMinQty.text) ?: -1
+                    newQty = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(etCurrentQty.text) ?: -1
                     if (newMin < 0 || newQty < 0) {
                         Toast.makeText(requireContext(), getString(R.string.invalid_quantity), Toast.LENGTH_SHORT).show()
                         return@setPositiveButton
@@ -366,7 +381,7 @@ class ProductsAdapter(
         private val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
 
         fun bind(item: InventoryItem) {
-            tvName.text = item.name
+            tvName.text = BidiFormatter.getInstance().unicodeWrap(item.name)
             tvPrice.text = com.mohamed.playstation.core.utils.CurrencyUtils.formatAmount(itemView.context, item.sellPrice, currencyCode)
             tvUnitCost.text = com.mohamed.playstation.core.utils.CurrencyUtils.formatAmount(itemView.context, item.costPerUnit, currencyCode)
             
@@ -381,7 +396,7 @@ class ProductsAdapter(
             tvUnitCostLabel.text = itemView.context.getString(R.string.cost_of_unit, definiteUnit)
             tvProfitLabel.text = itemView.context.getString(R.string.profit_of_unit, definiteUnit)
             
-            tvQuantity.text = item.quantity.toString()
+            tvQuantity.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(itemView.context, item.quantity)
 
             if (isPrepared) {
                 val icon = if (unitName == com.mohamed.playstation.core.utils.UnitType.PACK.rawDbValue) "🍜" else "☕"

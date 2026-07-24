@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+<LinearLayout
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/spacing_large">
-
+    android:paddingHorizontal="@dimen/spacing_large"
+    android:paddingVertical="@dimen/spacing_medium"
+    android:orientation="vertical">
     <!-- Device Number -->
     <TextView
         android:layout_width="match_parent"
@@ -20,8 +24,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+        android:layout_marginTop="6dp"
+        style="@style/Widget.PlayStation.Dialog.Field.Compact">
 
         <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/spinnerDeviceNumber"
@@ -35,7 +39,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:text="@string/console_type"
         android:textColor="@color/text_primary"
         android:textAppearance="@style/TextAppearance.PlayStation.Body"
@@ -45,27 +49,35 @@
         android:id="@+id/toggleConsoleType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_segmented_control"
+        android:padding="0dp"
         app:singleSelection="true"
         app:selectionRequired="true">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPs4"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.PlayStation.Selection.SegmentedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:minHeight="48dp"
             android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="@string/ps4"
-            android:textColor="@color/text_primary" />
+            />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPs5"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.PlayStation.Selection.SegmentedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:minHeight="48dp"
             android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="@string/ps5"
-            android:textColor="@color/text_primary" />
+            />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -73,7 +85,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:text="@string/session_mode"
         android:textColor="@color/text_primary"
         android:textAppearance="@style/TextAppearance.PlayStation.Body"
@@ -83,41 +95,47 @@
         android:id="@+id/toggleSessionMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_segmented_control"
+        android:padding="0dp"
         app:singleSelection="true"
         app:selectionRequired="true">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnModeOpen"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.PlayStation.Selection.SegmentedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:minHeight="48dp"
             android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="@string/session_mode_open"
-            android:textColor="@color/text_primary" />
+            />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnModeFixed"
-            style="@style/Widget.Material3.Button.OutlinedButton"
+            style="@style/Widget.PlayStation.Selection.SegmentedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:minHeight="48dp"
             android:layout_weight="1"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="@string/session_mode_fixed"
-            android:textColor="@color/text_primary" />
+            />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <!-- Fixed duration (visible only when Fixed) -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilFixedDuration"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        style="@style/Widget.PlayStation.Dialog.Field.Compact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="12dp"
         android:visibility="gone"
         android:hint="@string/session_duration_minutes"
-        app:boxStrokeColor="@color/ps_blue_light"
-        app:hintTextColor="@color/ps_blue_light"
         app:suffixText="@string/minutes"
         app:suffixTextColor="@color/text_secondary">
 
@@ -135,7 +153,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:minHeight="48dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -143,6 +162,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="@string/multiplayer"
             android:textColor="@color/text_primary"
             android:textAppearance="@style/TextAppearance.PlayStation.Body"
@@ -151,7 +171,8 @@
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/switchMultiPlayer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="48dp"
+            android:minHeight="48dp" />
 
     </LinearLayout>
 
@@ -159,7 +180,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         app:cardBackgroundColor="@color/surface_dark"
         app:strokeColor="@color/ps_blue_primary"
         app:strokeWidth="1dp">
@@ -168,7 +189,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/spacing_medium">
+            android:paddingHorizontal="@dimen/spacing_medium"
+            android:paddingVertical="8dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -181,14 +203,17 @@
                 android:id="@+id/tvPricePreview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+
                 android:textColor="@color/ps_blue_primary"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-medium"
+                android:textDirection="firstStrong"
+                android:textAlignment="viewStart"
                 tools:text="30.00 ج.م / الساعة" />
 
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

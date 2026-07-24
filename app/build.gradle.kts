@@ -77,7 +77,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.56.1")
 
     // Room
-    val roomVersion = "2.7.0-alpha11"
+    val roomVersion = "2.8.4"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")

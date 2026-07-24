@@ -11,15 +11,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.FragmentExpensesBinding
 import com.mohamed.playstation.domain.model.Expense
+import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import com.mohamed.playstation.presentation.viewmodel.ExpenseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
@@ -44,7 +45,43 @@ class ExpensesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupListeners()
+        setupDateFilter()
         observeData()
+    }
+
+    private fun setupDateFilter() {
+        binding.cardDateRange.setOnClickListener {
+            showDateRangePicker()
+        }
+
+        binding.chipGroupDateFilters.setOnCheckedStateChangeListener { _, checkedIds ->
+            if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
+            
+            when (checkedIds.first()) {
+                R.id.chipToday -> viewModel.setDateFilter(DateRangeFilter.TODAY)
+                R.id.chipThisWeek -> viewModel.setDateFilter(DateRangeFilter.THIS_WEEK)
+                R.id.chipThisMonth -> viewModel.setDateFilter(DateRangeFilter.THIS_MONTH)
+                R.id.chipLastMonth -> viewModel.setDateFilter(DateRangeFilter.LAST_MONTH)
+                R.id.chipLast3Months -> viewModel.setDateFilter(DateRangeFilter.LAST_3_MONTHS)
+            }
+        }
+    }
+
+    private fun showDateRangePicker() {
+        val picker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText(getString(R.string.filter_custom))
+            .build()
+            
+        picker.addOnPositiveButtonClickListener { selection ->
+            val start = selection.first
+            val end = selection.second
+            if (start != null && end != null) {
+                binding.chipGroupDateFilters.clearCheck()
+                viewModel.setCustomDateRange(start, end)
+            }
+        }
+        
+        picker.show(parentFragmentManager, "DATE_PICKER")
     }
 
     private fun setupRecyclerView() {
@@ -53,6 +90,7 @@ class ExpensesFragment : Fragment() {
             onDelete = { expense -> showDeleteConfirmation(expense) }
         )
         binding.rvExpenses.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvExpenses.setHasFixedSize(true)
         binding.rvExpenses.adapter = adapter
     }
 
@@ -68,8 +106,14 @@ class ExpensesFragment : Fragment() {
                 launch {
                     viewModel.expenses.collect { list ->
                         adapter.submitList(list)
-                        binding.layoutEmpty.isVisible = list.isEmpty()
-                        binding.rvExpenses.isVisible = list.isNotEmpty()
+                        // Preserve visibility if data exists to prevent flicker
+                        if (list.isNotEmpty()) {
+                            binding.layoutEmpty.isVisible = false
+                            binding.rvExpenses.isVisible = true
+                        } else {
+                            binding.layoutEmpty.isVisible = true
+                            binding.rvExpenses.isVisible = false
+                        }
                     }
                 }
                 launch {
@@ -83,8 +127,22 @@ class ExpensesFragment : Fragment() {
                     }
                 }
                 launch {
-                    val monthFormat = java.text.SimpleDateFormat("MMMM yyyy", java.util.Locale.getDefault())
-                    binding.tvCurrentMonth.text = monthFormat.format(Date())
+                    viewModel.dateFilterFlow.collect { filter ->
+                        // Update UI title based on the filter
+                        val titleRes = when (filter) {
+                            DateRangeFilter.TODAY -> R.string.today
+                            DateRangeFilter.THIS_WEEK -> R.string.filter_this_week
+                            DateRangeFilter.LAST_7_DAYS -> R.string.filter_last_7_days
+                            DateRangeFilter.THIS_MONTH -> R.string.this_month
+                            DateRangeFilter.LAST_MONTH -> R.string.filter_last_month
+                            DateRangeFilter.LAST_30_DAYS -> R.string.filter_last_30_days
+                            DateRangeFilter.LAST_3_MONTHS -> R.string.filter_last_3_months
+                            DateRangeFilter.ALL_TIME -> R.string.all
+                            DateRangeFilter.CUSTOM -> R.string.filter_custom
+                        }
+                        binding.tvDateRange.text = getString(titleRes)
+                        // No programmatic chip updates needed because UI matches ViewModel flow defaults
+                    }
                 }
             }
         }

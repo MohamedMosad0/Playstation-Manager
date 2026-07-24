@@ -3,6 +3,7 @@ package com.mohamed.playstation.presentation.ui.reports
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -12,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -55,6 +57,7 @@ class ReportsFragment : Fragment() {
 
     private fun setupViews() {
         topProductsAdapter = TopProductsAdapter("EGP")
+        binding.rvTopProducts.layoutManager = LinearLayoutManager(requireContext())
         binding.rvTopProducts.adapter = topProductsAdapter
 
         binding.cardDateRange.setOnClickListener {
@@ -68,7 +71,6 @@ class ReportsFragment : Fragment() {
                 R.id.chipToday -> viewModel.setDateFilter(DateRangeFilter.TODAY)
                 R.id.chipLast7Days -> viewModel.setDateFilter(DateRangeFilter.LAST_7_DAYS)
                 R.id.chipThisMonth -> viewModel.setDateFilter(DateRangeFilter.THIS_MONTH)
-                R.id.chipLast30Days -> viewModel.setDateFilter(DateRangeFilter.LAST_30_DAYS)
                 R.id.chipAllTime -> viewModel.setDateFilter(DateRangeFilter.ALL_TIME)
             }
         }
@@ -99,6 +101,7 @@ class ReportsFragment : Fragment() {
             description.isEnabled = false
             setDrawGridBackground(false)
             setDrawBorders(false)
+            setNoDataText("")
             
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
@@ -133,6 +136,7 @@ class ReportsFragment : Fragment() {
                 isRotationEnabled = true
                 isHighlightPerTapEnabled = true
                 setDrawEntryLabels(false) // Hide labels to prevent overlap
+                setNoDataText("")
                 
                 legend.apply {
                     this.textColor = textColor
@@ -163,8 +167,7 @@ class ReportsFragment : Fragment() {
 
     private fun updateUI(state: ReportsUiState) {
         val currency = state.currency
-        topProductsAdapter = TopProductsAdapter(currency) // Recreate if currency changes
-        binding.rvTopProducts.adapter = topProductsAdapter
+        topProductsAdapter.updateCurrency(currency)
 
         // Date Label
         if (state.dateRangeLabel == com.mohamed.playstation.R.string.filter_custom) {
@@ -179,8 +182,8 @@ class ReportsFragment : Fragment() {
         binding.tvTotalExpenses.text = CurrencyUtils.formatAmount(requireContext(), state.totalExpenses, currency)
         binding.tvSessionRevenue.text = CurrencyUtils.formatAmount(requireContext(), state.sessionRevenue, currency)
         binding.tvProductRevenue.text = CurrencyUtils.formatAmount(requireContext(), state.productRevenue, currency)
-        binding.tvTotalSessions.text = state.totalSessions.toString()
-        binding.tvAvgDuration.text = "${state.avgSessionDurationMinutes} ${getString(com.mohamed.playstation.R.string.minutes_suffix)}"
+        binding.tvTotalSessions.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), state.totalSessions)
+        binding.tvAvgDuration.text = "${com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), state.avgSessionDurationMinutes)} ${getString(com.mohamed.playstation.R.string.minutes_suffix)}"
         binding.tvProductCost.text = CurrencyUtils.formatAmount(requireContext(), state.productCost, currency)
         binding.tvProductProfit.text = CurrencyUtils.formatAmount(requireContext(), state.productProfit, currency)
         binding.tvNetProfit.text = CurrencyUtils.formatAmount(requireContext(), state.netProfit, currency)
@@ -194,7 +197,7 @@ class ReportsFragment : Fragment() {
         binding.tvNetProfit.setTextColor(netProfitColor)
 
         // Historical cost gap warning
-        binding.cardHistoricalWarning.visibility = if (state.hasHistoricalCostGap) View.VISIBLE else View.GONE
+
 
         // Top Products
         if (state.topProducts.isEmpty()) {
@@ -215,8 +218,13 @@ class ReportsFragment : Fragment() {
     private fun updateBarChart(data: List<kotlin.Pair<String, Double>>) {
         if (data.isEmpty()) {
             binding.barChartRevenue.clear()
+            binding.barChartRevenue.visibility = View.INVISIBLE
+            binding.layoutEmptyBarChart.visibility = View.VISIBLE
             return
         }
+        
+        binding.barChartRevenue.visibility = View.VISIBLE
+        binding.layoutEmptyBarChart.visibility = View.GONE
 
         val entries = ArrayList<BarEntry>()
         val labels = ArrayList<String>()
@@ -240,8 +248,13 @@ class ReportsFragment : Fragment() {
     private fun updateRevenuePieChart(distribution: Map<String, Double>) {
         if (distribution.isEmpty()) {
             binding.pieChartRevenue.clear()
+            binding.pieChartRevenue.visibility = View.INVISIBLE
+            binding.layoutEmptyPieChartRevenue.visibility = View.VISIBLE
             return
         }
+        
+        binding.pieChartRevenue.visibility = View.VISIBLE
+        binding.layoutEmptyPieChartRevenue.visibility = View.GONE
 
         val entries = ArrayList<PieEntry>()
         for ((label, value) in distribution) {
@@ -268,8 +281,13 @@ class ReportsFragment : Fragment() {
     private fun updateDevicePieChart(distribution: Map<String, Int>) {
         if (distribution.isEmpty()) {
             binding.pieChartDevices.clear()
+            binding.pieChartDevices.visibility = View.INVISIBLE
+            binding.layoutEmptyPieChartDevices.visibility = View.VISIBLE
             return
         }
+        
+        binding.pieChartDevices.visibility = View.VISIBLE
+        binding.layoutEmptyPieChartDevices.visibility = View.GONE
 
         val entries = ArrayList<PieEntry>()
         for ((label, value) in distribution) {
@@ -279,7 +297,7 @@ class ReportsFragment : Fragment() {
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = listOf(
             ContextCompat.getColor(requireContext(), R.color.ps_blue_primary),
-            ContextCompat.getColor(requireContext(), R.color.ps_blue_dark)
+            ContextCompat.getColor(requireContext(), R.color.colorPrimaryContainer)
         )
         dataSet.valueTextColor = Color.WHITE
         dataSet.valueTextSize = 12f

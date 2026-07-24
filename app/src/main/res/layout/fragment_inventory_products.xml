@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_medium"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
         android:hint="@string/inventory_search_product"
         app:startIconDrawable="@drawable/ic_search"
         app:startIconTint="@color/text_secondary"
@@ -36,6 +36,8 @@
             android:maxLines="1"
             android:paddingStart="@dimen/spacing_small"
             android:paddingEnd="@dimen/spacing_medium"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:textSize="15sp"
             android:textColor="@color/text_primary" />
 
@@ -49,6 +51,8 @@
         android:clipToPadding="false"
         android:paddingBottom="100dp"
         android:paddingTop="@dimen/spacing_small"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/searchLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,15 +83,16 @@
 
     </LinearLayout>
 
-    <!-- New Product Button (Extended FAB) -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <!-- New Product Button (FAB) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnNewProduct"
-        style="@style/Widget.PlayStation.FAB.Extended"
+        style="@style/Widget.PlayStation.FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_large"
-        android:text="@string/inventory_add_product"
-        app:icon="@drawable/ic_add"
+        android:layout_marginEnd="@dimen/spacing_large"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="@string/inventory_add_product"
+        app:srcCompat="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

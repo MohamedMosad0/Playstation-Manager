@@ -9,6 +9,7 @@ import com.mohamed.playstation.core.utils.SessionPricing
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -88,6 +89,18 @@ class SettingsManager @Inject constructor(
     }
 
     // ======================== Language ========================
+
+    data class AppConfig(
+        val language: String,
+        val isDark: Boolean
+    )
+
+    val appConfigFlow: Flow<AppConfig> = dataStore.data.map { preferences ->
+        AppConfig(
+            language = preferences[PreferencesKeys.LANGUAGE] ?: AppConstants.DEFAULT_LANGUAGE,
+            isDark = preferences[PreferencesKeys.DARK_MODE] ?: true
+        )
+    }.distinctUntilChanged()
 
     val languageFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.LANGUAGE] ?: AppConstants.DEFAULT_LANGUAGE
@@ -318,14 +331,6 @@ class SettingsManager @Inject constructor(
             legacyMultiPrice = preferences[PreferencesKeys.MULTI_PRICE]
                 ?: AppConstants.DEFAULT_MULTI_PRICE
         )
-    }
-
-    // ======================== Clear All ========================
-
-    suspend fun clearAll() {
-        dataStore.edit { preferences ->
-            preferences.clear()
-        }
     }
 
     data class WarningNotificationSettings(

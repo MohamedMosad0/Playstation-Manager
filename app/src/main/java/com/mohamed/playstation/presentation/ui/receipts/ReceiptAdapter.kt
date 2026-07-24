@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamed.playstation.databinding.ItemReceiptBinding
 import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptListItemUiModel
+import android.text.BidiFormatter
 
 /**
  * Adapter for displaying a list of receipts.
@@ -37,7 +38,7 @@ class ReceiptAdapter(
         fun bind(model: ReceiptListItemUiModel) {
             with(binding) {
                 tvReceiptNumber.text = model.receiptNumber
-                tvDeviceInfo.text = model.deviceInfo
+                tvDeviceInfo.text = BidiFormatter.getInstance().unicodeWrap(model.deviceInfo)
                 tvDuration.text = model.durationAndRange
                 tvTotal.text = model.totalAmount
                 chipPaymentMethod.text = model.paymentMethod

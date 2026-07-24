@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Top Divider for Bottom Navigation -->
-    <View
+    <android.view.View
         android:id="@+id/bottomNavDivider"
         android:layout_width="0dp"
         android:layout_height="1dp"

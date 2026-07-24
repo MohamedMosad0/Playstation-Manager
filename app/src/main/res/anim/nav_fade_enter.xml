@@ -2,11 +2,7 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="@integer/material_motion_duration_short_2">
     
-    <translate
-        android:fromYDelta="6dp"
-        android:toYDelta="0dp"
-        android:interpolator="@android:interpolator/decelerate_quint" />
-
+    <!-- Stay in place, just fade in -->
     <alpha
         android:fromAlpha="0.0"
         android:toAlpha="1.0"

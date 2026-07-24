@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/spacing_large">
+    android:fillViewport="true">
+
+    <LinearLayout
+        style="@style/Widget.PlayStation.Dialog.Content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilInventoryProduct"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        style="@style/Widget.PlayStation.Dialog.Field.Dropdown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/product_name"
@@ -18,6 +23,7 @@
             android:id="@+id/actInventoryProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/product_name"
             android:inputType="none"
             android:maxLines="1" />
 
@@ -25,10 +31,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilProductPrice"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.PlayStation.Dialog.Field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="12dp"
         android:hint="@string/product_price">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -44,10 +50,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilAvailableQuantity"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.PlayStation.Dialog.Field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="12dp"
         android:hint="@string/available_quantity">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -63,10 +69,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilRequestedQuantity"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.PlayStation.Dialog.Field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="12dp"
         android:hint="@string/requested_quantity">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -78,4 +84,5 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

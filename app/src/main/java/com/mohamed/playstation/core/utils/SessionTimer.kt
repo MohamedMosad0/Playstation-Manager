@@ -1,5 +1,6 @@
 package com.mohamed.playstation.core.utils
 
+import android.content.Context
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.domain.model.Session
 import java.util.concurrent.TimeUnit
@@ -38,18 +39,18 @@ object SessionTimer {
         return remaining < 100L
     }
 
-    fun formatDurationMs(durationMs: Long): String {
+    fun formatDurationMs(context: Context, durationMs: Long): String {
         val hours = TimeUnit.MILLISECONDS.toHours(durationMs)
         val minutes = TimeUnit.MILLISECONDS.toMinutes(durationMs) % 60
         val seconds = TimeUnit.MILLISECONDS.toSeconds(durationMs) % 60
-        return String.format(java.util.Locale.US, "%02d:%02d:%02d", hours, minutes, seconds)
+        return AppFormatters.formatTimer(context, hours, minutes, seconds)
     }
 
-    fun formatForSession(session: Session, nowMs: Long): String {
+    fun formatForSession(context: Context, session: Session, nowMs: Long): String {
         return if (session.sessionMode == AppConstants.SESSION_MODE_FIXED) {
-            formatDurationMs(getRemainingMs(session, nowMs) ?: 0L)
+            formatDurationMs(context, getRemainingMs(session, nowMs) ?: 0L)
         } else {
-            formatDurationMs(getElapsedMs(session, nowMs))
+            formatDurationMs(context, getElapsedMs(session, nowMs))
         }
     }
 }

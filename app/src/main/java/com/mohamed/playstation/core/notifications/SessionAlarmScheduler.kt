@@ -109,7 +109,6 @@ class SessionAlarmScheduler @Inject constructor(
         }
 
         setAlarm(maxOf(endTimeMs, now), buildEndPendingIntent(session.id))
-        Timber.d("Scheduled fixed-session alarms for session ${session.id}")
     }
 
     @SuppressLint("ScheduleExactAlarm")
@@ -117,9 +116,6 @@ class SessionAlarmScheduler @Inject constructor(
         triggerAtMillis: Long,
         pendingIntent: PendingIntent
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Timber.e("canScheduleExactAlarms = ${alarmManager.canScheduleExactAlarms()}")
-        }
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
                 !alarmManager.canScheduleExactAlarms() -> {

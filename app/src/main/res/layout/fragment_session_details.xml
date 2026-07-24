@@ -46,7 +46,8 @@
                             android:layout_width="@dimen/spacing_medium"
                             android:layout_height="@dimen/spacing_medium"
                             android:src="@drawable/ic_gamepad"
-                            app:tint="@color/white" />
+                            android:contentDescription="@null"
+                            app:tint="?attr/colorOnPrimary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -279,14 +280,31 @@
                         android:fontFamily="sans-serif-medium"
                         android:layout_marginBottom="@dimen/spacing_small" />
 
-                    <TextView
-                        android:id="@+id/tvNoProducts"
+                    <LinearLayout
+                        android:id="@+id/layoutEmptyProducts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
-                        android:text="@string/no_products_added"
-                        android:textColor="@color/text_secondary"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body" />
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:paddingVertical="32dp">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_inventory"
+                            android:contentDescription="@null"
+                            app:tint="?android:attr/textColorTertiary"
+                            android:layout_marginBottom="12dp" />
+
+                        <TextView
+                            android:id="@+id/tvNoProducts"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_products_added"
+                            android:textColor="@color/text_secondary"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body" />
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvProducts"
@@ -336,6 +354,7 @@
                     android:text="@string/end_session"
                     style="@style/Widget.PlayStation.Button"
                     app:backgroundTint="@color/error"
+                    android:textColor="?attr/colorOnError"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 

@@ -66,10 +66,12 @@ class SettingsViewModel @Inject constructor(
                 getSettingsFlowsUseCase.ps4MultiplayerPriceFlow
             ) { hour, extra, legacyMultiHour ->
                 Triple(hour, extra, legacyMultiHour)
-            }.first().let { (hour, extra, legacyMultiHour) ->
+            }.distinctUntilChanged().first().let { (hour, extra, legacyMultiHour) ->
                 if (extra == AppConstants.DEFAULT_PS4_MULTI_EXTRA && legacyMultiHour > hour) {
                     val migrated = (legacyMultiHour - hour).coerceAtLeast(0.0)
-                    updateSettingsUseCase.setPs4MultiExtra(migrated)
+                    if (migrated != extra) {
+                        updateSettingsUseCase.setPs4MultiExtra(migrated)
+                    }
                 }
             }
 
@@ -80,10 +82,12 @@ class SettingsViewModel @Inject constructor(
                 getSettingsFlowsUseCase.ps5MultiplayerPriceFlow
             ) { hour, extra, legacyMultiHour ->
                 Triple(hour, extra, legacyMultiHour)
-            }.first().let { (hour, extra, legacyMultiHour) ->
+            }.distinctUntilChanged().first().let { (hour, extra, legacyMultiHour) ->
                 if (extra == AppConstants.DEFAULT_PS5_MULTI_EXTRA && legacyMultiHour > hour) {
                     val migrated = (legacyMultiHour - hour).coerceAtLeast(0.0)
-                    updateSettingsUseCase.setPs5MultiExtra(migrated)
+                    if (migrated != extra) {
+                        updateSettingsUseCase.setPs5MultiExtra(migrated)
+                    }
                 }
             }
         }
@@ -103,6 +107,18 @@ class SettingsViewModel @Inject constructor(
 
     private val _backupUiState = MutableStateFlow<BackupUiState>(BackupUiState.Idle)
     val backupUiState: StateFlow<BackupUiState> = _backupUiState.asStateFlow()
+
+    enum class EditableSetting {
+        PS4_HOUR_PRICE,
+        PS4_MULTI_EXTRA,
+        PS5_HOUR_PRICE,
+        PS5_MULTI_EXTRA,
+        REMINDER_MINUTES
+    }
+
+    private val editableSettingVersions = mutableMapOf<EditableSetting, Long>()
+    private val _editableSettingSaved = MutableSharedFlow<EditableSetting>(extraBufferCapacity = 1)
+    val editableSettingSaved: SharedFlow<EditableSetting> = _editableSettingSaved.asSharedFlow()
 
     data class CurrencyItem(val code: String, val displayResName: String)
 
@@ -149,35 +165,69 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun setReminderMinutes(minutes: Int) {
+        val version = nextEditableSettingVersion(EditableSetting.REMINDER_MINUTES)
         if (minutes <= 0) {
             _validationErrors.update { it.copy(reminderError = com.mohamed.playstation.R.string.error_invalid_price) }
         } else {
             _validationErrors.update { it.copy(reminderError = null) }
-            viewModelScope.launch { updateSettingsUseCase.setReminderMinutes(minutes) }
+            saveEditableSetting(EditableSetting.REMINDER_MINUTES, version) {
+                updateSettingsUseCase.setReminderMinutes(minutes)
+            }
         }
     }
 
     fun setPs4HourPrice(price: Double?) {
+        val version = nextEditableSettingVersion(EditableSetting.PS4_HOUR_PRICE)
         validateAndSavePrice(price, allowZero = false, errorSetter = { err -> _validationErrors.update { it.copy(ps4HourError = err) } }) {
-            viewModelScope.launch { updateSettingsUseCase.setPs4HourPrice(it) }
+            saveEditableSetting(EditableSetting.PS4_HOUR_PRICE, version) {
+                updateSettingsUseCase.setPs4HourPrice(it)
+            }
         }
     }
 
     fun setPs4MultiExtra(price: Double?) {
+        val version = nextEditableSettingVersion(EditableSetting.PS4_MULTI_EXTRA)
         validateAndSavePrice(price, allowZero = true, errorSetter = { err -> _validationErrors.update { it.copy(ps4MultiError = err) } }) {
-            viewModelScope.launch { updateSettingsUseCase.setPs4MultiExtra(it) }
+            saveEditableSetting(EditableSetting.PS4_MULTI_EXTRA, version) {
+                updateSettingsUseCase.setPs4MultiExtra(it)
+            }
         }
     }
 
     fun setPs5HourPrice(price: Double?) {
+        val version = nextEditableSettingVersion(EditableSetting.PS5_HOUR_PRICE)
         validateAndSavePrice(price, allowZero = false, errorSetter = { err -> _validationErrors.update { it.copy(ps5HourError = err) } }) {
-            viewModelScope.launch { updateSettingsUseCase.setPs5HourPrice(it) }
+            saveEditableSetting(EditableSetting.PS5_HOUR_PRICE, version) {
+                updateSettingsUseCase.setPs5HourPrice(it)
+            }
         }
     }
 
     fun setPs5MultiExtra(price: Double?) {
+        val version = nextEditableSettingVersion(EditableSetting.PS5_MULTI_EXTRA)
         validateAndSavePrice(price, allowZero = true, errorSetter = { err -> _validationErrors.update { it.copy(ps5MultiError = err) } }) {
-            viewModelScope.launch { updateSettingsUseCase.setPs5MultiExtra(it) }
+            saveEditableSetting(EditableSetting.PS5_MULTI_EXTRA, version) {
+                updateSettingsUseCase.setPs5MultiExtra(it)
+            }
+        }
+    }
+
+    private fun nextEditableSettingVersion(setting: EditableSetting): Long {
+        val nextVersion = (editableSettingVersions[setting] ?: 0L) + 1
+        editableSettingVersions[setting] = nextVersion
+        return nextVersion
+    }
+
+    private fun saveEditableSetting(
+        setting: EditableSetting,
+        version: Long,
+        save: suspend () -> Unit
+    ) {
+        viewModelScope.launch {
+            save()
+            if (editableSettingVersions[setting] == version) {
+                _editableSettingSaved.emit(setting)
+            }
         }
     }
 
@@ -194,10 +244,6 @@ class SettingsViewModel @Inject constructor(
                 onSave(price)
             }
         }
-    }
-
-    fun resetSettings() {
-        viewModelScope.launch { updateSettingsUseCase.resetSettings() }
     }
 
     suspend fun hasActiveSessions(): Boolean {

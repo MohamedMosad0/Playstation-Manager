@@ -103,6 +103,13 @@ class ReceiptRepository @Inject constructor(
     }
 
     /**
+     * الحصول على إجمالي الإيرادات في فترة زمنية
+     */
+    fun getTotalRevenueInRange(startTime: Long, endTime: Long): Flow<Double> {
+        return receiptDao.getTodayTotalRevenue(startTime, endTime).map { it ?: 0.0 }
+    }
+
+    /**
      * توليد رقم فاتورة جديد
      */
     suspend fun generateReceiptNumber(): String {

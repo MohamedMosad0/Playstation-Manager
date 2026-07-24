@@ -69,7 +69,7 @@
 
     <!-- Device Types -->
     <string name="ps4_standard">PS4 Standard</string>
-    <string name="ps4_pro">PS4 Pro</string>
+    <string name="ps4_pro">PS4 Advanced</string>
     <string name="ps5_standard">PS5 Standard</string>
     <string name="ps5_digital">PS5 Digital</string>
 
@@ -133,7 +133,7 @@
     <string name="restore">Restore</string>
     <string name="per_hour">/ Hour</string>
     <string name="select_currency">Select Currency</string>
-    <string name="settings_saved">Settings Saved</string>
+    <string name="settings_saved">✓ Saved</string>
     <string name="settings_general">General</string>
     <string name="settings_dark_mode">Dark Mode</string>
     <string name="settings_notifications">Notifications</string>
@@ -153,10 +153,6 @@
     <string name="settings_backup">Backup</string>
     <string name="settings_restore">Restore</string>
     <string name="settings_about">About</string>
-    <string name="settings_reset">Reset Settings</string>
-    <string name="settings_reset_confirm_title">Reset Settings?</string>
-    <string name="settings_reset_confirm_message">Are you sure you want to reset all settings? This action cannot be undone.</string>
-    <string name="settings_reset_success">Settings reset successfully</string>
     <string name="settings_version">Version: %1$s</string>
     <string name="settings_developer">Developer: %1$s</string>
     <string name="settings_version_title">Application Version</string>
@@ -283,8 +279,8 @@
     <string name="product_unit_profit">📈 Unit Profit:</string>
     <string name="product_available">📦 Available:</string>
     <string name="product_unit">Unit</string>
-    <string name="ps4">PlayStation 4</string>
-    <string name="ps5">PlayStation 5</string>
+    <string name="ps4">PS4</string>
+    <string name="ps5">PS5</string>
     <string name="last_7_days">Last 7 Days</string>
     <string name="this_month">This Month</string>
     <string name="last_30_days">Last 30 Days</string>
@@ -476,4 +472,18 @@
     <string name="settings_developer_label">Developer</string>
     <string name="settings_dark_mode_subtitle">Use dark appearance</string>
     <string name="settings_notifications_subtitle">Enable session alerts</string>
+    <string name="dashboard_empty_expense_chart_title">No expense data</string>
+    <string name="dashboard_empty_expense_chart_subtitle">Add your first expense to see insights here.</string>
+    <string name="expense_history">Expense History</string>
+    <string name="receipt_history">Receipt History</string>
+    <string name="filter_this_week">This Week</string>
+    <string name="filter_last_month">Last Month</string>
+    <string name="filter_last_3_months">Last 3 Months</string>
+    <string name="action_edit_product">Edit Product</string>
+    <string name="action_archive_product">Archive Product</string>
+    <string name="delete_expense_title">Delete Expense</string>
+    <string name="delete_expense_message">Are you sure you want to delete \"%1$s\"?\nThis action cannot be undone.</string>
+    <string name="invalid_expense_amount">Enter an amount greater than zero</string>
+    <string name="select_expense_category">Select an expense category</string>
+    <string name="end_session_failed">Unable to end the session. Please try again.</string>
 </resources>

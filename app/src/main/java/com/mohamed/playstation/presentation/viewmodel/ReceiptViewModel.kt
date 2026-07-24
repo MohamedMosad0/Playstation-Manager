@@ -33,89 +33,87 @@ class ReceiptViewModel @Inject constructor(
     private val pdfGenerator: ReceiptPdfGenerator
 ) : ViewModel() {
 
-    // كل الفواتير
-    private val _allReceipts = MutableStateFlow<UiState<List<Receipt>>>(UiState.Loading)
-    val allReceipts: StateFlow<UiState<List<Receipt>>> = _allReceipts.asStateFlow()
+    // العملة من الإعدادات — reactive من DataStore
+    val currency: StateFlow<String> = settingsManager.currencyFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_CURRENCY)
 
-    // فواتير اليوم
-    private val _todayReceipts = MutableStateFlow<UiState<List<Receipt>>>(UiState.Loading)
-    val todayReceipts: StateFlow<UiState<List<Receipt>>> = _todayReceipts.asStateFlow()
-
-    // إجمالي الإيرادات اليوم
-    private val _todayRevenue = MutableStateFlow(0.0)
-    val todayRevenue: StateFlow<Double> = _todayRevenue.asStateFlow()
+    private val _dateFilterFlow = MutableStateFlow(com.mohamed.playstation.domain.model.filter.DateRangeFilter.TODAY)
+    val dateFilterFlow: StateFlow<com.mohamed.playstation.domain.model.filter.DateRangeFilter> = _dateFilterFlow.asStateFlow()
 
     val productSummaries: StateFlow<Map<Long, SessionProductSummary>> = sessionProductUseCases
         .getAllSessionProductSummaries()
         .map { summaries -> summaries.associateBy { it.sessionId } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
 
-    // العملة من الإعدادات — reactive من DataStore
-    val currency: StateFlow<String> = settingsManager.currencyFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_CURRENCY)
+    private val _customStart = MutableStateFlow<Long>(0L)
+    private val _customEnd = MutableStateFlow<Long>(0L)
+
+    private val filterTrigger = combine(
+        dateFilterFlow,
+        _customStart,
+        _customEnd
+    ) { filter, start, end ->
+        Triple(filter, start, end)
+    }
+
+    val receipts: StateFlow<UiState<List<Receipt>>> = filterTrigger.flatMapLatest { (filter, customStart, customEnd) ->
+        val (start, end) = getRangeForFilter(filter, customStart, customEnd)
+        receiptUseCases.getReceiptsInRange(start, end)
+            .map { list ->
+                if (list.isEmpty()) UiState.Empty else UiState.Success(list)
+            }
+            .catch { e ->
+                Timber.e(e, "Error loading receipts")
+                emit(UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred)))
+            }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState.Loading)
+
+    val periodRevenue: StateFlow<Double> = filterTrigger.flatMapLatest { (filter, customStart, customEnd) ->
+        val (start, end) = getRangeForFilter(filter, customStart, customEnd)
+        receiptUseCases.getTotalRevenueInRange(start, end)
+            .catch { emit(0.0) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     // PDF UI State
     private val _pdfUiState = MutableStateFlow<PdfUiState>(PdfUiState.Idle)
     val pdfUiState: StateFlow<PdfUiState> = _pdfUiState.asStateFlow()
 
-    init {
-        loadAllReceipts()
-        loadTodayReceipts()
-        loadTodayRevenue()
+    fun setDateFilter(filter: com.mohamed.playstation.domain.model.filter.DateRangeFilter) {
+        _dateFilterFlow.value = filter
     }
 
-    /**
-     * تحميل كل الفواتير
-     */
-    private fun loadAllReceipts() {
-        viewModelScope.launch {
-            receiptUseCases.getAllReceipts()
-                .catch { e ->
-                    Timber.e(e, "Error loading all receipts")
-                    _allReceipts.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
-                }
-                .collect { receipts ->
-                    _allReceipts.value = if (receipts.isEmpty()) {
-                        UiState.Empty
-                    } else {
-                        UiState.Success(receipts)
-                    }
-                }
-        }
+    fun setCustomDateRange(start: Long, end: Long) {
+        _customStart.value = start
+        _customEnd.value = end
+        setDateFilter(com.mohamed.playstation.domain.model.filter.DateRangeFilter.CUSTOM)
     }
 
-    /**
-     * تحميل فواتير اليوم
-     */
-    private fun loadTodayReceipts() {
-        viewModelScope.launch {
-            receiptUseCases.getTodayReceipts()
-                .catch { e ->
-                    Timber.e(e, "Error loading today receipts")
-                    _todayReceipts.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
+    private fun getRangeForFilter(
+        range: com.mohamed.playstation.domain.model.filter.DateRangeFilter,
+        customStart: Long,
+        customEnd: Long
+    ): Pair<Long, Long> {
+        return when (range) {
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.TODAY -> com.mohamed.playstation.core.utils.DateUtils.todayRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.THIS_WEEK -> com.mohamed.playstation.core.utils.DateUtils.thisWeekRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_7_DAYS -> com.mohamed.playstation.core.utils.DateUtils.last7DaysRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.THIS_MONTH -> com.mohamed.playstation.core.utils.DateUtils.thisMonthRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_MONTH -> com.mohamed.playstation.core.utils.DateUtils.lastMonthRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_30_DAYS -> com.mohamed.playstation.core.utils.DateUtils.last30DaysRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_3_MONTHS -> com.mohamed.playstation.core.utils.DateUtils.last3MonthsRange()
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.ALL_TIME -> Pair(0L, Long.MAX_VALUE)
+            com.mohamed.playstation.domain.model.filter.DateRangeFilter.CUSTOM -> {
+                val endCal = java.util.Calendar.getInstance()
+                endCal.timeInMillis = customEnd
+                if (endCal.get(java.util.Calendar.HOUR_OF_DAY) == 0 && endCal.get(java.util.Calendar.MINUTE) == 0) {
+                    endCal.add(java.util.Calendar.DAY_OF_YEAR, 1)
+                    endCal.set(java.util.Calendar.HOUR_OF_DAY, 0)
+                    endCal.set(java.util.Calendar.MINUTE, 0)
+                    endCal.set(java.util.Calendar.SECOND, 0)
+                    endCal.set(java.util.Calendar.MILLISECOND, 0)
                 }
-                .collect { receipts ->
-                    _todayReceipts.value = if (receipts.isEmpty()) {
-                        UiState.Empty
-                    } else {
-                        UiState.Success(receipts)
-                    }
-                }
-        }
-    }
-
-    /**
-     * تحميل إجمالي الإيرادات اليوم
-     */
-    private fun loadTodayRevenue() {
-        viewModelScope.launch {
-            receiptUseCases.getTodayTotalRevenue()
-                .catch { e ->
-                    Timber.e(e, "Error loading today revenue")
-                }
-                .collect { revenue ->
-                    _todayRevenue.value = revenue
-                }
+                Pair(customStart, endCal.timeInMillis)
+            }
         }
     }
 
@@ -126,7 +124,6 @@ class ReceiptViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 receiptUseCases.updatePaymentMethod(receipt, paymentMethod)
-                Timber.d("Payment method updated for receipt: ${receipt.id}")
             } catch (e: Exception) {
                 Timber.e(e, "Error updating payment method")
             }
@@ -140,7 +137,6 @@ class ReceiptViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 receiptUseCases.deleteReceipt(receipt)
-                Timber.d("Receipt deleted: ${receipt.id}")
             } catch (e: Exception) {
                 Timber.e(e, "Error deleting receipt")
             }

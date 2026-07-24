@@ -26,6 +26,7 @@ import com.mohamed.playstation.presentation.viewmodel.ReceiptViewModel
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import android.text.BidiFormatter
 
 @AndroidEntryPoint
 class ReceiptDetailDialog : DialogFragment() {
@@ -144,7 +145,7 @@ class ReceiptDetailDialog : DialogFragment() {
     private fun bindUI(model: ReceiptUiModel, currentPaymentMethod: String?) {
         with(binding) {
             tvReceiptNumber.text = model.receiptNumber
-            tvDevice.text = model.deviceName
+            tvDevice.text = BidiFormatter.getInstance().unicodeWrap(model.deviceName)
             tvSessionType.text = model.sessionType
             tvStarted.text = model.startTime
             tvEnded.text = model.endTime
@@ -161,8 +162,21 @@ class ReceiptDetailDialog : DialogFragment() {
             tvProductsCost.text = model.productsCost
             tvTotal.text = model.totalAmount
 
-            tvProductsList.text = model.productsListDisplay
-            tvProductsList.isVisible = model.hasProducts
+            llProductsList.removeAllViews()
+            if (model.hasProducts) {
+                model.products.forEach { productUi ->
+                    val productView = layoutInflater.inflate(R.layout.item_receipt_product, llProductsList, false)
+                    productView.findViewById<android.widget.TextView>(R.id.tvProductName).text = productUi.name
+                    val quantityText = context?.getString(R.string.product_quantity_format, productUi.unitPrice, productUi.quantity.toIntOrNull() ?: 0) ?: ""
+                    productView.findViewById<android.widget.TextView>(R.id.tvProductQuantity).text = quantityText
+                    productView.findViewById<android.widget.TextView>(R.id.tvProductPrice).text = productUi.totalLinePrice
+                    llProductsList.addView(productView)
+                }
+                llProductsList.isVisible = true
+            } else {
+                llProductsList.isVisible = false
+            }
+
             tvNoProducts.isVisible = !model.hasProducts
 
             when (currentPaymentMethod) {
@@ -192,10 +206,21 @@ class ReceiptDetailDialog : DialogFragment() {
                         else -> "cash"
                     }
 
-                    if (newPaymentMethod != currentPaymentMethod) {
-                        val currentReceipt = this@ReceiptDetailDialog.receipt ?: return@setOnCheckedStateChangeListener
+                    val currentReceipt = this@ReceiptDetailDialog.receipt ?: return@setOnCheckedStateChangeListener
+                    if (newPaymentMethod != currentReceipt.paymentMethod) {
                         val updatedReceipt = currentReceipt.copy(paymentMethod = newPaymentMethod)
                         this@ReceiptDetailDialog.receipt = updatedReceipt
+                        
+                        // Update uiModel so PDF and Share features get the latest localized value
+                        val localizedMethod = when (newPaymentMethod) {
+                            "cash" -> getString(R.string.payment_cash)
+                            "card" -> getString(R.string.payment_card)
+                            else -> getString(R.string.payment_cash)
+                        }
+                        this@ReceiptDetailDialog.uiModel = this@ReceiptDetailDialog.uiModel?.copy(
+                            paymentMethod = localizedMethod
+                        )
+                        
                         receiptViewModel.updatePaymentMethod(updatedReceipt, newPaymentMethod)
                     }
                 }

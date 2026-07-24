@@ -2,17 +2,19 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
     <LinearLayout
+        style="@style/Widget.PlayStation.Dialog.Content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_large">
+        >
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.PlayStation.Dialog.Field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/product_name">
@@ -27,10 +29,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPrice"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.PlayStation.Dialog.Field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="12dp"
             android:hint="@string/sale_price_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -43,10 +45,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilCurrentQty"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.PlayStation.Dialog.Field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="12dp"
             android:hint="@string/current_quantity_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -59,10 +61,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilMinQty"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.PlayStation.Dialog.Field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="12dp"
             android:hint="@string/min_quantity_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -75,10 +77,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilCostPerUnit"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.PlayStation.Dialog.Field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="12dp"
             android:hint="@string/unit_cost_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -93,14 +95,14 @@
             android:id="@+id/tvAvailableStock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="12dp"
             android:textAppearance="@style/TextAppearance.PlayStation.Body"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:visibility="gone" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilNewPreparedQty"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.PlayStation.Dialog.Field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"

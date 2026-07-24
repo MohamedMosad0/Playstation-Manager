@@ -56,7 +56,7 @@ class SessionNotificationHelper @Inject constructor(
     ) {
         if (!canPostNotifications()) return
 
-        val title = "${session.deviceType} #${session.deviceNumber}"
+        val title = "${session.deviceType} #${com.mohamed.playstation.core.utils.AppFormatters.formatInteger(context, session.deviceNumber)}"
         val text = context.getString(R.string.notification_session_ending_warning, warningMinutes)
 
         val notification = buildNotification(
@@ -78,7 +78,7 @@ class SessionNotificationHelper @Inject constructor(
     ) {
         if (!canPostNotifications()) return
 
-        val title = "${session.deviceType} #${session.deviceNumber}"
+        val title = "${session.deviceType} #${com.mohamed.playstation.core.utils.AppFormatters.formatInteger(context, session.deviceNumber)}"
         val text = context.getString(R.string.notification_session_ended_receipt)
 
         val notification = buildNotification(
@@ -112,7 +112,7 @@ class SessionNotificationHelper @Inject constructor(
         )
 
         return NotificationCompat.Builder(context, AppConstants.NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_ps_logo)
+            .setSmallIcon(R.drawable.ic_gamepad)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))

@@ -131,6 +131,11 @@ class SessionsFragment : Fragment() {
 
                 // --- Running sessions (existing logic, unchanged) ---
                 var cachedSessions: List<com.mohamed.playstation.domain.model.Session> = emptyList()
+                // Track previous inner list references to skip redundant submitList on tick-only updates.
+                // The combine creates a new concatenated list every emission via `+`, so we must
+                // track the source lists whose identity only changes when Room emits new data.
+                var lastActiveRef: List<com.mohamed.playstation.domain.model.Session>? = null
+                var lastPausedRef: List<com.mohamed.playstation.domain.model.Session>? = null
                 
                 launch {
                     combine(
@@ -140,13 +145,19 @@ class SessionsFragment : Fragment() {
                         val isLoading =
                             activeState is UiState.Loading && pausedState is UiState.Loading
 
-                        val activeSessions =
-                            if (activeState is UiState.Success) activeState.data.first else if (activeState is UiState.Loading) emptyList() else null
+                        val activeSessions = when (activeState) {
+                            is UiState.Success -> activeState.data.first
+                            is UiState.Empty, is UiState.Loading -> emptyList()
+                            else -> null
+                        }
                         val activeTick =
                             if (activeState is UiState.Success) activeState.data.second else 0L
 
-                        val pausedSessions =
-                            if (pausedState is UiState.Success) pausedState.data.first else if (pausedState is UiState.Loading) emptyList() else null
+                        val pausedSessions = when (pausedState) {
+                            is UiState.Success -> pausedState.data.first
+                            is UiState.Empty, is UiState.Loading -> emptyList()
+                            else -> null
+                        }
 
                         if (activeState is UiState.Error) {
                             android.widget.Toast.makeText(requireContext(), activeState.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
@@ -161,25 +172,42 @@ class SessionsFragment : Fragment() {
                         val allSessions = newActive + newPaused
                         cachedSessions = allSessions
 
-                        Triple(isLoading, allSessions, activeTick)
-                    }.collect { (isLoading, sessions, tick) ->
-                        if (isLoading) {
+                        // Return inner list references alongside combined result for identity tracking
+                        data class SessionTick(
+                            val isLoading: Boolean,
+                            val sessions: List<com.mohamed.playstation.domain.model.Session>,
+                            val tick: Long,
+                            val activeRef: List<com.mohamed.playstation.domain.model.Session>,
+                            val pausedRef: List<com.mohamed.playstation.domain.model.Session>
+                        )
+                        SessionTick(isLoading, allSessions, activeTick, newActive, newPaused)
+                    }.collect { result ->
+                        if (result.isLoading) {
                             binding.progressBar.isVisible = true
                             binding.rvSessions.isVisible = false
                             binding.tvEmptyState.isVisible = false
-                        } else if (sessions.isEmpty()) {
+                        } else if (result.sessions.isEmpty()) {
                             binding.progressBar.isVisible = false
                             binding.rvSessions.isVisible = false
                             binding.tvEmptyState.isVisible = true
+                            lastActiveRef = null
+                            lastPausedRef = null
                         } else {
                             binding.progressBar.isVisible = false
                             binding.tvEmptyState.isVisible = false
                             binding.rvSessions.isVisible = true
 
-                            sessionAdapter.updateTick(tick)
-                            sessionAdapter.submitList(sessions)
-
-                            binding.chipRunning.text = getString(com.mohamed.playstation.R.string.tab_running) + " (${sessions.size})"
+                            // Only run DiffUtil when the session data actually changed.
+                            // On tick-only updates the inner Room lists keep the same reference,
+                            // so this skips redundant DiffUtil comparisons every second.
+                            val listChanged = result.activeRef !== lastActiveRef || result.pausedRef !== lastPausedRef
+                            if (listChanged) {
+                                sessionAdapter.submitList(result.sessions)
+                                lastActiveRef = result.activeRef
+                                lastPausedRef = result.pausedRef
+                                binding.chipRunning.text = getString(com.mohamed.playstation.R.string.tab_running) + " (${result.sessions.size})"
+                            }
+                            sessionAdapter.updateTick(result.tick)
                         }
                     }
                 }

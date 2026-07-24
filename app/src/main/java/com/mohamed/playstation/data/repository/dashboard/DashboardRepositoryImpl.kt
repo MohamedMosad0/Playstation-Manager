@@ -36,9 +36,10 @@ class DashboardRepositoryImpl @Inject constructor(
             receiptRepository.getTodayTotalRevenue().distinctUntilChanged(),
             expenseRepository.getTotalExpensesInRange(startOfDay, endOfDay).distinctUntilChanged(),
             sessionRepository.getTodaySessions().distinctUntilChanged(),
-            inventoryRepository.getAllActiveItems().distinctUntilChanged()
-        ) { todayRevenue, todayExpenses, todaySessions, inventoryProducts ->
-            DailyMetrics(todayRevenue, todayExpenses, todaySessions, inventoryProducts)
+            inventoryRepository.getActiveInventoryItemsCount().distinctUntilChanged(),
+            inventoryRepository.getLowStockInventoryItemsCount().distinctUntilChanged()
+        ) { todayRevenue, todayExpenses, todaySessions, totalProducts, lowStockProducts ->
+            DailyMetrics(todayRevenue, todayExpenses, todaySessions, totalProducts, lowStockProducts)
         }
 
         val chartFlow = combine(
@@ -56,8 +57,8 @@ class DashboardRepositoryImpl @Inject constructor(
                 todayExpenses = daily.todayExpenses,
                 sessionsToday = daily.todaySessions.size,
                 netProfit = daily.todayRevenue - daily.todayExpenses,
-                totalProducts = daily.inventoryProducts.size,
-                lowStockProducts = daily.inventoryProducts.count { it.quantity <= 5 },
+                totalProducts = daily.totalProducts,
+                lowStockProducts = daily.lowStockProducts,
                 revenueChartData = buildRevenueChartData(chart.recentReceipts),
                 expenseChartData = buildExpenseChartData(chart.recentExpenses),
                 recentSessions = daily.todaySessions.sortedByDescending { it.startTime }.take(5),
@@ -107,7 +108,8 @@ class DashboardRepositoryImpl @Inject constructor(
         val todayRevenue: Double,
         val todayExpenses: Double,
         val todaySessions: List<com.mohamed.playstation.domain.model.Session>,
-        val inventoryProducts: List<com.mohamed.playstation.domain.model.InventoryItem>
+        val totalProducts: Int,
+        val lowStockProducts: Int
     )
 
     private data class ChartMetrics(

@@ -74,7 +74,6 @@ class SessionAlarmReceiver : BroadcastReceiver() {
                 warningMinutes = warningSettings.warningMinutes,
                 soundEnabled = warningSettings.soundEnabled
             )
-            Timber.d("Warning alarm delivered for session ${session.id}")
             return
         }
 
@@ -115,7 +114,6 @@ class SessionAlarmReceiver : BroadcastReceiver() {
                 receiptId = receiptId,
                 soundEnabled = warningSettings.soundEnabled
             )
-            Timber.d("End alarm delivered for session ${session.id}")
         } catch (e: Exception) {
             sessionAlarmScheduler.syncSession(sessionId)
             Timber.e(e, "Failed to end session ${session.id}")

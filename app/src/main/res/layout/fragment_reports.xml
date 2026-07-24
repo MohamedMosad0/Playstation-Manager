@@ -92,35 +92,28 @@
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipToday"
-                            style="@style/Widget.Material3.Chip.Filter"
+                            style="@style/Widget.PlayStation.Selection.FilterChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/today" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipLast7Days"
-                            style="@style/Widget.Material3.Chip.Filter"
+                            style="@style/Widget.PlayStation.Selection.FilterChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/last_7_days" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipThisMonth"
-                            style="@style/Widget.Material3.Chip.Filter"
+                            style="@style/Widget.PlayStation.Selection.FilterChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/this_month" />
 
                         <com.google.android.material.chip.Chip
-                            android:id="@+id/chipLast30Days"
-                            style="@style/Widget.Material3.Chip.Filter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/last_30_days" />
-
-                        <com.google.android.material.chip.Chip
                             android:id="@+id/chipAllTime"
-                            style="@style/Widget.Material3.Chip.Filter"
+                            style="@style/Widget.PlayStation.Selection.FilterChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="true"
@@ -153,22 +146,27 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reports_total_revenue"
-                        app:drawableStartCompat="@drawable/ic_receipt"
-                        android:drawablePadding="@dimen/spacing_small"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
-                        android:textColor="@color/text_secondary" />
-                    <TextView
                         android:id="@+id/tvTotalRevenue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="?attr/colorPrimary"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_receipt"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="?attr/colorPrimary"
                         tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_total_revenue"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -185,22 +183,27 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reports_total_expenses"
-                        app:drawableStartCompat="@drawable/ic_expenses"
-                        android:drawablePadding="@dimen/spacing_small"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
-                        android:textColor="@color/text_secondary" />
-                    <TextView
                         android:id="@+id/tvTotalExpenses"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/chart_red"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_expenses"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/chart_red"
                         tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_total_expenses"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -217,21 +220,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reports_sessions_revenue"
-                        app:drawableStartCompat="@drawable/ic_gamepad"
-                        android:drawablePadding="@dimen/spacing_small"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
-                        android:textColor="@color/text_secondary" />
-                    <TextView
                         android:id="@+id/tvSessionRevenue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_gamepad"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/text_primary"
                         tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_sessions_revenue"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -248,21 +256,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reports_products_revenue"
-                        app:drawableStartCompat="@drawable/ic_package"
-                        android:drawablePadding="@dimen/spacing_small"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
-                        android:textColor="@color/text_secondary" />
-                    <TextView
                         android:id="@+id/tvProductRevenue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_package"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/text_primary"
                         tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_products_revenue"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -279,21 +292,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reports_total_sessions"
-                        app:drawableStartCompat="@drawable/ic_gamepad"
-                        android:drawablePadding="@dimen/spacing_small"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
-                        android:textColor="@color/text_secondary" />
-                    <TextView
                         android:id="@+id/tvTotalSessions"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_gamepad"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/text_primary"
                         tools:text="0" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_total_sessions"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -310,71 +328,28 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reports_average_duration"
-                        app:drawableStartCompat="@drawable/ic_timer"
-                        android:drawablePadding="@dimen/spacing_small"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
-                        android:textColor="@color/text_secondary" />
-                    <TextView
                         android:id="@+id/tvAvgDuration"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_timer"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/text_primary"
                         tools:text="0 دقيقة" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_average_duration"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-        </GridLayout>
-
-
-        <!-- Historical Cost Gap Warning -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardHistoricalWarning"
-            style="@style/Widget.PlayStation.Card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginBottom="@dimen/spacing_small"
-            android:visibility="gone"
-            app:cardBackgroundColor="#1AE6A800">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="12dp"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_warning"
-                    app:tint="@color/status_paused"
-                    tools:ignore="ContentDescription" />
-                <TextView
-                    android:id="@+id/tvHistoricalWarning"
-                    style="@style/TextAppearance.PlayStation.Body"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="@dimen/spacing_small"
-                    android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
-                    android:textColor="@color/status_paused"
-                    android:text="@string/reports_old_products_warning" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Profit Cards Row -->
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:useDefaultMargins="true"
-            android:layout_marginHorizontal="-4dp"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginBottom="@dimen/spacing_medium">
 
             <!-- Product Cost -->
             <com.google.android.material.card.MaterialCardView
@@ -389,22 +364,32 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reports_products_cost"
-                        app:drawableStartCompat="@drawable/ic_expenses"
-                        android:drawablePadding="@dimen/spacing_small"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
-                        android:textColor="@color/text_secondary" />
-                    <TextView
                         android:id="@+id/tvProductCost"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/chart_red"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_expenses"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/chart_red"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        app:autoSizeMinTextSize="12sp"
+                        app:autoSizeMaxTextSize="20sp"
                         tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_products_cost"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -421,71 +406,88 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/reports_products_profit"
-                        app:drawableStartCompat="@drawable/ic_purchases"
-                        android:drawablePadding="@dimen/spacing_small"
-                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
-                        android:textColor="@color/text_secondary" />
-                    <TextView
                         android:id="@+id/tvProductProfit"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/chart_green"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_purchases"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/chart_green"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        app:autoSizeMinTextSize="12sp"
+                        app:autoSizeMaxTextSize="20sp"
                         tools:text="0.0 EGP" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Net Profit (full width) -->
-            <com.google.android.material.card.MaterialCardView
-                style="@style/Widget.PlayStation.Card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="2"
-                android:layout_margin="4dp"
-                app:cardBackgroundColor="@color/ps_blue_dark">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/spacing_medium"
-                    android:gravity="center_vertical">
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_wallet"
-                        app:tint="@color/white"
-                        tools:ignore="ContentDescription" />
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="12dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/reports_net_profit"
-                            android:textColor="@color/white"
-                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
-                        <TextView
-                            android:id="@+id/tvNetProfit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:textColor="@color/white"
-                            android:textSize="22sp"
-                            android:textStyle="bold"
-                            tools:text="0.0 EGP" />
-                    </LinearLayout>
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_products_profit"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </GridLayout>
+
+        <!-- Net Profit (full width) -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.PlayStation.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="@dimen/spacing_medium"
+            app:cardBackgroundColor="@color/ps_blue_dark">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_medium"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_wallet"
+                    app:tint="@color/white"
+                    tools:ignore="ContentDescription" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+                    <TextView
+                        android:id="@+id/tvNetProfit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        app:autoSizeMinTextSize="14sp"
+                        app:autoSizeMaxTextSize="22sp"
+                        tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/reports_net_profit"
+                        android:textColor="@color/white"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
 
         <!-- BarChart: Revenue Last 7 Days -->
@@ -510,7 +512,7 @@
                     android:layout_marginTop="2dp"
                     android:text="@string/reports_chart_subtitle_period"
                     android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
-                    android:textColor="@color/text_disabled" />
+                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <View
                     android:layout_width="match_parent"
@@ -521,11 +523,46 @@
                     android:background="@color/divider"
                     android:alpha="0.4" />
 
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/barChartRevenue"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginTop="12dp" />
+                    android:layout_marginTop="12dp">
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/barChartRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+                    <LinearLayout
+                        android:id="@+id/layoutEmptyBarChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="visible">
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/ic_reports"
+                            app:tint="?android:attr/textColorTertiary"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/reports_empty_title"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                            android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/reports_empty_subtitle"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                    </LinearLayout>
+                </FrameLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -551,7 +588,7 @@
                     android:layout_marginTop="2dp"
                     android:text="@string/reports_chart_subtitle_distribution"
                     android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
-                    android:textColor="@color/text_disabled" />
+                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <View
                     android:layout_width="match_parent"
@@ -562,11 +599,46 @@
                     android:background="@color/divider"
                     android:alpha="0.4" />
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChartRevenue"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginTop="12dp" />
+                    android:layout_marginTop="12dp">
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+                    <LinearLayout
+                        android:id="@+id/layoutEmptyPieChartRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="visible">
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/ic_reports"
+                            app:tint="?android:attr/textColorTertiary"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/reports_empty_title"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                            android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/reports_empty_subtitle"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                    </LinearLayout>
+                </FrameLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -592,7 +664,7 @@
                     android:layout_marginTop="2dp"
                     android:text="@string/reports_chart_subtitle_devices"
                     android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
-                    android:textColor="@color/text_disabled" />
+                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <View
                     android:layout_width="match_parent"
@@ -603,11 +675,46 @@
                     android:background="@color/divider"
                     android:alpha="0.4" />
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChartDevices"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginTop="12dp" />
+                    android:layout_marginTop="12dp">
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartDevices"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+                    <LinearLayout
+                        android:id="@+id/layoutEmptyPieChartDevices"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="visible">
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/ic_gamepad"
+                            app:tint="?android:attr/textColorTertiary"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/reports_empty_title"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                            android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/reports_empty_subtitle"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                    </LinearLayout>
+                </FrameLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

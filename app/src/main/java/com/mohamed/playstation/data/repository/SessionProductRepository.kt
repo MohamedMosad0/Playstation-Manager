@@ -25,6 +25,10 @@ class SessionProductRepository @Inject constructor(
         return sessionProductDao.getProductsBySessionId(sessionId).map { list -> list.map { it.toDomainModel() } }
     }
 
+    fun getProductsBySessionIds(sessionIds: List<Long>): Flow<List<SessionProduct>> {
+        return sessionProductDao.getProductsBySessionIds(sessionIds).map { list -> list.map { it.toDomainModel() } }
+    }
+
     suspend fun getProductsBySessionIdOnce(sessionId: Long): List<SessionProduct> {
         return sessionProductDao.getProductsBySessionIdOnce(sessionId).map { it.toDomainModel() }
     }
