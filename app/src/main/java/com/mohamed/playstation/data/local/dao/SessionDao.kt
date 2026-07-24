@@ -18,6 +18,34 @@ interface SessionDao {
     @Update
     suspend fun update(session: SessionEntity)
 
+    @Query(
+        """
+        UPDATE sessions
+        SET status = 'paused', pausedAt = :pausedAt, updatedAt = :updatedAt
+        WHERE id = :sessionId AND status = 'active'
+        """
+    )
+    suspend fun pauseIfActive(
+        sessionId: Long,
+        pausedAt: java.util.Date,
+        updatedAt: java.util.Date
+    ): Int
+
+    @Query(
+        """
+        UPDATE sessions
+        SET status = 'active', pausedAt = NULL, startTime = :startTime,
+            totalPausedMinutes = :totalPausedMinutes, updatedAt = :updatedAt
+        WHERE id = :sessionId AND status = 'paused'
+        """
+    )
+    suspend fun resumeIfPaused(
+        sessionId: Long,
+        startTime: java.util.Date,
+        totalPausedMinutes: Long,
+        updatedAt: java.util.Date
+    ): Int
+
     @Delete
     suspend fun delete(session: SessionEntity)
 

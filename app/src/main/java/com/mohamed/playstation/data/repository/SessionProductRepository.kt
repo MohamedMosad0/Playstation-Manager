@@ -1,8 +1,10 @@
 package com.mohamed.playstation.data.repository
 
 import androidx.room.withTransaction
+import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.data.local.AppDatabase
 import com.mohamed.playstation.data.local.dao.InventoryItemDao
+import com.mohamed.playstation.data.local.dao.SessionDao
 import com.mohamed.playstation.data.local.dao.SessionProductDao
 import com.mohamed.playstation.data.local.dao.StockMovementDao
 import com.mohamed.playstation.data.local.entity.SessionProductEntity
@@ -17,6 +19,7 @@ import javax.inject.Singleton
 @Singleton
 class SessionProductRepository @Inject constructor(
     private val sessionProductDao: SessionProductDao,
+    private val sessionDao: SessionDao,
     private val inventoryItemDao: InventoryItemDao,
     private val stockMovementDao: StockMovementDao,
     private val database: AppDatabase
@@ -43,6 +46,8 @@ class SessionProductRepository @Inject constructor(
         quantityToSell: Int
     ) {
         database.withTransaction {
+            requireSessionCanBeMutated(sessionId)
+
             val inventoryItem = inventoryItemDao.getById(inventoryItemId)
                 ?: throw IllegalArgumentException("PRODUCT_NOT_FOUND")
 
@@ -80,6 +85,8 @@ class SessionProductRepository @Inject constructor(
             val sessionProduct = sessionProductDao.getById(sessionProductId)
                 ?: throw IllegalArgumentException("PRODUCT_NOT_FOUND")
 
+            requireSessionCanBeMutated(sessionProduct.sessionId)
+
             sessionProductDao.delete(sessionProduct)
 
             // Restore stock
@@ -95,6 +102,16 @@ class SessionProductRepository @Inject constructor(
                     )
                 )
             }
+        }
+    }
+
+    private suspend fun requireSessionCanBeMutated(sessionId: Long) {
+        val session = sessionDao.getSessionById(sessionId)
+            ?: throw IllegalStateException("SESSION_NOT_ACTIVE")
+        if (session.status != AppConstants.SESSION_STATUS_ACTIVE &&
+            session.status != AppConstants.SESSION_STATUS_PAUSED
+        ) {
+            throw IllegalStateException("SESSION_NOT_ACTIVE")
         }
     }
 }

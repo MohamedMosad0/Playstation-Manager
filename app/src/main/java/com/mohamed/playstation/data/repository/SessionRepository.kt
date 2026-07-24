@@ -7,6 +7,7 @@ import com.mohamed.playstation.data.mapper.SessionMapper
 import com.mohamed.playstation.domain.model.Session
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,6 +40,24 @@ class SessionRepository @Inject constructor(
     suspend fun updateSession(session: Session) {
         val entity = SessionMapper.toEntity(session)
         sessionDao.update(entity)
+    }
+
+    suspend fun pauseSessionIfActive(sessionId: Long, pausedAt: Date, updatedAt: Date): Boolean {
+        return sessionDao.pauseIfActive(sessionId, pausedAt, updatedAt) > 0
+    }
+
+    suspend fun resumeSessionIfPaused(
+        sessionId: Long,
+        startTime: Date,
+        totalPausedMinutes: Long,
+        updatedAt: Date
+    ): Boolean {
+        return sessionDao.resumeIfPaused(
+            sessionId = sessionId,
+            startTime = startTime,
+            totalPausedMinutes = totalPausedMinutes,
+            updatedAt = updatedAt
+        ) > 0
     }
 
     suspend fun deleteSession(session: Session) {

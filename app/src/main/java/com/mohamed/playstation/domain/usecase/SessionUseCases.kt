@@ -68,12 +68,12 @@ class SessionUseCases @Inject constructor(
     }
 
     suspend fun pauseSession(session: Session) {
-        val updatedSession = session.copy(
-            status = AppConstants.SESSION_STATUS_PAUSED,
-            pausedAt = Date(),
-            updatedAt = Date()
+        val now = Date()
+        sessionRepository.pauseSessionIfActive(
+            sessionId = session.id,
+            pausedAt = now,
+            updatedAt = now
         )
-        sessionRepository.updateSession(updatedSession)
     }
 
     suspend fun resumeSession(session: Session) {
@@ -90,14 +90,12 @@ class SessionUseCases @Inject constructor(
         val wholeMinutes = exactPausedDurationMs / 60000
         val remainderMs = exactPausedDurationMs % 60000
 
-        val updatedSession = currentSession.copy(
-            status = AppConstants.SESSION_STATUS_ACTIVE,
-            pausedAt = null,
+        sessionRepository.resumeSessionIfPaused(
+            sessionId = currentSession.id,
             startTime = Date(currentSession.startTime.time + remainderMs),
             totalPausedMinutes = currentSession.totalPausedMinutes + wholeMinutes,
             updatedAt = Date()
         )
-        sessionRepository.updateSession(updatedSession)
     }
 
     suspend fun endSessionAndCreateReceipt(
