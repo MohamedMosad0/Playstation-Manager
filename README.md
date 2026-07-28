@@ -130,7 +130,7 @@ app/
 1. Clone the repository.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/PS-Manager.git
+git clone https://github.com/MohamedMosad0/Playstation-Manager.git
 ```
 
 2. Open the project in Android Studio.
