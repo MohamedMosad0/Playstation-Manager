@@ -4,24 +4,25 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.localization.LocaleManager
 import com.mohamed.playstation.core.notifications.NotificationPermissionHelper
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
-import com.mohamed.playstation.core.localization.LocaleManager
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var exactAlarmPermissionDialog: androidx.appcompat.app.AlertDialog? = null
 
     @Inject
     lateinit var settingsManager: SettingsManager
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 navController.navigate(item.itemId, null, options)
                 true
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 false
             }
         }
@@ -99,18 +100,25 @@ class MainActivity : AppCompatActivity() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             val alarmManager = getSystemService(android.app.AlarmManager::class.java)
             if (!alarmManager.canScheduleExactAlarms()) {
-                com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                    .setTitle(getString(com.mohamed.playstation.R.string.exact_alarm_permission_title))
-                    .setMessage(getString(com.mohamed.playstation.R.string.exact_alarm_permission_message))
-                    .setPositiveButton(getString(com.mohamed.playstation.R.string.action_confirm)) { _, _ ->
+                exactAlarmPermissionDialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                    .setTitle(getString(R.string.exact_alarm_permission_title))
+                    .setMessage(getString(R.string.exact_alarm_permission_message))
+                    .setPositiveButton(getString(R.string.action_confirm)) { _, _ ->
                         val intent = android.content.Intent(
                             android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
                         )
                         startActivity(intent)
                     }
-                    .setNegativeButton(getString(com.mohamed.playstation.R.string.action_cancel), null)
-                    .show()
+                    .setNegativeButton(getString(R.string.action_cancel), null)
+                    .create()
+                exactAlarmPermissionDialog?.show()
             }
         }
+    }
+
+    override fun onDestroy() {
+        exactAlarmPermissionDialog?.dismiss()
+        exactAlarmPermissionDialog = null
+        super.onDestroy()
     }
 }

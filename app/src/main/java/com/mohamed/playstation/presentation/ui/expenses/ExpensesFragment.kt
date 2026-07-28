@@ -104,9 +104,14 @@ class ExpensesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.expenses.collect { list ->
+                    kotlinx.coroutines.flow.combine(
+                        viewModel.expenses,
+                        viewModel.currency
+                    ) { list, currency ->
+                        Pair(list, currency)
+                    }.collect { (list, currency) ->
+                        adapter.updateCurrency(currency)
                         adapter.submitList(list)
-                        // Preserve visibility if data exists to prevent flicker
                         if (list.isNotEmpty()) {
                             binding.layoutEmpty.isVisible = false
                             binding.rvExpenses.isVisible = true
@@ -117,8 +122,13 @@ class ExpensesFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.totalAmount.collect { total ->
-                        binding.tvTotalExpenses.text = CurrencyUtils.formatAmount(requireContext(), total, viewModel.currency.value)
+                    kotlinx.coroutines.flow.combine(
+                        viewModel.totalAmount,
+                        viewModel.currency
+                    ) { total, currency ->
+                        Pair(total, currency)
+                    }.collect { (total, currency) ->
+                        binding.tvTotalExpenses.text = CurrencyUtils.formatAmount(requireContext(), total, currency)
                     }
                 }
                 launch {

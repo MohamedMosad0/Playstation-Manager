@@ -89,7 +89,11 @@ class DashboardSessionAdapter(
 
                 val modeText = if (session.isFixed()) strModeFixed else strModeOpen
                 val playerText = if (session.isMultiPlayer) strMultiplayer else strSinglePlayer
-                tvSessionMode.text = "$modeText • $playerText"
+                tvSessionMode.text = buildString {
+        append(modeText)
+        append(" • ")
+        append(playerText)
+    }
 
                 when {
                     session.isActive() -> {

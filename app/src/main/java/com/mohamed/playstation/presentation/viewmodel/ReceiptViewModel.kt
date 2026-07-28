@@ -206,6 +206,4 @@ class ReceiptViewModel @Inject constructor(
      * بديل غير-suspend لو أردت استخدام LiveData/Flow لاحقاً.
      * يمكنك إضافته حسب حاجة ال-UI.
      */
-    // fun getReceiptFlowById(receiptId: Long): Flow<Receipt?> =
-    //     flow { emit(receiptUseCases.getReceiptById(receiptId)) }.catch { emit(null) }
 }

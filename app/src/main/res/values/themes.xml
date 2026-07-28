@@ -280,7 +280,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/Animation.PlayStation.Dialog</item>
     </style>
-    
+
     <style name="Animation.PlayStation.Dialog" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
@@ -326,14 +326,9 @@
     </style>
 
     <!-- Shared dialog surfaces and fields. -->
-    <style name="ThemeOverlay.PlayStation.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.PlayStation.Dialog</item>
-    </style>
 
-    <style name="ShapeAppearance.PlayStation.Dialog" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">28dp</item>
-    </style>
+
+
 
     <style name="Widget.PlayStation.Dialog.Content" parent="">
         <item name="android:paddingStart">@dimen/spacing_large</item>

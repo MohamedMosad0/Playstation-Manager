@@ -10,7 +10,7 @@
     <color name="colorPrimary">#1E3A8A</color>
     <color name="colorPrimaryContainer">#DBEAFE</color>
     <color name="colorSecondary">#64748B</color>
-    
+
     <!-- Text Colors -->
     <color name="text_primary">#0F172A</color>
     <color name="text_secondary">#475569</color>
@@ -36,7 +36,7 @@
 
     <!-- System Colors -->
     <color name="white">#FFFFFF</color>
-    <color name="overlay_light">#33FFFFFF</color>
+
 
     <!-- Navigation & FAB -->
 

@@ -20,7 +20,6 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -66,7 +65,6 @@ dependencies {
     // Lifecycle & ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     // Navigation Component
     implementation(libs.androidx.navigation.fragment.ktx)
@@ -91,17 +89,6 @@ dependencies {
 
     // Timber (Logging)
     implementation(libs.timber)
-
-    // Lottie (Animations)
-    implementation(libs.lottie)
-
-    // WorkManager (Background Tasks)
-    implementation(libs.androidx.work.runtime.ktx)
-
-    // Testing
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     // MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")

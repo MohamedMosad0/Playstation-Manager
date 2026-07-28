@@ -4,10 +4,10 @@
     <string name="app_name">بلايستيشن</string>
 
     <!-- Splash Screen -->
-    <string name="splash_loading">جاري التحميل&#8230;</string>
+
 
     <!-- Main Screen -->
-    <string name="main_title">بلايستيشن</string>
+
     <string name="dashboard">لوحة التحكم</string>
     <string name="sessions">الجلسات</string>
     <string name="receipts">الفواتير</string>
@@ -16,8 +16,8 @@
     <string name="nav_settings">الإعدادات</string>
     <string name="reports">التقارير</string>
     <string name="coming_soon">قريباً</string>
-    <string name="revenue_report">الإيرادات</string>
-    <string name="profit_report">الأرباح</string>
+
+
 
     <!-- Dashboard -->
     <string name="revenue">الإيرادات</string>
@@ -26,7 +26,7 @@
     <string name="quick_actions">إجراءات سريعة</string>
     <string name="recent_sessions">أحدث الجلسات</string>
     <string name="recent_expenses">أحدث المصروفات</string>
-    <string name="no_data">لا توجد بيانات</string>
+
 
     <!-- Session Status -->
     <string name="status_available">متاح</string>
@@ -39,7 +39,7 @@
     <string name="no_completed_sessions_hint">ابدأ وأنهِ جلسة لترى سجل الجلسات هنا</string>
 
     <!-- Sessions -->
-    <string name="active_sessions">الجلسات النشطة</string>
+
     <string name="new_session">جلسة جديدة</string>
     <string name="start_session">بدء الجلسة</string>
     <string name="end_session">إنهاء الجلسة</string>
@@ -58,20 +58,20 @@
     <string name="invalid_quantity">أدخل كمية صحيحة أكبر من صفر</string>
     <string name="minimum_quantity">الحد الأدنى للكمية</string>
     <string name="new_product">منتج جديد</string>
-    <string name="product_exists">هذا المنتج موجود بالفعل. استخدم التعديل أو زيادة المخزون.</string>
-    <string name="product_exists_rename">يوجد منتج آخر بهذا الاسم بالفعل.</string>
+
+
 
     <string name="select_inventory_product">Select an inventory product</string>
     <string name="available_quantity">الكمية المتاحة</string>
     <string name="requested_quantity">الكمية المطلوبة</string>
     <string name="insufficient_stock">Requested quantity exceeds available stock</string>
-    <string name="no_inventory_products">No inventory products available</string>
+
 
     <!-- Device Types -->
-    <string name="ps4_standard">PS4 - قياسي</string>
-    <string name="ps4_pro">PS4 - متقدم</string>
-    <string name="ps5_standard">PS5 - قياسي</string>
-    <string name="ps5_digital">PS5 - رقمي</string>
+
+
+
+
 
     <!-- Session Types -->
     <string name="single_player">لاعب واحد</string>
@@ -115,24 +115,24 @@
     <string name="receipt_type_label">النوع</string>
     <string name="receipt_payment_method_label">طريقة الدفع</string>
     <string name="pause_duration">مدة الإيقاف المؤقت</string>
-    <string name="print_receipt_message">سيتم إضافة ميزة الطباعة قريباً</string>
+
 
     <!-- Settings -->
-    <string name="appearance">المظهر</string>
-    <string name="dark_mode">الوضع الداكن</string>
-    <string name="language">اللغة</string>
-    <string name="pricing">الأسعار</string>
-    <string name="currency">العملة</string>
-    <string name="single_player_price">سعر اللاعب الواحد</string>
-    <string name="multiplayer_price">سعر متعدد اللاعبين</string>
-    <string name="notifications">الإشعارات</string>
-    <string name="alert_time">وقت التنبيه</string>
-    <string name="alert_sound">نغمة التنبيه</string>
-    <string name="backup">النسخ الاحتياطي</string>
-    <string name="backup_now">نسخ احتياطي الآن</string>
+
+
+
+
+
+
+
+
+
+
+
+
     <string name="restore">استعادة</string>
-    <string name="per_hour">/ الساعة</string>
-    <string name="select_currency">اختر العملة</string>
+
+
     <string name="settings_saved">✓ تم الحفظ</string>
     <string name="settings_general">عام</string>
     <string name="settings_dark_mode">الوضع الداكن</string>
@@ -143,10 +143,10 @@
     <string name="language_arabic">العربية</string>
     <string name="language_english">English</string>
     <string name="settings_hour_price">سعر الساعة</string>
-    <string name="settings_multi_hour_price">سعر الساعة (متعدد اللاعبين)</string>
+
     <string name="settings_alerts">التنبيهات</string>
     <string name="settings_reminder_minutes">دقائق التنبيه قبل الانتهاء</string>
-    <string name="settings_reminder_helper">عدد الدقائق قبل انتهاء وقت الجلسة</string>
+
     <string name="error_invalid_price">يجب أن يكون أكبر من صفر</string>
     <string name="error_empty_price">لا يمكن أن يكون فارغاً</string>
     <string name="settings_data">البيانات</string>
@@ -155,38 +155,38 @@
     <string name="settings_about">حول التطبيق</string>
     <string name="settings_version">الإصدار: %1$s</string>
     <string name="settings_developer">المطور: %1$s</string>
-    <string name="settings_version_title">الإصدار</string>
-    <string name="settings_developer_title">المطور</string>
-    <string name="settings_dark_mode_desc">استخدام الوضع الداكن</string>
-    <string name="settings_notifications_desc">تفعيل تنبيهات الجلسات</string>
+
+
+
+
 
     <!-- Settings - PS4 Pricing -->
-    <string name="ps4_pricing">أسعار PS4</string>
-    <string name="ps4_hour_price">سعر الساعة</string>
-    <string name="ps4_half_hour_price">سعر نصف ساعة</string>
+
+
+
     <string name="ps4_multi_extra">سعر الملتي الإضافي</string>
 
     <!-- Settings - PS5 Pricing -->
-    <string name="ps5_pricing">أسعار PS5</string>
-    <string name="ps5_hour_price">سعر الساعة</string>
-    <string name="ps5_half_hour_price">سعر نصف ساعة</string>
+
+
+
     <string name="ps5_multi_extra">سعر الملتي الإضافي</string>
 
     <!-- Settings - Session Defaults -->
-    <string name="session_defaults">إعدادات الجلسة</string>
+
     <string name="session_mode">نوع الجلسة</string>
     <string name="session_mode_open">مفتوحة</string>
     <string name="session_mode_fixed">محددة</string>
-    <string name="default_fixed_minutes">مدة الجلسة المحددة (دقيقة)</string>
+
 
     <!-- Settings - Warning Settings -->
-    <string name="warning_settings">إعدادات التنبيهات</string>
-    <string name="warnings_enabled">تفعيل التنبيهات</string>
-    <string name="warning_sound">صوت التنبيه</string>
-    <string name="warning_notification">إشعار التنبيه</string>
-    <string name="warning_minutes">دقائق التنبيه قبل الانتهاء</string>
-    <string name="per_half_hour">/ نصف ساعة</string>
-    <string name="extra_per_player">إضافي / لاعب</string>
+
+
+
+
+
+
+
 
     <!-- Currencies -->
     <string name="currency_egp">جنيه مصري (EGP)</string>
@@ -227,7 +227,7 @@
     <!-- Time -->
     <string name="hours">ساعة</string>
     <string name="minutes">دقيقة</string>
-    <string name="seconds">ثانية</string>
+
 
     <!-- Common -->
     <string name="ok">موافق</string>
@@ -236,14 +236,14 @@
     <string name="edit">تعديل</string>
     <string name="save_changes">حفظ التغييرات</string>
     <string name="confirm">تأكيد</string>
-    <string name="loading">جاري التحميل&#8230;</string>
+    <string name="loading">جاري التحميل…</string>
     <string name="error">خطأ</string>
-    <string name="success">نجح</string>
+
 
     <!-- Notifications -->
     <string name="notification_channel_description">تنبيهات انتهاء الجلسات المحددة</string>
-    <string name="notification_channel_ongoing_description">عرض الجلسات النشطة في شريط الإشعارات</string>
-    <string name="notification_active_sessions_title">🎮 Active Sessions: %1$d</string>
+
+
     <string name="notification_session_ending_warning">ستنتهي الجلسة خلال %1$d دقائق</string>
     <string name="notification_session_ended_receipt">انتهت الجلسة وتم إنشاء الفاتورة</string>
 
@@ -253,8 +253,8 @@
     <string name="expense_count">عدد العمليات</string>
     <string name="no_expenses">لا توجد مصروفات</string>
     <string name="add_expense">إضافة مصروف</string>
-    <string name="expense_added">تم إضافة المصروف بنجاح</string>
-    <string name="expense_deleted">تم حذف المصروف</string>
+
+
     <string name="amount">المبلغ</string>
     <string name="category">التصنيف</string>
     <string name="notes">ملاحظات</string>
@@ -267,22 +267,22 @@
     <string name="category_other">أخرى</string>
 
     <!-- Messages -->
-    <string name="session_started">تم بدء الجلسة بنجاح</string>
-    <string name="session_ended">انتهت الجلسة</string>
+
+
     <string name="backup_success">تم إنشاء النسخة الاحتياطية بنجاح</string>
     <string name="restore_success">تمت استعادة البيانات بنجاح</string>
     <string name="error_occurred">حدث خطأ</string>
     <!-- Extracted from Layouts -->
-    <string name="product_sale_price">💰 سعر البيع:</string>
+
     <string name="product_cost">💸 التكلفة:</string>
-    <string name="product_unit_profit">📈 ربح الوحدة:</string>
+
     <string name="product_available">📦 المتاح:</string>
     <string name="product_unit">وحدة</string>
     <string name="ps4">PS4</string>
     <string name="ps5">PS5</string>
     <string name="last_7_days">آخر 7 أيام</string>
     <string name="this_month">هذا الشهر</string>
-    <string name="last_30_days">آخر 30 يوم</string>
+
     <string name="all_time">الكل</string>
     <string name="reports_total_revenue">إجمالي الإيرادات</string>
     <string name="reports_total_expenses">إجمالي المصروفات</string>
@@ -290,7 +290,7 @@
     <string name="reports_products_revenue">إيرادات المنتجات</string>
     <string name="reports_total_sessions">إجمالي الجلسات</string>
     <string name="reports_average_duration">متوسط المدة</string>
-    <string name="reports_old_products_warning">بعض المنتجات القديمة لا تحتوي على معلومات التكلفة، لذلك قد تكون حسابات الأرباح القديمة غير مكتملة.</string>
+
     <string name="reports_products_cost">تكلفة المنتجات</string>
     <string name="reports_products_profit">ربح المنتجات</string>
     <string name="reports_net_profit">صافي الربح</string>
@@ -298,7 +298,7 @@
     <string name="reports_revenue_distribution">توزيع الإيرادات</string>
     <string name="reports_sessions_distribution">توزيع الجلسات حسب الجهاز</string>
     <string name="reports_top_products">أفضل المنتجات مبيعًا</string>
-    <string name="reports_no_products_sold">لا توجد منتجات مباعة</string>
+
     <string name="reports_chart_subtitle_period">حسب الفترة المحددة</string>
     <string name="reports_chart_subtitle_distribution">يتم التحديث تلقائيًا</string>
     <string name="reports_chart_subtitle_devices">نطاق التقرير الحالي</string>
@@ -321,8 +321,8 @@
 
     <string name="end_session_title">إنهاء الجلسة</string>
     <string name="end_session_message">هل أنت متأكد من إنهاء هذه الجلسة؟\nسيتم إنشاء فاتورة تلقائياً.</string>
-    <string name="enable">تفعيل</string>
-    <string name="later">لاحقاً</string>
+
+
 
     <!-- Phase 3 -->
     <string name="product_type_label">نوع المنتج</string>
@@ -335,8 +335,8 @@
     <string name="current_quantity_label">الكمية الحالية</string>
     <string name="min_quantity_label">الحد الأدنى للكمية</string>
     <string name="new_prepared_qty_label">عدد الأكواب الجديدة</string>
-    <string name="save_inventory_changes">حفظ التعديلات بالمخزون</string>
-    <string name="save_add_inventory">حفظ وإضافة للمخزون</string>
+
+
     <string name="unit_cup_plural">أكواب</string>
     <string name="unit_cup_def_plural">الأكواب</string>
     <string name="unit_cup_def_sing">الكوب</string>
@@ -381,7 +381,7 @@
     <string name="unit_bundle_def_sing">الربطة</string>
 
     <!-- Phase 3 Kotlin Strings -->
-    <string name="deleted_archived">[محذوف/أرشيف]</string>
+
     <string name="finishing_progress">جاري الإنهاء...</string>
     <string name="finishing_session_progress">جاري إنهاء الجلسة...</string>
     <string name="session_revenue">إيرادات الجلسات</string>
@@ -397,34 +397,34 @@
     <string name="archive_message">سيتم إخفاء المنتج من القوائم النشطة مع الاحتفاظ بجميع الفواتير والتقارير والحركات السابقة.</string>
     <string name="archive_action">أرشفة</string>
     <string name="prepared_product_badge">منتج مفحضَّر</string>
-    <string name="normal_product_badge">منتج عادي</string>
+
     <string name="inventory_status_out_of_stock">نفد</string>
     <string name="inventory_status_low_stock">منخفض</string>
     <string name="inventory_status_available">متوفر</string>
     <string name="action_add">إضافة</string>
-    <string name="payment_method_title">طريقة الدفع</string>
-    <string name="payment_method_message">حدد طريقة دفع لتسوية الفاتورة</string>
-    <string name="action_pay">تسديد</string>
-    <string name="status_closed">مغلق</string>
-    <string name="status_open">مفتوح</string>
+
+
+
+
+
     <!-- Phase 3B Kotlin Strings -->
-    <string name="inventory_stock_label">في المخزن:</string>
+
     <string name="normal_product_label">منتج عادي</string>
     <string name="computed_unit_cost">تكلفة الوحدة المحسوبة: %.2f</string>
     <string name="currently_available_format">المتاح حالياً: %1$s %2$s</string>
     <string name="will_be_available_format">سيصبح المتاح: %1$s %2$s</string>
-    <string name="currency_egp_suffix">ج.م</string>
+
     <string name="cost_of_unit">تكلفة %1$s:</string>
     <string name="profit_of_unit">ربح %1$s:</string>
     <string name="available_label">المتاح:</string>
     <string name="quantity_sold_label">تم بيع:</string>
-    <string name="revenue_label">الإيراد:</string>
+
     <string name="report_date_picker_title">اختر فترة التقرير</string>
     <string name="custom_period">فترة مخصصة</string>
     <string name="minutes_suffix">دقيقة</string>
     <string name="revenue_chart_label">الإيرادات</string>
-    <string name="print_receipt_soon">سيتم إضافة ميزة الطباعة قريباً</string>
-    <string name="action_ok">موافق</string>
+
+
     <string name="payment_cash">نقداً</string>
     <string name="payment_card">كارت</string>
     <string name="new_quantity_hint">عدد %1$s الجديدة</string>
@@ -435,19 +435,19 @@
     <string name="tab_movements">الحركات</string>
     <string name="error_duplicate_product_name">يوجد منتج آخر بنفس الاسم</string>
     <string name="product_not_found">المنتج غير موجود</string>
-    <string name="invalid_return_quantity">لا يمكن إرجاع كمية أكبر من المباع</string>
+
     <string name="action_confirm">تأكيد</string>
     <string name="action_cancel">إلغاء</string>
     <string name="unit_cup">كوب</string>
     <string name="unit_piece">قطعة</string>
-    <string name="print_receipt_title">طباعة الفاتورة</string>
+
     <string name="exact_alarm_permission_title">إذن الإنذار الدقيق</string>
     <string name="exact_alarm_permission_message">التطبيق بحاجة لإذن الإنذار الدقيق لضمان تنبيهك عند انتهاء الجلسات المحددة بوقت.</string>
     <string name="receipt_item_format">%1$s (%2$s × %3$d = %4$s)</string>
     <string name="receipt_item_format_print">- %1$s: %2$s × %3$d = %4$s</string>
     <string name="product_quantity_format">%1$s × %2$d</string>
-    <string name="top_product_revenue_format">💰 %1$s %2$s</string>
-    <string name="movement_order_indicator">طلب</string>
+
+
 
     <!-- Backup and Restore -->
     <string name="backup_failed">فشل النسخ الاحتياطي</string>
@@ -467,8 +467,8 @@
     <string name="reports_empty_subtitle">قم بتغيير الفترة أو أضف بيانات جديدة</string>
     <string name="receipts_empty_subtitle">لا توجد إيصالات حتى الآن</string>
     <string name="expenses_empty_subtitle">لا توجد مصروفات حتى الآن</string>
-    <string name="settings_version_label">الإصدار</string>
-    <string name="settings_developer_label">المطور</string>
+
+
     <string name="settings_dark_mode_subtitle">استخدام الوضع الداكن</string>
     <string name="settings_notifications_subtitle">تفعيل تنبيهات الجلسات</string>
     <string name="dashboard_empty_expense_chart_title">لا توجد بيانات مصروفات</string>
@@ -480,8 +480,8 @@
     <string name="filter_last_3_months">آخر 3 أشهر</string>
     <string name="action_edit_product">تعديل المنتج</string>
     <string name="action_archive_product">أرشفة المنتج</string>
-    <string name="delete_expense_title">حذف المصروف</string>
-    <string name="delete_expense_message">هل أنت متأكد من حذف \"%1$s\"؟\nهذا الإجراء لا يمكن التراجع عنه.</string>
+
+
     <string name="invalid_expense_amount">أدخل مبلغاً أكبر من صفر</string>
     <string name="select_expense_category">اختر فئة للمصروف</string>
     <string name="end_session_failed">تعذر إنهاء الجلسة. حاول مرة أخرى.</string>

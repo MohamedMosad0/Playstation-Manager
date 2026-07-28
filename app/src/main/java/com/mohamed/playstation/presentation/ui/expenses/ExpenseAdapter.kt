@@ -14,9 +14,16 @@ import com.mohamed.playstation.domain.model.ExpenseCategory
 import android.text.BidiFormatter
 
 class ExpenseAdapter(
-    private val currency: String,
+    private var currency: String,
     private val onDelete: (Expense) -> Unit
 ) : ListAdapter<Expense, ExpenseAdapter.ViewHolder>(DiffCallback()) {
+
+    fun updateCurrency(newCurrency: String) {
+        if (currency != newCurrency) {
+            currency = newCurrency
+            notifyDataSetChanged()
+        }
+    }
 
     private var isInitialized = false
     private var strCategoryElectricity = ""

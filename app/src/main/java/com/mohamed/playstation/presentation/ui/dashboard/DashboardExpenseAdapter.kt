@@ -14,8 +14,15 @@ import com.mohamed.playstation.domain.model.ExpenseCategory
 import android.text.BidiFormatter
 
 class DashboardExpenseAdapter(
-    private val currency: String
+    private var currency: String
 ) : ListAdapter<Expense, DashboardExpenseAdapter.ViewHolder>(DiffCallback()) {
+
+    fun updateCurrency(newCurrency: String) {
+        if (currency != newCurrency) {
+            currency = newCurrency
+            notifyDataSetChanged()
+        }
+    }
 
     private var isInitialized = false
     private var strCategoryElectricity = ""

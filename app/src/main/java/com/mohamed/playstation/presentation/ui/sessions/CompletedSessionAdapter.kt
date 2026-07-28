@@ -18,10 +18,15 @@ import android.text.BidiFormatter
  * Reuses the existing Session domain model.
  */
 class CompletedSessionAdapter(
-    private val currency: String
+    private var currency: String
 ) : ListAdapter<Session, CompletedSessionAdapter.CompletedViewHolder>(CompletedDiffCallback()) {
 
-
+    fun updateCurrency(newCurrency: String) {
+        if (currency != newCurrency) {
+            currency = newCurrency
+            notifyDataSetChanged()
+        }
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompletedViewHolder {
         val binding = ItemCompletedSessionBinding.inflate(
             LayoutInflater.from(parent.context),

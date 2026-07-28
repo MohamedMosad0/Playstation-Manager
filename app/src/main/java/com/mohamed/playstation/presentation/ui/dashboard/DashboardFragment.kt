@@ -136,22 +136,27 @@ class DashboardFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.uiState.collect { state ->
-                        handleUiState(state)
+                    kotlinx.coroutines.flow.combine(
+                        viewModel.uiState,
+                        viewModel.currency
+                    ) { state, currency ->
+                        Pair(state, currency)
+                    }.collect { (state, currency) ->
+                        handleUiState(state, currency)
                     }
                 }
             }
         }
     }
 
-    private fun handleUiState(state: UiState<DashboardData>) {
+    private fun handleUiState(state: UiState<DashboardData>, currency: String) {
         when (state) {
             is UiState.Loading -> {
                 binding.progressBar.isVisible = true
             }
             is UiState.Success -> {
                 binding.progressBar.isVisible = false
-                bindData(state.data)
+                bindData(state.data, currency)
                 animateUiIn()
             }
             is UiState.Error -> {
@@ -164,9 +169,7 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    private fun bindData(data: DashboardData) {
-        val currencyStr = viewModel.currency.value
-        
+    private fun bindData(data: DashboardData, currencyStr: String) {
         binding.tvRevenue.text = CurrencyUtils.formatAmount(requireContext(), data.todayRevenue, currencyStr)
         binding.tvExpenses.text = CurrencyUtils.formatAmount(requireContext(), data.todayExpenses, currencyStr)
         binding.tvNetProfit.text = CurrencyUtils.formatAmount(requireContext(), data.netProfit, currencyStr)
@@ -180,6 +183,7 @@ class DashboardFragment : Fragment() {
         binding.tvEmptySessions.isVisible = data.recentSessions.isEmpty()
         binding.rvRecentSessions.isVisible = data.recentSessions.isNotEmpty()
 
+        expenseAdapter.updateCurrency(currencyStr)
         expenseAdapter.submitList(data.recentExpenses)
         binding.tvEmptyExpenses.isVisible = data.recentExpenses.isEmpty()
         binding.rvRecentExpenses.isVisible = data.recentExpenses.isNotEmpty()

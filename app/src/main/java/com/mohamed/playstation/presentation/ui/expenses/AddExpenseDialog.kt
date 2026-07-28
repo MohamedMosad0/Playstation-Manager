@@ -3,7 +3,6 @@ package com.mohamed.playstation.presentation.ui.expenses
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
@@ -60,7 +59,7 @@ class AddExpenseDialog : DialogFragment() {
         binding.rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.rvCategories.setHasFixedSize(true)
         binding.rvCategories.adapter = adapter
-        adapter.submitList(ExpenseCategory.values().toList())
+        adapter.submitList(ExpenseCategory.entries)
     }
 
     private fun setupValidation() {

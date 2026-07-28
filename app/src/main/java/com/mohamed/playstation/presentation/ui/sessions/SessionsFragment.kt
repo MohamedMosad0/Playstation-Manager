@@ -214,16 +214,19 @@ class SessionsFragment : Fragment() {
 
                 // --- Completed sessions (new — reuses existing flow) ---
                 launch {
-                    viewModel.completedSessions.collect { sessions ->
+                    combine(
+                        viewModel.completedSessions,
+                        viewModel.currency
+                    ) { sessions, currency ->
+                        Pair(sessions, currency)
+                    }.collect { (sessions, currency) ->
+                        completedAdapter.updateCurrency(currency)
                         val isEmpty = sessions.isEmpty()
                         binding.layoutEmptyCompleted.isVisible = isEmpty
                         binding.rvCompletedSessions.isVisible = !isEmpty
                         if (!isEmpty) {
                             completedAdapter.submitList(sessions)
                             binding.chipCompleted.text = getString(com.mohamed.playstation.R.string.tab_completed) + " (${sessions.size})"
-                            if (binding.layoutCompleted.isVisible && binding.rvCompletedSessions.adapter?.itemCount != sessions.size) {
-                                // removed scheduleLayoutAnimation
-                            }
                         } else {
                             binding.chipCompleted.text = getString(com.mohamed.playstation.R.string.tab_completed)
                         }

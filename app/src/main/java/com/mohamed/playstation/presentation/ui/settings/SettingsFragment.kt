@@ -206,7 +206,8 @@ class SettingsFragment : Fragment() {
                 // Language
                 launch {
                     viewModel.language.collect { code ->
-                        val languageItem = viewModel.languageList.find { it.code == code } ?: viewModel.languageList.first()
+                        val languageItem = viewModel.languageList.find { it.code == code }
+                            ?: viewModel.languageList.first()
                         val displayName = getString(languageItem.nameResId)
                         if (binding.actvLanguage.text.toString() != displayName) {
                             isUpdatingUi = true
