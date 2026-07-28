@@ -20,6 +20,7 @@ import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.presentation.ui.UiState
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -32,12 +33,12 @@ class SessionDetailsFragment : Fragment() {
 
     private val viewModel: SessionViewModel by viewModels()
 
-    private var sessionId: Long = 0L
+    private var sessionId: Long = -1L
     private lateinit var productAdapter: ProductAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sessionId = arguments?.getLong("sessionId") ?: 0L
+        sessionId = requireArguments().getLong("sessionId")
     }
 
     override fun onCreateView(
@@ -51,6 +52,7 @@ class SessionDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.loadProductsForSession(sessionId)
         setupProductsList()
         setupClickListeners()
         observeData()
@@ -77,36 +79,35 @@ class SessionDetailsFragment : Fragment() {
                         viewModel.activeSessions,
                         viewModel.pausedSessions,
                         viewModel.currency,
-                        viewModel.pricingSettings
-                    ) { activeState, pausedState, currency, pricing ->
-                        BaseSessionUIData(activeState, pausedState, currency, pricing)
-                    }.combine(viewModel.getProductsForSession(sessionId)) { baseData, products ->
-                        val activeSessions = if (baseData.activeState is UiState.Success) {
-                            baseData.activeState.data.first
+                        viewModel.pricingSettings,
+                        viewModel.sessionProducts
+                    ) { activeState, pausedState, currency, pricing, products ->
+                        val activeSessions = if (activeState is UiState.Success) {
+                            activeState.data.first
                         } else {
                             emptyList()
                         }
-                        val activeTick = if (baseData.activeState is UiState.Success) {
-                            baseData.activeState.data.second
+                        val activeTick = if (activeState is UiState.Success) {
+                            activeState.data.second
                         } else {
                             0L
                         }
-                        val pausedSessions = if (baseData.pausedState is UiState.Success) {
-                            baseData.pausedState.data.first
+                        val pausedSessions = if (pausedState is UiState.Success) {
+                            pausedState.data.first
                         } else {
                             emptyList()
                         }
                         val currentTick = if (activeTick > 0L) activeTick else System.currentTimeMillis()
                         val session = (activeSessions + pausedSessions).find { it.id == sessionId }
-                        val isLoading = baseData.activeState is UiState.Loading ||
-                            baseData.pausedState is UiState.Loading
+                        val isLoading = activeState is UiState.Loading ||
+                            pausedState is UiState.Loading
 
                         SessionUIData(
                             isLoading = isLoading,
                             session = session,
                             currentTick = currentTick,
-                            currency = baseData.currency,
-                            pricing = baseData.pricing,
+                            currency = currency,
+                            pricing = pricing,
                             products = products
                         )
                     }.collect { data -> updateUI(data) }
@@ -147,31 +148,51 @@ class SessionDetailsFragment : Fragment() {
             )
         }
 
-        when {
-            session.isActive() -> {
-                binding.tvStatus.text = getString(R.string.status_running)
-                binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_active))
-                binding.viewStatusDot.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(
-                        requireContext().getColor(R.color.status_active)
+        val remaining = SessionTimer.getRemainingMs(session, data.currentTick) ?: 0L
+        val isAutoEnding = session.isActive() && session.isFixed() && remaining <= 0L
+
+        if (isAutoEnding) {
+            binding.tvStatus.text = getString(com.mohamed.playstation.R.string.finishing_progress)
+            binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_paused))
+            binding.tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                androidx.core.graphics.ColorUtils.setAlphaComponent(requireContext().getColor(R.color.status_paused), 38)
+            )
+            binding.btnPauseResume.isEnabled = false
+            binding.btnEndSession.isEnabled = false
+            binding.btnAddProduct.isEnabled = false
+            binding.progressAutoEnd.isVisible = true
+        } else {
+            binding.btnPauseResume.isEnabled = true
+            binding.btnEndSession.isEnabled = true
+            binding.btnAddProduct.isEnabled = true
+            binding.progressAutoEnd.isVisible = false
+
+            when {
+                session.isActive() -> {
+                    binding.tvStatus.text = getString(R.string.status_running)
+                    binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_active))
+                    binding.tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                        androidx.core.graphics.ColorUtils.setAlphaComponent(requireContext().getColor(R.color.status_active), 38)
                     )
-                binding.btnPauseResume.text = getString(R.string.pause_session)
-                binding.btnPauseResume.setIconResource(R.drawable.ic_pause)
-                binding.btnPauseResume.setOnClickListener { viewModel.pauseSession(session) }
-            }
-            session.isPaused() -> {
-                binding.tvStatus.text = getString(R.string.status_paused)
-                binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_paused))
-                binding.viewStatusDot.backgroundTintList =
-                    android.content.res.ColorStateList.valueOf(
-                        requireContext().getColor(R.color.status_paused)
+                    binding.btnPauseResume.isVisible = true
+                    binding.btnPauseResume.text = getString(R.string.pause_session)
+                    binding.btnPauseResume.setIconResource(R.drawable.ic_pause)
+                    binding.btnPauseResume.setOnClickListener { viewModel.pauseSession(session) }
+                }
+                session.isPaused() -> {
+                    binding.tvStatus.text = getString(R.string.status_paused)
+                    binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_paused))
+                    binding.tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                        androidx.core.graphics.ColorUtils.setAlphaComponent(requireContext().getColor(R.color.status_paused), 38)
                     )
-                binding.btnPauseResume.text = getString(R.string.resume_session)
-                binding.btnPauseResume.setIconResource(R.drawable.ic_play)
-                binding.btnPauseResume.setOnClickListener { viewModel.resumeSession(session) }
-            }
-            else -> {
-                binding.btnPauseResume.visibility = View.GONE
+                    binding.btnPauseResume.isVisible = true
+                    binding.btnPauseResume.text = getString(R.string.resume_session)
+                    binding.btnPauseResume.setIconResource(R.drawable.ic_play)
+                    binding.btnPauseResume.setOnClickListener { viewModel.resumeSession(session) }
+                }
+                else -> {
+                    binding.btnPauseResume.isVisible = false
+                }
             }
         }
 
@@ -182,37 +203,44 @@ class SessionDetailsFragment : Fragment() {
         updateTimer(session, data.currentTick)
 
         val playCost = viewModel.playCostForSession(session, data.currentTick, data.pricing)
-        val productCost = data.products.sumOf { it.getLineTotal() }
+        val productCost = com.mohamed.playstation.domain.model.SessionProduct.calculateTotalAmount(data.products)
         val totalCost = playCost + productCost
 
         productAdapter.updateCurrency(data.currency)
         productAdapter.submitList(data.products)
-        binding.tvNoProducts.isVisible = data.products.isEmpty()
+        binding.layoutEmptyProducts.isVisible = data.products.isEmpty()
         binding.rvProducts.isVisible = data.products.isNotEmpty()
 
-        binding.tvPlayCost.text = CurrencyUtils.formatAmount(playCost, data.currency)
-        binding.tvTotalCost.text = CurrencyUtils.formatAmount(totalCost, data.currency)
-        binding.tvProductCost.text = CurrencyUtils.formatAmount(productCost, data.currency)
+        binding.tvPlayCost.text = CurrencyUtils.formatAmount(requireContext(), playCost, data.currency)
+        binding.tvTotalCost.text = CurrencyUtils.formatAmount(requireContext(), totalCost, data.currency)
+        binding.tvProductCost.text = CurrencyUtils.formatAmount(requireContext(), productCost, data.currency)
     }
 
     private fun updateTimer(session: Session, currentTick: Long) {
-        binding.tvLargeTimer.text = SessionTimer.formatForSession(session, currentTick)
+        val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
+        val isAutoEnding = session.isActive() && session.isFixed() && remaining <= 0L
 
-        if (session.isFixed()) {
-            binding.tvTimerLabel.text = getString(R.string.time_remaining)
-            val remaining = SessionTimer.getRemainingMs(session, currentTick) ?: 0L
-            binding.tvLargeTimer.setTextColor(
-                requireContext().getColor(
-                    if (remaining <= 5 * 60_000 && session.isActive()) {
-                        R.color.status_paused
-                    } else {
-                        R.color.ps_blue_primary
-                    }
-                )
-            )
+        if (isAutoEnding) {
+            binding.tvLargeTimer.text = "00:00:00"
+            binding.tvTimerLabel.text = getString(com.mohamed.playstation.R.string.finishing_session_progress)
+            binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.status_paused))
         } else {
-            binding.tvTimerLabel.text = getString(R.string.elapsed_time)
-            binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.ps_blue_primary))
+            binding.tvLargeTimer.text = SessionTimer.formatForSession(requireContext(), session, currentTick)
+            if (session.isFixed()) {
+                binding.tvTimerLabel.text = getString(R.string.time_remaining)
+                binding.tvLargeTimer.setTextColor(
+                    requireContext().getColor(
+                        if (remaining <= 5 * 60_000 && session.isActive()) {
+                            R.color.status_paused
+                        } else {
+                            R.color.ps_blue_primary
+                        }
+                    )
+                )
+            } else {
+                binding.tvTimerLabel.text = getString(R.string.elapsed_time)
+                binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.ps_blue_primary))
+            }
         }
     }
 
@@ -222,6 +250,7 @@ class SessionDetailsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding.rvProducts.adapter = null
         super.onDestroyView()
         _binding = null
     }
@@ -235,10 +264,4 @@ class SessionDetailsFragment : Fragment() {
         val products: List<SessionProduct>
     )
 
-    private data class BaseSessionUIData(
-        val activeState: UiState<Pair<List<Session>, Long>>,
-        val pausedState: UiState<Pair<List<Session>, Long>>,
-        val currency: String,
-        val pricing: com.mohamed.playstation.core.utils.SessionPricing.PricingSettings
-    )
 }

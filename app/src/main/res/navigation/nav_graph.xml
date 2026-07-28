@@ -2,7 +2,28 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/sessionsFragment">
+    app:startDestination="@id/dashboardFragment">
+
+    <!-- Dashboard Fragment (startDestination) -->
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.mohamed.playstation.presentation.ui.dashboard.DashboardFragment"
+        android:label="@string/dashboard">
+        <action
+            android:id="@+id/action_dashboardFragment_to_receiptsFragment"
+            app:destination="@id/receiptsFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_expensesFragment"
+            app:destination="@id/expensesFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
+    </fragment>
 
     <!-- Sessions Fragment -->
     <fragment
@@ -11,7 +32,11 @@
         android:label="@string/sessions">
         <action
             android:id="@+id/action_sessionsFragment_to_sessionDetailsFragment"
-            app:destination="@id/sessionDetailsFragment" />
+            app:destination="@id/sessionDetailsFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
     </fragment>
 
     <!-- Session Details Fragment -->
@@ -22,6 +47,33 @@
         <argument
             android:name="sessionId"
             app:argType="long" />
+    </fragment>
+
+    <!-- Inventory Fragment -->
+    <fragment
+        android:id="@+id/inventoryFragment"
+        android:name="com.mohamed.playstation.presentation.ui.inventory.InventoryFragment"
+        android:label="@string/inventory" />
+
+    <!-- Reports Fragment -->
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="com.mohamed.playstation.presentation.ui.reports.ReportsFragment"
+        android:label="@string/reports">
+        <action
+            android:id="@+id/action_reportsFragment_to_receiptsFragment"
+            app:destination="@id/receiptsFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
+        <action
+            android:id="@+id/action_reportsFragment_to_expensesFragment"
+            app:destination="@id/expensesFragment"
+            app:enterAnim="@anim/nav_fade_enter"
+            app:exitAnim="@anim/nav_fade_exit"
+            app:popEnterAnim="@anim/nav_fade_enter"
+            app:popExitAnim="@anim/nav_fade_exit" />
     </fragment>
 
     <!-- Receipts Fragment -->
@@ -35,5 +87,11 @@
         android:id="@+id/settingsFragment"
         android:name="com.mohamed.playstation.presentation.ui.settings.SettingsFragment"
         android:label="@string/settings" />
+
+    <!-- Expenses Fragment -->
+    <fragment
+        android:id="@+id/expensesFragment"
+        android:name="com.mohamed.playstation.presentation.ui.expenses.ExpensesFragment"
+        android:label="@string/expenses" />
 
 </navigation>

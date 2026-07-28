@@ -2,6 +2,7 @@ package com.mohamed.playstation.domain.model
 
 import com.mohamed.playstation.core.constants.AppConstants
 import java.util.Date
+import kotlin.math.ceil
 
 /**
  * Domain Model للجلسة
@@ -30,12 +31,13 @@ data class Session(
 
     /**
      * Elapsed active play time in minutes (derived from timestamps).
+     * Hardening: Partial minute counts as a full minute (Ceil strategy).
      */
     fun getElapsedMinutes(nowMs: Long = System.currentTimeMillis()): Long {
         val endMs = endTime?.time ?: pausedAt?.time ?: nowMs
-        val durationMs = endMs - startTime.time
-        val totalMinutes = durationMs / 60000
-        return (totalMinutes - totalPausedMinutes).coerceAtLeast(0)
+        val grossMs = endMs - startTime.time
+        val netMs = grossMs - (totalPausedMinutes * 60000L)
+        return ceil(netMs / 60000.0).toLong().coerceAtLeast(0)
     }
 
     /**

@@ -1,34 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:minHeight="48dp"
-    android:orientation="horizontal"
-    android:paddingVertical="8dp">
+    android:paddingTop="16dp"
+    android:paddingBottom="4dp">
 
+    <!-- Top Row: Product Name & Quantity -->
     <TextView
         android:id="@+id/tvProductName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/text_primary"
-        android:textSize="14sp" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textDirection="firstStrong"
+        android:textAlignment="viewStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvProductQuantity"
+        tools:text="Pepsi" />
 
     <TextView
         android:id="@+id/tvProductQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
         android:textColor="@color/text_secondary"
-        android:textSize="14sp" />
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@id/tvProductName"
+        app:layout_constraintBottom_toBottomOf="@id/tvProductName"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="×3" />
+
+    <!-- Bottom Row: Unit Price & Line Total -->
+    <TextView
+        android:id="@+id/tvProductUnitPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:textDirection="firstStrong"
+        android:textAlignment="viewStart"
+        app:layout_constraintTop_toBottomOf="@id/tvProductName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tvProductPrice"
+        tools:text="25.00 ج.م" />
 
     <TextView
         android:id="@+id/tvProductPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
         android:textColor="@color/text_primary"
-        android:textSize="14sp" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/tvProductQuantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="75.00 ج.م" />
 
-</LinearLayout>
+    <!-- Subtle divider below each item -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/divider"
+        app:layout_constraintTop_toBottomOf="@id/tvProductUnitPrice"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

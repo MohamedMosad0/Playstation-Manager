@@ -37,9 +37,12 @@ class ProductAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: SessionProduct) {
-            binding.tvProductName.text = product.name
-            binding.tvProductQuantity.text = "x${product.quantity}"
-            binding.tvProductPrice.text = CurrencyUtils.formatAmount(product.getLineTotal(), currencyCode)
+            binding.tvProductName.text = product.nameSnapshot
+            val unitPrice = CurrencyUtils.formatAmount(itemView.context, product.sellPriceSnapshot, currencyCode)
+            val lineTotal = CurrencyUtils.formatAmount(itemView.context, product.getLineTotal(), currencyCode)
+            binding.tvProductQuantity.text = "×${product.quantitySold}"
+            binding.tvProductUnitPrice.text = unitPrice
+            binding.tvProductPrice.text = lineTotal
         }
     }
 

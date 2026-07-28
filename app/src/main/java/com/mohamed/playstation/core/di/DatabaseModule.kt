@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.data.local.AppDatabase
-import com.mohamed.playstation.data.local.dao.ProductDao
 import com.mohamed.playstation.data.local.dao.SessionDao
+import com.mohamed.playstation.data.local.dao.InventoryItemDao
+import com.mohamed.playstation.data.local.dao.SessionProductDao
 import com.mohamed.playstation.data.local.dao.ReceiptDao
+import com.mohamed.playstation.data.local.dao.StockMovementDao
+import com.mohamed.playstation.data.local.dao.ExpenseDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,16 +32,17 @@ object DatabaseModule {
     fun provideAppDatabase(
         @ApplicationContext context: Context
     ): AppDatabase {
+        // NOTE:
+        // Database schema was intentionally squashed to version 1 before production release.
+        // Existing development databases created with older schema versions (2-8)
+        // are unsupported and must be cleared or the app reinstalled.
+        // Never reintroduce migrations for pre-release development databases.
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
             AppConstants.DATABASE_NAME
-        )
-            .addMigrations(
-                AppDatabase.MIGRATION_1_2,
-                AppDatabase.MIGRATION_2_3
-            )
-            .build()
+
+        ).build()
     }
 
     /**
@@ -51,12 +55,21 @@ object DatabaseModule {
     }
 
     /**
-     * توفير ProductDao
+     * توفير InventoryItemDao
      */
     @Provides
     @Singleton
-    fun provideProductDao(database: AppDatabase): ProductDao {
-        return database.productDao()
+    fun provideInventoryItemDao(database: AppDatabase): InventoryItemDao {
+        return database.inventoryItemDao()
+    }
+
+    /**
+     * توفير SessionProductDao
+     */
+    @Provides
+    @Singleton
+    fun provideSessionProductDao(database: AppDatabase): SessionProductDao {
+        return database.sessionProductDao()
     }
 
     /**
@@ -66,5 +79,23 @@ object DatabaseModule {
     @Singleton
     fun provideReceiptDao(database: AppDatabase): ReceiptDao {
         return database.receiptDao()
+    }
+
+    /**
+     * توفير StockMovementDao
+     */
+    @Provides
+    @Singleton
+    fun provideStockMovementDao(database: AppDatabase): StockMovementDao {
+        return database.stockMovementDao()
+    }
+
+    /**
+     * توفير ExpenseDao
+     */
+    @Provides
+    @Singleton
+    fun provideExpenseDao(database: AppDatabase): ExpenseDao {
+        return database.expenseDao()
     }
 }

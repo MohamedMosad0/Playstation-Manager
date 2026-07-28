@@ -3,6 +3,7 @@ package com.mohamed.playstation.domain.usecase
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.Session
+import com.mohamed.playstation.domain.model.SessionProduct
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
@@ -12,7 +13,7 @@ import javax.inject.Inject
  */
 class ReceiptUseCases @Inject constructor(
     private val receiptRepository: ReceiptRepository,
-    private val productUseCases: ProductUseCases
+    private val sessionProductUseCases: SessionProductUseCases
 ) {
 
     /**
@@ -30,11 +31,25 @@ class ReceiptUseCases @Inject constructor(
 
         // حساب المدة والإجمالي بالسعر الحالي
         val durationMinutes = session.getDurationMinutes()
-        val hours = durationMinutes / 60.0
-        val playAmount = hours * pricePerHour
-        val productsAmount = productUseCases.getProductsBySessionIdOnce(session.id)
-            .sumOf { it.getLineTotal() }
-        val totalAmount = playAmount + productsAmount
+        val playAmount = com.mohamed.playstation.core.utils.SessionPricing.calculatePlayAmount(durationMinutes, pricePerHour)
+        val productsAmount = SessionProduct.calculateTotalAmount(
+            sessionProductUseCases.getProductsBySessionIdOnce(session.id)
+        )
+        val discountAmount = 0.0
+        val taxAmount = 0.0
+        val totalAmount = playAmount + productsAmount - discountAmount + taxAmount
+
+        require(
+            kotlin.math.abs(
+                totalAmount -
+                (
+                    playAmount +
+                    productsAmount -
+                    discountAmount +
+                    taxAmount
+                )
+            ) < 0.01
+        )
 
         // إنشاء الفاتورة
         val receipt = Receipt(
@@ -47,6 +62,10 @@ class ReceiptUseCases @Inject constructor(
             endTime = session.endTime ?: Date(),
             durationMinutes = durationMinutes,
             pricePerHour = pricePerHour,
+            playAmount = playAmount,
+            productsAmount = productsAmount,
+            discountAmount = discountAmount,
+            taxAmount = taxAmount,
             totalAmount = totalAmount,
             currencyCode = currencyCode,
             paymentMethod = paymentMethod,
@@ -101,6 +120,13 @@ class ReceiptUseCases @Inject constructor(
     }
 
     /**
+     * الحصول على فواتير في فترة زمنية
+     */
+    fun getReceiptsInRange(startTime: Long, endTime: Long): Flow<List<Receipt>> {
+        return receiptRepository.getReceiptsInRange(startTime, endTime)
+    }
+
+    /**
      * الحصول على فواتير اليوم
      */
     fun getTodayReceipts(): Flow<List<Receipt>> {
@@ -112,5 +138,12 @@ class ReceiptUseCases @Inject constructor(
      */
     fun getTodayTotalRevenue(): Flow<Double> {
         return receiptRepository.getTodayTotalRevenue()
+    }
+
+    /**
+     * الحصول على إجمالي الإيرادات في فترة زمنية
+     */
+    fun getTotalRevenueInRange(startTime: Long, endTime: Long): Flow<Double> {
+        return receiptRepository.getTotalRevenueInRange(startTime, endTime)
     }
 }

@@ -1,28 +1,32 @@
 package com.mohamed.playstation.presentation.ui.settings
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatDelegate
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.mohamed.playstation.BuildConfig
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.databinding.FragmentSettingsBinding
+import com.mohamed.playstation.domain.model.CurrencyList
 import com.mohamed.playstation.presentation.viewmodel.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import androidx.activity.result.contract.ActivityResultContracts
 
-/**
- * Fragment للإعدادات — Phase 1
- * المظهر · أسعار PS4 · أسعار PS5 · إعدادات الجلسة · التنبيهات · العملة
- */
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
@@ -31,22 +35,22 @@ class SettingsFragment : Fragment() {
 
     private val viewModel: SettingsViewModel by viewModels()
 
-    // Focus flags — prevent overwriting user input while editing
-    private var isPs4HourFocused = false
-    private var isPs4HalfHourFocused = false
-    private var isPs4MultiExtraFocused = false
-    private var isPs5HourFocused = false
-    private var isPs5HalfHourFocused = false
-    private var isPs5MultiExtraFocused = false
-    private var isFixedMinutesFocused = false
-    private var isWarningMinutesFocused = false
+    private var isUpdatingUi = false
+    private var progressDialog: androidx.appcompat.app.AlertDialog? = null
+    private var restoreDialog: androidx.appcompat.app.AlertDialog? = null
+    private var savedIndicatorJob: Job? = null
 
-    // Programmatic-update guards — prevent listener re-entry
-    private var isDarkModeUpdatingProgrammatically = false
-    private var isWarningsEnabledUpdating = false
-    private var isWarningSoundUpdating = false
-    private var isWarningNotificationUpdating = false
-    private var isSessionModeUpdating = false
+    private val exportLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        uri?.let {
+            viewModel.exportBackup(it)
+        }
+    }
+
+    private val importLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let {
+            showRestoreConfirmation(it)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,245 +64,230 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupCurrencyDropdown()
+        setupAboutSection()
         setupListeners()
         observeData()
     }
 
-    // ──────────────────────── Setup ────────────────────────
-
-    private fun setupCurrencyDropdown() {
-        val displayNames = viewModel.currencyList.map { item ->
-            val resId = resources.getIdentifier(item.displayResName, "string", requireContext().packageName)
-            if (resId != 0) getString(resId) else item.code
-        }
-
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            displayNames
-        )
-        binding.actvCurrency.setAdapter(adapter)
+    private fun setupAboutSection() {
+        binding.tvAppVersion.text = getString(R.string.settings_version, BuildConfig.VERSION_NAME)
+        binding.tvDeveloper.text = getString(R.string.settings_developer, AppConstants.DEVELOPER_NAME)
     }
 
     private fun setupListeners() {
-        // ── Dark Mode ──
+        // Dark Mode
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            if (isDarkModeUpdatingProgrammatically) return@setOnCheckedChangeListener
-            viewModel.setDarkMode(isChecked)
-            AppCompatDelegate.setDefaultNightMode(
-                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
-                else AppCompatDelegate.MODE_NIGHT_NO
-            )
-            Timber.d("Dark mode toggled: $isChecked")
-        }
-
-        // ── PS4 Pricing ──
-        binding.etPs4HourPrice.setOnFocusChangeListener { _, hasFocus ->
-            isPs4HourFocused = hasFocus
-            if (!hasFocus) savePrice(binding.etPs4HourPrice.text.toString()) { viewModel.setPs4HourPrice(it) }
-        }
-        binding.etPs4HalfHourPrice.setOnFocusChangeListener { _, hasFocus ->
-            isPs4HalfHourFocused = hasFocus
-            if (!hasFocus) savePrice(binding.etPs4HalfHourPrice.text.toString()) { viewModel.setPs4HalfHourPrice(it) }
-        }
-        binding.etPs4MultiExtra.setOnFocusChangeListener { _, hasFocus ->
-            isPs4MultiExtraFocused = hasFocus
-            if (!hasFocus) savePrice(binding.etPs4MultiExtra.text.toString()) { viewModel.setPs4MultiExtra(it) }
-        }
-
-        // ── PS5 Pricing ──
-        binding.etPs5HourPrice.setOnFocusChangeListener { _, hasFocus ->
-            isPs5HourFocused = hasFocus
-            if (!hasFocus) savePrice(binding.etPs5HourPrice.text.toString()) { viewModel.setPs5HourPrice(it) }
-        }
-        binding.etPs5HalfHourPrice.setOnFocusChangeListener { _, hasFocus ->
-            isPs5HalfHourFocused = hasFocus
-            if (!hasFocus) savePrice(binding.etPs5HalfHourPrice.text.toString()) { viewModel.setPs5HalfHourPrice(it) }
-        }
-        binding.etPs5MultiExtra.setOnFocusChangeListener { _, hasFocus ->
-            isPs5MultiExtraFocused = hasFocus
-            if (!hasFocus) savePrice(binding.etPs5MultiExtra.text.toString()) { viewModel.setPs5MultiExtra(it) }
-        }
-
-        // ── Session Mode (ToggleGroup) ──
-        binding.toggleSessionMode.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (isSessionModeUpdating || !isChecked) return@addOnButtonCheckedListener
-            val mode = if (checkedId == R.id.btnModeOpen) AppConstants.SESSION_MODE_OPEN
-                       else AppConstants.SESSION_MODE_FIXED
-            viewModel.setSessionMode(mode)
-            updateFixedMinutesVisibility(mode)
-            Timber.d("Session mode: $mode")
-        }
-
-        // ── Fixed Minutes ──
-        binding.etFixedMinutes.setOnFocusChangeListener { _, hasFocus ->
-            isFixedMinutesFocused = hasFocus
-            if (!hasFocus) {
-                val value = binding.etFixedMinutes.text.toString().toIntOrNull()
-                if (value != null && value > 0) {
-                    viewModel.setDefaultFixedMinutes(value)
-                    Timber.d("Fixed minutes saved: $value")
-                }
+            if (viewModel.darkMode.value != isChecked) {
+                viewModel.setDarkMode(isChecked)
             }
         }
 
-        // ── Warning Switches ──
-        binding.switchWarningsEnabled.setOnCheckedChangeListener { _, isChecked ->
-            if (isWarningsEnabledUpdating) return@setOnCheckedChangeListener
-            viewModel.setWarningsEnabled(isChecked)
-            updateWarningChildrenEnabled(isChecked)
-            Timber.d("Warnings enabled: $isChecked")
-        }
-        binding.switchWarningSound.setOnCheckedChangeListener { _, isChecked ->
-            if (isWarningSoundUpdating) return@setOnCheckedChangeListener
-            viewModel.setWarningSoundEnabled(isChecked)
-            Timber.d("Warning sound: $isChecked")
-        }
-        binding.switchWarningNotification.setOnCheckedChangeListener { _, isChecked ->
-            if (isWarningNotificationUpdating) return@setOnCheckedChangeListener
-            viewModel.setWarningNotificationEnabled(isChecked)
-            Timber.d("Warning notification: $isChecked")
-        }
-
-        // ── Warning Minutes ──
-        binding.etWarningMinutes.setOnFocusChangeListener { _, hasFocus ->
-            isWarningMinutesFocused = hasFocus
-            if (!hasFocus) {
-                val value = binding.etWarningMinutes.text.toString().toIntOrNull()
-                if (value != null && value > 0) {
-                    viewModel.setWarningMinutes(value)
-                    Timber.d("Warning minutes saved: $value")
-                }
+        // Notifications
+        binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
+            if (viewModel.notificationsEnabled.value != isChecked) {
+                viewModel.setNotificationsEnabled(isChecked)
             }
         }
 
-        // ── Currency ──
+        // Currency
+        val currencies = CurrencyList.currencies
+        val displayNames = currencies.map { "${getString(it.displayNameRes)} (${it.code})" }.toTypedArray()
+        binding.actvCurrency.setSimpleItems(displayNames)
+        
         binding.actvCurrency.setOnItemClickListener { _, _, position, _ ->
-            val selectedCode = viewModel.currencyList[position].code
-            viewModel.setCurrency(selectedCode)
-            Timber.d("Currency selected: $selectedCode")
+            if (!isUpdatingUi) {
+                viewModel.setCurrency(currencies[position].code)
+            }
         }
+
+        // Language
+        val languageItems = viewModel.languageList
+        val languageNames = languageItems.map { getString(it.nameResId) }.toTypedArray()
+        binding.actvLanguage.setSimpleItems(languageNames)
+        
+        binding.actvLanguage.setOnItemClickListener { _, _, position, _ ->
+            if (!isUpdatingUi) {
+                val selectedCode = languageItems[position].code
+                viewModel.setLanguage(selectedCode)
+            }
+        }
+
+        // Pricing Inputs with Validation
+        setupPriceInput(binding.etPs4HourPrice) { viewModel.setPs4HourPrice(it) }
+        setupPriceInput(binding.etPs4MultiExtra) { viewModel.setPs4MultiExtra(it) }
+        setupPriceInput(binding.etPs5HourPrice) { viewModel.setPs5HourPrice(it) }
+        setupPriceInput(binding.etPs5MultiExtra) { viewModel.setPs5MultiExtra(it) }
+
+        // Reminder Minutes with Validation
+        binding.etReminderMinutes.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (!isUpdatingUi) {
+                    hideSavedIndicator()
+                    val value = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(s)
+                    viewModel.setReminderMinutes(value ?: 0)
+                }
+            }
+        })
+
+        // Backup & Restore
+        binding.btnBackup.setOnClickListener {
+            val sdf = java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm", java.util.Locale.ENGLISH)
+            val fileName = "playstation_backup_${sdf.format(java.util.Date())}.json"
+            exportLauncher.launch(fileName)
+        }
+        binding.btnRestore.setOnClickListener {
+            importLauncher.launch(arrayOf("application/json", "*/*"))
+        }
+
     }
 
-    // ──────────────────────── Observe ────────────────────────
+    private fun setupPriceInput(editText: com.google.android.material.textfield.TextInputEditText, onSave: (Double?) -> Unit) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (!isUpdatingUi) {
+                    hideSavedIndicator()
+                    val value = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(s)
+                    onSave(value)
+                }
+            }
+        })
+    }
+
+    private fun showLoadingDialog(messageRes: Int) {
+        if (progressDialog == null) {
+            val view = layoutInflater.inflate(R.layout.dialog_loading, null)
+            val tvMessage = view.findViewById<android.widget.TextView>(R.id.tvLoadingMessage)
+            tvMessage.setText(messageRes)
+            
+            progressDialog = MaterialAlertDialogBuilder(requireContext())
+                .setView(view)
+                .setCancelable(false)
+                .create()
+        }
+        progressDialog?.show()
+    }
+
+    private fun dismissLoadingDialog() {
+        progressDialog?.dismiss()
+        progressDialog = null
+    }
 
     private fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
                 // Dark Mode
                 launch {
                     viewModel.darkMode.collect { enabled ->
-                        if (binding.switchDarkMode.isChecked != enabled) {
-                            isDarkModeUpdatingProgrammatically = true
-                            binding.switchDarkMode.isChecked = enabled
-                            isDarkModeUpdatingProgrammatically = false
+                        updateSwitchState(binding.switchDarkMode, enabled)
+                    }
+                }
+                // Notifications
+                launch {
+                    viewModel.notificationsEnabled.collect { enabled ->
+                        updateSwitchState(binding.switchNotifications, enabled)
+                    }
+                }
+                // Currency
+                launch {
+                    viewModel.currency.collect { code ->
+                        val currency = CurrencyList.getCurrencyByCode(code)
+                        val displayName = "${getString(currency.displayNameRes)} (${currency.code})"
+                        if (binding.actvCurrency.text.toString() != displayName) {
+                            isUpdatingUi = true
+                            binding.actvCurrency.setText(displayName, false)
+                            isUpdatingUi = false
+                        }
+                    }
+                }
+                // Language
+                launch {
+                    viewModel.language.collect { code ->
+                        val languageItem = viewModel.languageList.find { it.code == code }
+                            ?: viewModel.languageList.first()
+                        val displayName = getString(languageItem.nameResId)
+                        if (binding.actvLanguage.text.toString() != displayName) {
+                            isUpdatingUi = true
+                            binding.actvLanguage.setText(displayName, false)
+                            isUpdatingUi = false
                         }
                     }
                 }
 
-                // ── PS4 Pricing ──
+                // Prices
                 launch {
                     viewModel.ps4HourPrice.collect { price ->
-                        if (!isPs4HourFocused) setTextIfChanged(binding.etPs4HourPrice, formatPrice(price))
-                    }
-                }
-                launch {
-                    viewModel.ps4HalfHourPrice.collect { price ->
-                        if (!isPs4HalfHourFocused) setTextIfChanged(binding.etPs4HalfHourPrice, formatPrice(price))
+                        updatePriceEditText(binding.etPs4HourPrice, price)
                     }
                 }
                 launch {
                     viewModel.ps4MultiExtra.collect { price ->
-                        if (!isPs4MultiExtraFocused) setTextIfChanged(binding.etPs4MultiExtra, formatPrice(price))
+                        updatePriceEditText(binding.etPs4MultiExtra, price)
                     }
                 }
-
-                // ── PS5 Pricing ──
                 launch {
                     viewModel.ps5HourPrice.collect { price ->
-                        if (!isPs5HourFocused) setTextIfChanged(binding.etPs5HourPrice, formatPrice(price))
-                    }
-                }
-                launch {
-                    viewModel.ps5HalfHourPrice.collect { price ->
-                        if (!isPs5HalfHourFocused) setTextIfChanged(binding.etPs5HalfHourPrice, formatPrice(price))
+                        updatePriceEditText(binding.etPs5HourPrice, price)
                     }
                 }
                 launch {
                     viewModel.ps5MultiExtra.collect { price ->
-                        if (!isPs5MultiExtraFocused) setTextIfChanged(binding.etPs5MultiExtra, formatPrice(price))
+                        updatePriceEditText(binding.etPs5MultiExtra, price)
                     }
                 }
-
-                // ── Session Mode ──
+                // Reminder
                 launch {
-                    viewModel.sessionMode.collect { mode ->
-                        isSessionModeUpdating = true
-                        val buttonId = if (mode == AppConstants.SESSION_MODE_OPEN) R.id.btnModeOpen
-                                       else R.id.btnModeFixed
-                        binding.toggleSessionMode.check(buttonId)
-                        updateFixedMinutesVisibility(mode)
-                        isSessionModeUpdating = false
-                    }
-                }
-
-                // ── Fixed Minutes ──
-                launch {
-                    viewModel.defaultFixedMinutes.collect { minutes ->
-                        if (!isFixedMinutesFocused) setTextIfChanged(binding.etFixedMinutes, minutes.toString())
-                    }
-                }
-
-                // ── Warning Settings ──
-                launch {
-                    viewModel.warningsEnabled.collect { enabled ->
-                        if (binding.switchWarningsEnabled.isChecked != enabled) {
-                            isWarningsEnabledUpdating = true
-                            binding.switchWarningsEnabled.isChecked = enabled
-                            isWarningsEnabledUpdating = false
-                        }
-                        updateWarningChildrenEnabled(enabled)
-                    }
-                }
-                launch {
-                    viewModel.warningSoundEnabled.collect { enabled ->
-                        if (binding.switchWarningSound.isChecked != enabled) {
-                            isWarningSoundUpdating = true
-                            binding.switchWarningSound.isChecked = enabled
-                            isWarningSoundUpdating = false
+                    viewModel.reminderMinutes.collect { minutes ->
+                        val formattedMinutes = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), minutes)
+                        if (binding.etReminderMinutes.text.toString() != formattedMinutes && !binding.etReminderMinutes.hasFocus()) {
+                            isUpdatingUi = true
+                            binding.etReminderMinutes.setText(formattedMinutes)
+                            isUpdatingUi = false
                         }
                     }
                 }
+                // Validation Errors
                 launch {
-                    viewModel.warningNotificationEnabled.collect { enabled ->
-                        if (binding.switchWarningNotification.isChecked != enabled) {
-                            isWarningNotificationUpdating = true
-                            binding.switchWarningNotification.isChecked = enabled
-                            isWarningNotificationUpdating = false
-                        }
+                    viewModel.validationErrors.collect { errors ->
+                        binding.tilPs4HourPrice.error = errors.ps4HourError?.let { getString(it) }
+                        binding.tilPs4MultiExtra.error = errors.ps4MultiError?.let { getString(it) }
+                        binding.tilPs5HourPrice.error = errors.ps5HourError?.let { getString(it) }
+                        binding.tilPs5MultiExtra.error = errors.ps5MultiError?.let { getString(it) }
+                        binding.tilReminderMinutes.error = errors.reminderError?.let { getString(it) }
                     }
                 }
+                // Editable settings acknowledgement
                 launch {
-                    viewModel.warningMinutes.collect { minutes ->
-                        if (!isWarningMinutesFocused) setTextIfChanged(binding.etWarningMinutes, minutes.toString())
+                    viewModel.editableSettingSaved.collect { setting ->
+                        showSavedIndicator(setting)
                     }
                 }
-
-                // ── Currency ──
+                // Backup State
                 launch {
-                    viewModel.currency.collect { code ->
-                        val index = viewModel.currencyList.indexOfFirst { it.code == code }
-                        if (index != -1) {
-                            val resId = resources.getIdentifier(
-                                viewModel.currencyList[index].displayResName,
-                                "string",
-                                requireContext().packageName
-                            )
-                            val displayName = if (resId != 0) getString(resId) else code
-                            if (binding.actvCurrency.text.toString() != displayName) {
-                                binding.actvCurrency.setText(displayName, false)
+                    viewModel.backupUiState.collect { state ->
+                        when (state) {
+                            is BackupUiState.Idle -> { dismissLoadingDialog() }
+                            is BackupUiState.Loading -> {
+                                showLoadingDialog(R.string.backup_loading)
+                            }
+                            is BackupUiState.Success -> {
+                                dismissLoadingDialog()
+                                Toast.makeText(requireContext(), R.string.backup_success, Toast.LENGTH_LONG).show()
+                                viewModel.resetBackupUiState()
+                            }
+                            is BackupUiState.RestoreSuccess -> {
+                                dismissLoadingDialog()
+                                Toast.makeText(requireContext(), R.string.restore_success, Toast.LENGTH_LONG).show()
+                                viewModel.resetBackupUiState()
+                                requireActivity().recreate()
+                            }
+                            is BackupUiState.Error -> {
+                                dismissLoadingDialog()
+                                Toast.makeText(requireContext(), state.message.asString(requireContext()), Toast.LENGTH_LONG).show()
+                                viewModel.resetBackupUiState()
                             }
                         }
                     }
@@ -307,58 +296,89 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    // ──────────────────────── Helpers ────────────────────────
-
-    /**
-     * Generic price saver — validates ≥ 0 before calling the provided setter.
-     */
-    private fun savePrice(text: String, setter: (Double) -> Unit) {
-        val value = text.toDoubleOrNull()
-        if (value != null && value >= 0) {
-            setter(value)
+    private fun updateSwitchState(switch: com.google.android.material.materialswitch.MaterialSwitch, state: Boolean) {
+        if (switch.isChecked != state) {
+            switch.isChecked = state
         }
     }
 
-    /**
-     * Sets text on an EditText only if the current text differs — prevents infinite loops.
-     */
-    private fun setTextIfChanged(editText: com.google.android.material.textfield.TextInputEditText, text: String) {
-        if (editText.text.toString() != text) {
-            editText.setText(text)
+    private fun updatePriceEditText(editText: com.google.android.material.textfield.TextInputEditText, price: Double) {
+        val priceStr = com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), price)
+        if (editText.text.toString() != priceStr && !editText.hasFocus()) {
+            isUpdatingUi = true
+            editText.setText(priceStr)
+            isUpdatingUi = false
         }
     }
 
-    /**
-     * Show/hide the fixed-minutes field based on session mode.
-     */
-    private fun updateFixedMinutesVisibility(mode: String) {
-        binding.tilFixedMinutes.visibility =
-            if (mode == AppConstants.SESSION_MODE_FIXED) View.VISIBLE else View.GONE
-    }
-
-    /**
-     * Enable/disable warning sub-switches and minutes field based on master toggle.
-     */
-    private fun updateWarningChildrenEnabled(masterEnabled: Boolean) {
-        binding.switchWarningSound.isEnabled = masterEnabled
-        binding.switchWarningNotification.isEnabled = masterEnabled
-        binding.etWarningMinutes.isEnabled = masterEnabled
-        binding.tilWarningMinutes.isEnabled = masterEnabled
-    }
-
-    /**
-     * Format price — display without decimal if it's a whole number.
-     */
-    private fun formatPrice(price: Double): String {
-        return if (price == price.toLong().toDouble()) {
-            price.toLong().toString()
-        } else {
-            price.toString()
+    private fun showSavedIndicator(setting: SettingsViewModel.EditableSetting) {
+        hideSavedIndicator()
+        savedIndicatorFor(setting).isVisible = true
+        savedIndicatorJob = viewLifecycleOwner.lifecycleScope.launch {
+            delay(SAVED_INDICATOR_DURATION_MS)
+            savedIndicatorFor(setting).isVisible = false
+            savedIndicatorJob = null
         }
+    }
+
+    private fun hideSavedIndicator() {
+        savedIndicatorJob?.cancel()
+        savedIndicatorJob = null
+        binding.tvPs4HourPriceSaved.isVisible = false
+        binding.tvPs4MultiExtraSaved.isVisible = false
+        binding.tvPs5HourPriceSaved.isVisible = false
+        binding.tvPs5MultiExtraSaved.isVisible = false
+        binding.tvReminderMinutesSaved.isVisible = false
+    }
+
+    private fun savedIndicatorFor(setting: SettingsViewModel.EditableSetting): TextView = when (setting) {
+        SettingsViewModel.EditableSetting.PS4_HOUR_PRICE -> binding.tvPs4HourPriceSaved
+        SettingsViewModel.EditableSetting.PS4_MULTI_EXTRA -> binding.tvPs4MultiExtraSaved
+        SettingsViewModel.EditableSetting.PS5_HOUR_PRICE -> binding.tvPs5HourPriceSaved
+        SettingsViewModel.EditableSetting.PS5_MULTI_EXTRA -> binding.tvPs5MultiExtraSaved
+        SettingsViewModel.EditableSetting.REMINDER_MINUTES -> binding.tvReminderMinutesSaved
+    }
+
+    private fun showRestoreConfirmation(uri: android.net.Uri) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (viewModel.hasActiveSessions()) {
+                restoreDialog = MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.active_sessions_warning)
+                    .setMessage(R.string.restore_confirmation)
+                    .setPositiveButton(R.string.restore_backup_button) { _, _ ->
+                        executeRestore(uri)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            } else {
+                restoreDialog = MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.restore)
+                    .setMessage(R.string.restore_confirmation)
+                    .setPositiveButton(R.string.restore_backup_button) { _, _ ->
+                        executeRestore(uri)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+            }
+        }
+    }
+
+    private fun executeRestore(uri: android.net.Uri) {
+        val inputStream = requireContext().contentResolver.openInputStream(uri)
+        viewModel.importBackup(uri, inputStream)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        savedIndicatorJob?.cancel()
+        savedIndicatorJob = null
+        dismissLoadingDialog()
+        restoreDialog?.dismiss()
+        restoreDialog = null
         _binding = null
+    }
+
+    private companion object {
+        const val SAVED_INDICATOR_DURATION_MS = 1_500L
     }
 }

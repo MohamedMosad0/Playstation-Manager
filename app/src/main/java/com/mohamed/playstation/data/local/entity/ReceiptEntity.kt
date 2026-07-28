@@ -43,6 +43,10 @@ data class ReceiptEntity(
 
     // الأسعار
     val pricePerHour: Double,       // السعر بالساعة
+    val playAmount: Double,
+    val productsAmount: Double,
+    val discountAmount: Double,
+    val taxAmount: Double,
     val totalAmount: Double,        // الإجمالي النهائي
     val currencyCode: String,       // كود العملة (EGP, SAR, etc.)
 

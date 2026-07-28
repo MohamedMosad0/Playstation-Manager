@@ -22,11 +22,13 @@ object AppConstants {
     const val KEY_PS4_HOUR_PRICE = "ps4_hour_price"
     const val KEY_PS4_HALF_HOUR_PRICE = "ps4_half_hour_price"
     const val KEY_PS4_MULTI_EXTRA = "ps4_multiplayer_extra"
+    const val KEY_PS4_MULTI_HOUR_PRICE = "ps4_multi_hour_price"
 
     // Preferences Keys — PS5 Pricing
     const val KEY_PS5_HOUR_PRICE = "ps5_hour_price"
     const val KEY_PS5_HALF_HOUR_PRICE = "ps5_half_hour_price"
     const val KEY_PS5_MULTI_EXTRA = "ps5_multiplayer_extra"
+    const val KEY_PS5_MULTI_HOUR_PRICE = "ps5_multi_hour_price"
 
     // Preferences Keys — Session Defaults
     const val KEY_SESSION_MODE = "session_mode"
@@ -38,23 +40,29 @@ object AppConstants {
     const val KEY_WARNING_NOTIFICATION_ENABLED = "warning_notification_enabled"
     const val KEY_WARNING_MINUTES = "warning_minutes"
 
+    // System / App State
+    const val KEY_EXACT_ALARM_PROMPT_DISMISSED = "exact_alarm_prompt_dismissed"
+
+
     // Default Values — existing (kept for backward compatibility)
     const val DEFAULT_SINGLE_PRICE = 30.0  // EGP
     const val DEFAULT_MULTI_PRICE = 20.0   // EGP
     const val DEFAULT_ALERT_TIME = 5 // minutes
     const val DEFAULT_DARK_MODE = true
-    const val DEFAULT_LANGUAGE = "ar"
+    const val DEFAULT_LANGUAGE = "system"
     const val DEFAULT_CURRENCY = "EGP"
 
     // Default Values — PS4 Pricing
     const val DEFAULT_PS4_HOUR_PRICE = 30.0
     const val DEFAULT_PS4_HALF_HOUR_PRICE = 20.0
     const val DEFAULT_PS4_MULTI_EXTRA = 10.0
+    const val DEFAULT_PS4_MULTI_HOUR_PRICE = 40.0
 
     // Default Values — PS5 Pricing
     const val DEFAULT_PS5_HOUR_PRICE = 50.0
     const val DEFAULT_PS5_HALF_HOUR_PRICE = 30.0
     const val DEFAULT_PS5_MULTI_EXTRA = 15.0
+    const val DEFAULT_PS5_MULTI_HOUR_PRICE = 65.0
 
     // Default Values — Session Defaults
     const val DEFAULT_SESSION_MODE = "open"
@@ -90,16 +98,11 @@ object AppConstants {
 
     // Notification
     const val NOTIFICATION_CHANNEL_ID = "playstation_notifications"
-    const val NOTIFICATION_CHANNEL_NAME = "PlayStation Notifications"
-    const val ONGOING_NOTIFICATION_CHANNEL_ID = "playstation_sessions_ongoing"
-    const val ONGOING_NOTIFICATION_CHANNEL_NAME = "Active Sessions"
-    const val SESSION_NOTIFICATION_ID = 1001
-    const val FOREGROUND_SESSION_NOTIFICATION_ID = 2001
+    const val NOTIFICATION_CHANNEL_NAME = "Arena Manager Notifications"
     const val NOTIFICATION_REQUEST_CODE_OPEN_APP = 1001
-    const val NOTIFICATION_REQUEST_CODE_FOREGROUND = 2001
-
-    // WorkManager
-    const val WORK_TAG_SESSION_ALERT = "session_alert"
+    const val ACTION_SESSION_WARNING_ALARM = "com.mohamed.playstation.action.SESSION_WARNING_ALARM"
+    const val ACTION_SESSION_END_ALARM = "com.mohamed.playstation.action.SESSION_END_ALARM"
+    const val EXTRA_SESSION_ID = "extra_session_id"
 
     // Date Format
     const val DATE_FORMAT = "dd/MM/yyyy"
@@ -111,18 +114,17 @@ object AppConstants {
     const val BACKUP_FILE_PREFIX = "playstation_backup_"
     const val BACKUP_FILE_EXTENSION = ".db"
 
-    // Session Status
-    const val SESSION_STATUS_ACTIVE = "active"
-    const val SESSION_STATUS_PAUSED = "paused"
-    const val SESSION_STATUS_ENDED = "ended"
+    // About
+    const val DEVELOPER_NAME = "Mohamed"
 
     // Device Types
     const val DEVICE_PS4 = "PS4"
     const val DEVICE_PS5 = "PS5"
-    const val DEVICE_PS4_STANDARD = "PS4 Standard"
-    const val DEVICE_PS4_PRO = "PS4 Pro"
-    const val DEVICE_PS5_STANDARD = "PS5 Standard"
-    const val DEVICE_PS5_DIGITAL = "PS5 Digital"
+
+    // Session Status
+    const val SESSION_STATUS_ACTIVE = "active"
+    const val SESSION_STATUS_PAUSED = "paused"
+    const val SESSION_STATUS_ENDED = "ended"
 
     // Session Types
     const val SESSION_TYPE_SINGLE = "single"

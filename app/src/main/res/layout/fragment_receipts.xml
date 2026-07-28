@@ -4,24 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark">
+    android:background="?attr/colorSurface">
 
-    <!-- Header -->
+    <!-- Unified Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        style="@style/Widget.PlayStation.ScreenHeader"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            style="@style/Widget.PlayStation.ScreenHeader.Logo"
+            android:src="@drawable/ic_receipt"
+            android:contentDescription="@null" />
+
+        <TextView
+            style="@style/Widget.PlayStation.ScreenHeader.Title"
+            android:text="@string/receipts" />
+    </LinearLayout>
+
+    <!-- Header Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/headerCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         app:cardBackgroundColor="@color/card_dark"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/cardDateRange">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:padding="16dp">
 
             <TextView
@@ -51,42 +67,117 @@
                 android:layout_height="48dp"
                 android:padding="8dp"
                 android:src="@drawable/ic_receipt"
-                app:tint="@color/ps_blue_light"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/ps_blue_light" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Tab Layout -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+    <!-- Date Filter Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardDateRange"
+        style="@style/Widget.PlayStation.Card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@color/background_dark"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerCard"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/ps_blue_light"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/ps_blue_light"
-        app:tabTextColor="@color/text_secondary">
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/today" />
+            android:orientation="vertical"
+            android:padding="12dp">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/all" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-    </com.google.android.material.tabs.TabLayout>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/ps_blue_primary"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tvDateRange"
+                    style="@style/TextAppearance.PlayStation.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    tools:text="2026/06/01 - 2026/06/30" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_chevron_down"
+                    app:tint="@color/text_secondary"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:scrollbars="none">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupDateFilters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipToday"
+                        style="@style/Widget.PlayStation.Selection.FilterChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/today" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipThisWeek"
+                        style="@style/Widget.PlayStation.Selection.FilterChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filter_this_week" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipThisMonth"
+                        style="@style/Widget.PlayStation.Selection.FilterChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/this_month" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipLastMonth"
+                        style="@style/Widget.PlayStation.Selection.FilterChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filter_last_month" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipLast3Months"
+                        style="@style/Widget.PlayStation.Selection.FilterChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filter_last_3_months" />
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <!-- Receipts List -->
     <androidx.recyclerview.widget.RecyclerView
@@ -99,36 +190,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout"
+        app:layout_constraintTop_toBottomOf="@id/headerCard"
         tools:listitem="@layout/item_receipt" />
 
     <!-- Empty State -->
     <LinearLayout
         android:id="@+id/emptyState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
+        style="@style/Widget.PlayStation.EmptyStateContainer"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout">
+        app:layout_constraintTop_toBottomOf="@id/headerCard">
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:alpha="0.3"
+            style="@style/Widget.PlayStation.EmptyStateIcon"
             android:src="@drawable/ic_receipt"
-            app:tint="@color/text_secondary" />
+            android:contentDescription="@null" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/no_receipts"
-            android:textColor="@color/text_secondary"
-            android:textSize="16sp" />
+            style="@style/Widget.PlayStation.EmptyStateTitle"
+            android:text="@string/no_receipts" />
+
+        <TextView
+            style="@style/Widget.PlayStation.EmptyStateSubtitle"
+            android:text="@string/receipts_empty_subtitle" />
 
     </LinearLayout>
 
@@ -142,6 +228,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+        app:layout_constraintTop_toBottomOf="@id/headerCard" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,28 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardBackgroundColor="@color/card_dark"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:strokeColor="@color/ps_blue_dark"
-    app:strokeWidth="1dp">
+    android:layout_margin="@dimen/spacing_small"
+    android:minHeight="130dp"
+    style="@style/Widget.PlayStation.Card">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_large">
 
         <ImageView
             android:id="@+id/ivReceiptIcon"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:contentDescription="@string/receipts"
-            android:padding="8dp"
+            android:padding="13dp"
             android:src="@drawable/ic_receipt"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/ps_blue_light" />
+            app:tint="?attr/colorPrimary" />
 
         <TextView
             android:id="@+id/tvReceiptNumber"
@@ -35,7 +32,7 @@
             android:textColor="@color/text_primary"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/tvTotal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivReceiptIcon"
             app:layout_constraintTop_toTopOf="@id/ivReceiptIcon"
             tools:text="فاتورة رقم 001234" />
@@ -44,10 +41,11 @@
             android:id="@+id/tvDeviceInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="2dp"
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@id/tvTotal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvReceiptNumber"
             app:layout_constraintTop_toBottomOf="@id/tvReceiptNumber"
             tools:text="PS5 #1 • لاعب واحد" />
@@ -56,39 +54,40 @@
             android:id="@+id/tvDuration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="2dp"
             android:textColor="@color/text_secondary"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@id/tvTotal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvReceiptNumber"
             app:layout_constraintTop_toBottomOf="@id/tvDeviceInfo"
             tools:text="2h 15m • 02:30 PM - 04:45 PM" />
 
         <TextView
-            android:id="@+id/tvProductsSummary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@id/tvTotal"
-            app:layout_constraintStart_toStartOf="@id/tvReceiptNumber"
-            app:layout_constraintTop_toBottomOf="@id/tvDuration"
-            tools:text="المنتجات: 3 • 40.00 ج.م" />
-
-        <TextView
             android:id="@+id/tvTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="@color/ps_blue_light"
+            android:layout_marginTop="8dp"
+            android:textColor="?attr/colorPrimary"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvReceiptNumber"
+            app:layout_constraintTop_toBottomOf="@id/tvDuration"
             tools:text="67.50 ج.م" />
+
+        <TextView
+            android:id="@+id/tvProductsSummary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="2dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvReceiptNumber"
+            app:layout_constraintTop_toBottomOf="@id/tvTotal"
+            tools:text="المنتجات: 3 • 40.00 ج.م" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipPaymentMethod"
@@ -96,11 +95,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/text_secondary"
-            app:chipBackgroundColor="@color/surface_dark"
+            android:textColor="@color/text_primary"
+            app:chipBackgroundColor="@color/surface_variant"
             app:chipMinHeight="24dp"
-            app:chipStrokeColor="@color/card_dark"
+            app:chipStrokeColor="@color/card_border"
             app:chipStrokeWidth="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvReceiptNumber"
             app:layout_constraintTop_toBottomOf="@id/tvProductsSummary"
             tools:text="نقداً" />

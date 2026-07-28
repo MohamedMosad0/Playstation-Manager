@@ -18,6 +18,34 @@ interface SessionDao {
     @Update
     suspend fun update(session: SessionEntity)
 
+    @Query(
+        """
+        UPDATE sessions
+        SET status = 'paused', pausedAt = :pausedAt, updatedAt = :updatedAt
+        WHERE id = :sessionId AND status = 'active'
+        """
+    )
+    suspend fun pauseIfActive(
+        sessionId: Long,
+        pausedAt: java.util.Date,
+        updatedAt: java.util.Date
+    ): Int
+
+    @Query(
+        """
+        UPDATE sessions
+        SET status = 'active', pausedAt = NULL, startTime = :startTime,
+            totalPausedMinutes = :totalPausedMinutes, updatedAt = :updatedAt
+        WHERE id = :sessionId AND status = 'paused'
+        """
+    )
+    suspend fun resumeIfPaused(
+        sessionId: Long,
+        startTime: java.util.Date,
+        totalPausedMinutes: Long,
+        updatedAt: java.util.Date
+    ): Int
+
     @Delete
     suspend fun delete(session: SessionEntity)
 
@@ -53,17 +81,20 @@ interface SessionDao {
     @Query("SELECT * FROM sessions ORDER BY startTime DESC")
     fun getAllSessions(): Flow<List<SessionEntity>>
 
+    @Query("SELECT * FROM sessions")
+    suspend fun getAllOnce(): List<SessionEntity>
+
     @Query("SELECT COUNT(*) FROM sessions WHERE status = 'active'")
     fun getActiveSessionsCount(): Flow<Int>
 
     @Query(
         """
         SELECT * FROM sessions
-        WHERE DATE(startTime/1000, 'unixepoch') = DATE('now')
+        WHERE startTime >= :startMs AND startTime < :endMs
         ORDER BY startTime DESC
         """
     )
-    fun getTodaySessions(): Flow<List<SessionEntity>>
+    fun getTodaySessions(startMs: Long, endMs: Long): Flow<List<SessionEntity>>
 
     @Query("DELETE FROM sessions")
     suspend fun deleteAll()

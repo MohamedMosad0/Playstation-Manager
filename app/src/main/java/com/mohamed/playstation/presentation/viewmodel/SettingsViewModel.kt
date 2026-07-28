@@ -3,81 +3,122 @@ package com.mohamed.playstation.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mohamed.playstation.core.constants.AppConstants
-import com.mohamed.playstation.data.local.SettingsManager
+import com.mohamed.playstation.domain.usecase.settings.GetSettingsFlowsUseCase
+import com.mohamed.playstation.domain.usecase.settings.UpdateSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 
-/**
- * ViewModel للإعدادات — Phase 1
- */
+import com.mohamed.playstation.core.backup.BackupManager
+import com.mohamed.playstation.presentation.ui.settings.BackupUiState
+import android.net.Uri
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.UiText
+import com.mohamed.playstation.core.backup.BackupResult
+import com.mohamed.playstation.domain.usecase.SessionUseCases
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val settingsManager: SettingsManager
+    private val getSettingsFlowsUseCase: GetSettingsFlowsUseCase,
+    private val updateSettingsUseCase: UpdateSettingsUseCase,
+    private val backupManager: BackupManager,
+    private val sessionUseCases: SessionUseCases
 ) : ViewModel() {
 
-    // ======================== Existing StateFlows ========================
-
-    val darkMode: StateFlow<Boolean> = settingsManager.darkModeFlow
+    val darkMode: StateFlow<Boolean> = getSettingsFlowsUseCase.darkModeFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_DARK_MODE)
 
-    val singlePrice: StateFlow<Double> = settingsManager.singlePriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_SINGLE_PRICE)
+    val language: StateFlow<String> = getSettingsFlowsUseCase.languageFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_LANGUAGE)
 
-    val multiPrice: StateFlow<Double> = settingsManager.multiPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_MULTI_PRICE)
-
-    val currency: StateFlow<String> = settingsManager.currencyFlow
+    val currency: StateFlow<String> = getSettingsFlowsUseCase.currencyFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_CURRENCY)
 
-    // ======================== PS4 Pricing ========================
-
-    val ps4HourPrice: StateFlow<Double> = settingsManager.ps4HourPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_HOUR_PRICE)
-
-    val ps4HalfHourPrice: StateFlow<Double> = settingsManager.ps4HalfHourPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_HALF_HOUR_PRICE)
-
-    val ps4MultiExtra: StateFlow<Double> = settingsManager.ps4MultiExtraFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_MULTI_EXTRA)
-
-    // ======================== PS5 Pricing ========================
-
-    val ps5HourPrice: StateFlow<Double> = settingsManager.ps5HourPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_HOUR_PRICE)
-
-    val ps5HalfHourPrice: StateFlow<Double> = settingsManager.ps5HalfHourPriceFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_HALF_HOUR_PRICE)
-
-    val ps5MultiExtra: StateFlow<Double> = settingsManager.ps5MultiExtraFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_MULTI_EXTRA)
-
-    // ======================== Session Defaults ========================
-
-    val sessionMode: StateFlow<String> = settingsManager.sessionModeFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_SESSION_MODE)
-
-    val defaultFixedMinutes: StateFlow<Int> = settingsManager.defaultFixedMinutesFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_FIXED_MINUTES)
-
-    // ======================== Warning Settings ========================
-
-    val warningsEnabled: StateFlow<Boolean> = settingsManager.warningsEnabledFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_WARNINGS_ENABLED)
-
-    val warningSoundEnabled: StateFlow<Boolean> = settingsManager.warningSoundEnabledFlow
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_WARNING_SOUND_ENABLED)
-
-    val warningNotificationEnabled: StateFlow<Boolean> = settingsManager.warningNotificationEnabledFlow
+    val notificationsEnabled: StateFlow<Boolean> = getSettingsFlowsUseCase.notificationsEnabledFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_WARNING_NOTIFICATION_ENABLED)
 
-    val warningMinutes: StateFlow<Int> = settingsManager.warningMinutesFlow
+    val reminderMinutes: StateFlow<Int> = getSettingsFlowsUseCase.reminderMinutesFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_WARNING_MINUTES)
 
-    // ======================== Currency List ========================
+    val ps4HourPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps4HourPriceFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_HOUR_PRICE)
+
+    val ps4MultiExtra: StateFlow<Double> = getSettingsFlowsUseCase.ps4MultiExtraFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS4_MULTI_EXTRA)
+
+    val ps5HourPrice: StateFlow<Double> = getSettingsFlowsUseCase.ps5HourPriceFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_HOUR_PRICE)
+
+    val ps5MultiExtra: StateFlow<Double> = getSettingsFlowsUseCase.ps5MultiExtraFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_PS5_MULTI_EXTRA)
+
+    init {
+        migrateLegacyPricing()
+    }
+
+    private fun migrateLegacyPricing() {
+        viewModelScope.launch {
+            // PS4 Migration
+            combine(
+                getSettingsFlowsUseCase.ps4HourPriceFlow,
+                getSettingsFlowsUseCase.ps4MultiExtraFlow,
+                getSettingsFlowsUseCase.ps4MultiplayerPriceFlow
+            ) { hour, extra, legacyMultiHour ->
+                Triple(hour, extra, legacyMultiHour)
+            }.distinctUntilChanged().first().let { (hour, extra, legacyMultiHour) ->
+                if (extra == AppConstants.DEFAULT_PS4_MULTI_EXTRA && legacyMultiHour > hour) {
+                    val migrated = (legacyMultiHour - hour).coerceAtLeast(0.0)
+                    if (migrated != extra) {
+                        updateSettingsUseCase.setPs4MultiExtra(migrated)
+                    }
+                }
+            }
+
+            // PS5 Migration
+            combine(
+                getSettingsFlowsUseCase.ps5HourPriceFlow,
+                getSettingsFlowsUseCase.ps5MultiExtraFlow,
+                getSettingsFlowsUseCase.ps5MultiplayerPriceFlow
+            ) { hour, extra, legacyMultiHour ->
+                Triple(hour, extra, legacyMultiHour)
+            }.distinctUntilChanged().first().let { (hour, extra, legacyMultiHour) ->
+                if (extra == AppConstants.DEFAULT_PS5_MULTI_EXTRA && legacyMultiHour > hour) {
+                    val migrated = (legacyMultiHour - hour).coerceAtLeast(0.0)
+                    if (migrated != extra) {
+                        updateSettingsUseCase.setPs5MultiExtra(migrated)
+                    }
+                }
+            }
+        }
+    }
+
+    // Validation State
+    data class ValidationErrors(
+        val ps4HourError: Int? = null,
+        val ps4MultiError: Int? = null,
+        val ps5HourError: Int? = null,
+        val ps5MultiError: Int? = null,
+        val reminderError: Int? = null
+    )
+
+    private val _validationErrors = MutableStateFlow(ValidationErrors())
+    val validationErrors: StateFlow<ValidationErrors> = _validationErrors.asStateFlow()
+
+    private val _backupUiState = MutableStateFlow<BackupUiState>(BackupUiState.Idle)
+    val backupUiState: StateFlow<BackupUiState> = _backupUiState.asStateFlow()
+
+    enum class EditableSetting {
+        PS4_HOUR_PRICE,
+        PS4_MULTI_EXTRA,
+        PS5_HOUR_PRICE,
+        PS5_MULTI_EXTRA,
+        REMINDER_MINUTES
+    }
+
+    private val editableSettingVersions = mutableMapOf<EditableSetting, Long>()
+    private val _editableSettingSaved = MutableSharedFlow<EditableSetting>(extraBufferCapacity = 1)
+    val editableSettingSaved: SharedFlow<EditableSetting> = _editableSettingSaved.asSharedFlow()
 
     data class CurrencyItem(val code: String, val displayResName: String)
 
@@ -100,77 +141,168 @@ class SettingsViewModel @Inject constructor(
         CurrencyItem(AppConstants.CURRENCY_LYD, "currency_lyd")
     )
 
-    // ======================== Existing Setters ========================
+    data class LanguageItem(val code: String, val nameResId: Int)
+    val languageList = listOf(
+        LanguageItem("system", com.mohamed.playstation.R.string.language_system),
+        LanguageItem("ar", com.mohamed.playstation.R.string.language_arabic),
+        LanguageItem("en", com.mohamed.playstation.R.string.language_english)
+    )
 
     fun setDarkMode(enabled: Boolean) {
-        viewModelScope.launch { settingsManager.setDarkMode(enabled) }
+        viewModelScope.launch { updateSettingsUseCase.setDarkMode(enabled) }
     }
 
-    fun setSinglePrice(price: Double) {
-        viewModelScope.launch { settingsManager.setSinglePrice(price) }
-    }
-
-    fun setMultiPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setMultiPrice(price) }
+    fun setLanguage(languageCode: String) {
+        viewModelScope.launch { updateSettingsUseCase.setLanguage(languageCode) }
     }
 
     fun setCurrency(code: String) {
-        viewModelScope.launch { settingsManager.setCurrency(code) }
+        viewModelScope.launch { updateSettingsUseCase.setCurrency(code) }
     }
 
-    // ======================== PS4 Pricing Setters ========================
-
-    fun setPs4HourPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setPs4HourPrice(price) }
+    fun setNotificationsEnabled(enabled: Boolean) {
+        viewModelScope.launch { updateSettingsUseCase.setNotificationsEnabled(enabled) }
     }
 
-    fun setPs4HalfHourPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setPs4HalfHourPrice(price) }
+    fun setReminderMinutes(minutes: Int) {
+        val version = nextEditableSettingVersion(EditableSetting.REMINDER_MINUTES)
+        if (minutes <= 0) {
+            _validationErrors.update { it.copy(reminderError = com.mohamed.playstation.R.string.error_invalid_price) }
+        } else {
+            _validationErrors.update { it.copy(reminderError = null) }
+            saveEditableSetting(EditableSetting.REMINDER_MINUTES, version) {
+                updateSettingsUseCase.setReminderMinutes(minutes)
+            }
+        }
     }
 
-    fun setPs4MultiExtra(price: Double) {
-        viewModelScope.launch { settingsManager.setPs4MultiExtra(price) }
+    fun setPs4HourPrice(price: Double?) {
+        val version = nextEditableSettingVersion(EditableSetting.PS4_HOUR_PRICE)
+        validateAndSavePrice(price, allowZero = false, errorSetter = { err -> _validationErrors.update { it.copy(ps4HourError = err) } }) {
+            saveEditableSetting(EditableSetting.PS4_HOUR_PRICE, version) {
+                updateSettingsUseCase.setPs4HourPrice(it)
+            }
+        }
     }
 
-    // ======================== PS5 Pricing Setters ========================
-
-    fun setPs5HourPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setPs5HourPrice(price) }
+    fun setPs4MultiExtra(price: Double?) {
+        val version = nextEditableSettingVersion(EditableSetting.PS4_MULTI_EXTRA)
+        validateAndSavePrice(price, allowZero = true, errorSetter = { err -> _validationErrors.update { it.copy(ps4MultiError = err) } }) {
+            saveEditableSetting(EditableSetting.PS4_MULTI_EXTRA, version) {
+                updateSettingsUseCase.setPs4MultiExtra(it)
+            }
+        }
     }
 
-    fun setPs5HalfHourPrice(price: Double) {
-        viewModelScope.launch { settingsManager.setPs5HalfHourPrice(price) }
+    fun setPs5HourPrice(price: Double?) {
+        val version = nextEditableSettingVersion(EditableSetting.PS5_HOUR_PRICE)
+        validateAndSavePrice(price, allowZero = false, errorSetter = { err -> _validationErrors.update { it.copy(ps5HourError = err) } }) {
+            saveEditableSetting(EditableSetting.PS5_HOUR_PRICE, version) {
+                updateSettingsUseCase.setPs5HourPrice(it)
+            }
+        }
     }
 
-    fun setPs5MultiExtra(price: Double) {
-        viewModelScope.launch { settingsManager.setPs5MultiExtra(price) }
+    fun setPs5MultiExtra(price: Double?) {
+        val version = nextEditableSettingVersion(EditableSetting.PS5_MULTI_EXTRA)
+        validateAndSavePrice(price, allowZero = true, errorSetter = { err -> _validationErrors.update { it.copy(ps5MultiError = err) } }) {
+            saveEditableSetting(EditableSetting.PS5_MULTI_EXTRA, version) {
+                updateSettingsUseCase.setPs5MultiExtra(it)
+            }
+        }
     }
 
-    // ======================== Session Defaults Setters ========================
-
-    fun setSessionMode(mode: String) {
-        viewModelScope.launch { settingsManager.setSessionMode(mode) }
+    private fun nextEditableSettingVersion(setting: EditableSetting): Long {
+        val nextVersion = (editableSettingVersions[setting] ?: 0L) + 1
+        editableSettingVersions[setting] = nextVersion
+        return nextVersion
     }
 
-    fun setDefaultFixedMinutes(minutes: Int) {
-        viewModelScope.launch { settingsManager.setDefaultFixedMinutes(minutes) }
+    private fun saveEditableSetting(
+        setting: EditableSetting,
+        version: Long,
+        save: suspend () -> Unit
+    ) {
+        viewModelScope.launch {
+            save()
+            if (editableSettingVersions[setting] == version) {
+                _editableSettingSaved.emit(setting)
+            }
+        }
     }
 
-    // ======================== Warning Settings Setters ========================
-
-    fun setWarningsEnabled(enabled: Boolean) {
-        viewModelScope.launch { settingsManager.setWarningsEnabled(enabled) }
+    private fun validateAndSavePrice(price: Double?, allowZero: Boolean, errorSetter: (Int?) -> Unit, onSave: (Double) -> Unit) {
+        when {
+            price == null -> {
+                errorSetter(com.mohamed.playstation.R.string.error_empty_price)
+            }
+            (!allowZero && price <= 0) || (allowZero && price < 0) -> {
+                errorSetter(com.mohamed.playstation.R.string.error_invalid_price)
+            }
+            else -> {
+                errorSetter(null)
+                onSave(price)
+            }
+        }
     }
 
-    fun setWarningSoundEnabled(enabled: Boolean) {
-        viewModelScope.launch { settingsManager.setWarningSoundEnabled(enabled) }
+    suspend fun hasActiveSessions(): Boolean {
+        return sessionUseCases.getActiveSessionsCount().first() > 0
     }
 
-    fun setWarningNotificationEnabled(enabled: Boolean) {
-        viewModelScope.launch { settingsManager.setWarningNotificationEnabled(enabled) }
+    fun exportBackup(uri: Uri) {
+        _backupUiState.value = BackupUiState.Loading
+        viewModelScope.launch {
+            when (val result = backupManager.exportBackup(uri)) {
+                is BackupResult.Success -> {
+                    _backupUiState.value = BackupUiState.Success
+                }
+                is BackupResult.Error -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.backup_failed))
+                }
+                else -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.backup_failed))
+                }
+            }
+        }
     }
 
-    fun setWarningMinutes(minutes: Int) {
-        viewModelScope.launch { settingsManager.setWarningMinutes(minutes) }
+    fun importBackup(uri: Uri, inputStream: java.io.InputStream?) {
+        if (inputStream == null) {
+            _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.restore_failed))
+            return
+        }
+        _backupUiState.value = BackupUiState.Loading
+        viewModelScope.launch {
+            when (val result = backupManager.importBackup(inputStream)) {
+                is BackupResult.Success -> {
+                    _backupUiState.value = BackupUiState.RestoreSuccess(
+                        language = result.restoredLanguage
+                    )
+                }
+                is BackupResult.PartialSuccess -> {
+                    _backupUiState.value = BackupUiState.Error(result.warning) // Treat partial as error/warning message
+                }
+                is BackupResult.InvalidFile -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.invalid_backup_file))
+                }
+                is BackupResult.InvalidChecksum -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.checksum_invalid))
+                }
+                is BackupResult.UnsupportedVersion -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.unsupported_backup_version))
+                }
+                is BackupResult.WrongApplication -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.restore_failed))
+                }
+                is BackupResult.Error -> {
+                    _backupUiState.value = BackupUiState.Error(UiText.StringResource(R.string.restore_failed))
+                }
+            }
+        }
+    }
+
+    fun resetBackupUiState() {
+        _backupUiState.value = BackupUiState.Idle
     }
 }

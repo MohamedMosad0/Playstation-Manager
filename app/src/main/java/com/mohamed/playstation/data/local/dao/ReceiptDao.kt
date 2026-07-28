@@ -53,24 +53,33 @@ interface ReceiptDao {
     @Query("SELECT * FROM receipts ORDER BY createdAt DESC")
     fun getAllReceipts(): Flow<List<ReceiptEntity>>
 
+    @Query("SELECT * FROM receipts")
+    suspend fun getAllOnce(): List<ReceiptEntity>
+
     /**
      * الحصول على فواتير اليوم
      */
     @Query("""
         SELECT * FROM receipts 
-        WHERE DATE(createdAt/1000, 'unixepoch') = DATE('now') 
+        WHERE createdAt >= :startTime AND createdAt < :endTime 
         ORDER BY createdAt DESC
     """)
-    fun getTodayReceipts(): Flow<List<ReceiptEntity>>
+    fun getTodayReceipts(startTime: Long, endTime: Long): Flow<List<ReceiptEntity>>
+
+    /**
+     * الحصول على فواتير في فترة زمنية
+     */
+    @Query("SELECT * FROM receipts WHERE createdAt >= :startTime AND createdAt < :endTime ORDER BY createdAt ASC")
+    fun getReceiptsInRange(startTime: Long, endTime: Long): Flow<List<ReceiptEntity>>
 
     /**
      * الحصول على إجمالي الإيرادات اليوم
      */
     @Query("""
         SELECT SUM(totalAmount) FROM receipts 
-        WHERE DATE(createdAt/1000, 'unixepoch') = DATE('now')
+        WHERE createdAt >= :startTime AND createdAt < :endTime
     """)
-    fun getTodayTotalRevenue(): Flow<Double?>
+    fun getTodayTotalRevenue(startTime: Long, endTime: Long): Flow<Double?>
 
     /**
      * الحصول على آخر رقم فاتورة

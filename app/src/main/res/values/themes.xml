@@ -1,89 +1,380 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base Application Theme -->
-    <style name="Base.Theme.PlayStation" parent="Theme.Material3.Dark.NoActionBar">
+    <!-- Base Application Theme — DayNight -->
+    <style name="Base.Theme.PlayStation" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary Colors -->
-        <item name="colorPrimary">@color/ps_blue_primary</item>
-        <item name="colorPrimaryVariant">@color/ps_blue_dark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryContainer">@color/colorPrimaryContainer</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimaryContainer">@color/text_primary</item>
 
         <!-- Secondary Colors -->
-        <item name="colorSecondary">@color/ps_button_triangle</item>
-        <item name="colorSecondaryVariant">@color/ps_button_square</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryContainer">@color/surface_variant</item>
+        <item name="colorOnSecondary">@color/background_dark</item>
 
-        <!-- Background Colors -->
+        <!-- Background / Surface -->
         <item name="android:colorBackground">@color/background_dark</item>
         <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnBackground">@color/text_primary</item>
         <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
 
-        <!-- Status Bar -->
-        <item name="android:statusBarColor">@color/background_dark</item>
-        <item name="android:navigationBarColor">@color/background_dark</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <!-- Status / Navigation Bar -->
+        <item name="android:statusBarColor">?android:colorBackground</item>
+        <item name="android:navigationBarColor">?android:colorBackground</item>
 
         <!-- Text Appearance -->
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_disabled</item>
+
+        <!-- Error Color -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOutline">@color/card_border</item>
+
+        <!-- Selection / Ripple -->
+        <item name="colorControlHighlight">?attr/colorPrimaryContainer</item>
     </style>
 
     <!-- Main Application Theme -->
-    <style name="Theme.PlayStation" parent="Base.Theme.PlayStation" />
+    <style name="Theme.PlayStation" parent="Base.Theme.PlayStation">
+        <item name="materialCardViewStyle">@style/Widget.PlayStation.Card</item>
+        <item name="floatingActionButtonStyle">@style/Widget.PlayStation.FAB</item>
+        <item name="extendedFloatingActionButtonStyle">@style/Widget.PlayStation.FAB.Extended</item>
+        <item name="bottomNavigationStyle">@style/Widget.PlayStation.BottomNavigationView</item>
+
+        <!-- Motion -->
+        <item name="motionDurationLong1">200</item>
+        <item name="motionDurationMedium2">150</item>
+    </style>
+
+    <!-- Unified Screen Header Style -->
+    <style name="Widget.PlayStation.ScreenHeader" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/spacing_large</item>
+        <item name="android:paddingBottom">@dimen/spacing_medium</item>
+        <item name="android:paddingStart">@dimen/spacing_large</item>
+        <item name="android:paddingEnd">@dimen/spacing_large</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="Widget.PlayStation.ScreenHeader.Logo" parent="">
+        <item name="android:layout_width">28dp</item>
+        <item name="android:layout_height">28dp</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:tint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.PlayStation.ScreenHeader.Title" parent="TextAppearance.PlayStation.Headline">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <!-- Standardized Empty State Style -->
+    <style name="Widget.PlayStation.EmptyStateContainer" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:padding">@dimen/spacing_xlarge</item>
+    </style>
+
+    <style name="Widget.PlayStation.EmptyStateIcon" parent="">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:tint">?android:attr/textColorTertiary</item>
+    </style>
+
+    <style name="Widget.PlayStation.EmptyStateTitle" parent="TextAppearance.PlayStation.Title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/spacing_medium</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="Widget.PlayStation.EmptyStateSubtitle" parent="TextAppearance.PlayStation.Body">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/spacing_small</item>
+        <item name="android:textAlignment">center</item>
+        <item name="lineHeight">20sp</item>
+    </style>
 
     <!-- Splash Screen Theme -->
     <style name="Theme.PlayStation.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/background_dark</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_ps_logo</item>
+        <item name="windowSplashScreenBackground">?android:colorBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_app_mark</item>
         <item name="postSplashScreenTheme">@style/Theme.PlayStation</item>
-        <item name="android:statusBarColor">@color/background_dark</item>
-        <item name="android:navigationBarColor">@color/background_dark</item>
+        <item name="android:statusBarColor">?android:statusBarColor</item>
+        <item name="android:navigationBarColor">?android:navigationBarColor</item>
     </style>
 
-    <!-- Card Style -->
+    <!-- Premium Card Styles -->
     <style name="Widget.PlayStation.Card" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@color/card_dark</item>
-        <item name="cardElevation">8dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="cardElevation">0dp</item>
         <item name="cardCornerRadius">16dp</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+        <item name="strokeWidth">1dp</item>
     </style>
 
     <!-- Button Styles -->
     <style name="Widget.PlayStation.Button" parent="Widget.Material3.Button">
-        <item name="cornerRadius">12dp</item>
+        <item name="cornerRadius">20dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
     </style>
 
     <style name="Widget.PlayStation.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="cornerRadius">12dp</item>
+        <item name="cornerRadius">20dp</item>
         <item name="android:textAllCaps">false</item>
-        <item name="strokeColor">@color/ps_blue_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Settings Components -->
+    <style name="Widget.PlayStation.Preference" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="Widget.PlayStation.Preference.Vertical" parent="Widget.PlayStation.Preference">
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">start</item>
+    </style>
+
+    <style name="Widget.PlayStation.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">20dp</item>
+        <item name="boxCornerRadiusTopEnd">20dp</item>
+        <item name="boxCornerRadiusBottomStart">20dp</item>
+        <item name="boxCornerRadiusBottomEnd">20dp</item>
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+        <item name="android:minHeight">56dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.TextInputLayout.Dropdown" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+        <item name="android:minHeight">56dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="thumbTint">@color/switch_thumb_tint</item>
+        <item name="trackTint">@color/switch_track_tint</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <!-- Floating Action Button Style -->
+    <style name="Widget.PlayStation.FAB" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.PlayStation.FAB</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="tint">?attr/colorOnPrimary</item>
+        <item name="fabCustomSize">56dp</item>
+        <item name="elevation">8dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.FAB.Extended" parent="Widget.Material3.ExtendedFloatingActionButton.Primary">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.PlayStation.FAB</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="iconTint">?attr/colorOnPrimary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="elevation">8dp</item>
+    </style>
+
+    <style name="ShapeAppearance.PlayStation.FAB" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <!-- Navigation Styles -->
+    <style name="Widget.PlayStation.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemActiveIndicatorStyle">@style/Widget.PlayStation.BottomNav.ActiveIndicator</item>
+        <item name="itemIconTint">@drawable/bottom_nav_color</item>
+        <item name="itemTextColor">@drawable/bottom_nav_color</item>
+        <item name="backgroundTint">?attr/colorSurface</item>
+        <item name="elevation">0dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="itemPaddingTop">8dp</item>
+        <item name="itemPaddingBottom">8dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.PlayStation.BottomNav.Active</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.PlayStation.BottomNav.Inactive</item>
+    </style>
+
+    <style name="Widget.PlayStation.BottomNav.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">?attr/colorPrimaryContainer</item>
+        <item name="android:width">64dp</item>
+        <item name="android:height">32dp</item>
     </style>
 
     <!-- Text Styles -->
     <style name="TextAppearance.PlayStation.Headline" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">24sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="lineHeight">32sp</item>
     </style>
 
     <style name="TextAppearance.PlayStation.Title" parent="TextAppearance.Material3.TitleMedium">
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="lineHeight">24sp</item>
     </style>
 
     <style name="TextAppearance.PlayStation.Body" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.01</item>
     </style>
-    <style name="Theme.PlayStation.Dialog.FullScreen" parent="Theme.Material3.Dark.Dialog">
+
+    <style name="TextAppearance.PlayStation.Body.Small" parent="TextAppearance.PlayStation.Body">
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">16sp</item>
+    </style>
+
+    <style name="TextAppearance.PlayStation.BottomNav.Active" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.PlayStation.BottomNav.Inactive" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="Theme.PlayStation.Dialog.FullScreen" parent="Theme.PlayStation">
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@color/background_dark</item>
-        <item name="android:statusBarColor">@color/background_dark</item>
-        <item name="colorPrimary">@color/ps_blue_primary</item>
-        <item name="colorSecondary">@color/ps_blue_light</item>
+        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:statusBarColor">?android:statusBarColor</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/Animation.PlayStation.Dialog</item>
     </style>
+
+    <style name="Animation.PlayStation.Dialog" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+    <!-- Unified selected / unselected state for segmented buttons and filter chips. -->
+    <style name="Widget.PlayStation.Selection.SegmentedButton" parent="Widget.Material3.Button.TextButton">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/selection_control_text</item>
+        <item name="backgroundTint">@color/selection_control_background</item>
+        <item name="strokeColor">@color/selection_control_stroke</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="rippleColor">?attr/colorPrimary</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.Selection.FilterChip" parent="Widget.Material3.Chip.Filter">
+        <item name="android:textColor">@color/selection_control_text</item>
+        <item name="chipBackgroundColor">@color/selection_control_background</item>
+        <item name="chipStrokeColor">@color/selection_control_stroke</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">12dp</item>
+        <item name="chipMinHeight">40dp</item>
+        <item name="ensureMinTouchTargetSize">true</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="rippleColor">?attr/colorPrimary</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.Selection.TabLayout" parent="Widget.Material3.TabLayout">
+        <item name="android:background">@drawable/bg_segmented_control</item>
+        <item name="android:padding">4dp</item>
+        <item name="tabIndicatorAnimationMode">elastic</item>
+        <item name="tabIndicatorGravity">stretch</item>
+        <item name="tabIndicator">@drawable/bg_segmented_indicator</item>
+        <item name="tabIndicatorColor">@null</item>
+        <item name="tabTextColor">@color/selection_control_text</item>
+        <item name="tabSelectedTextColor">?attr/colorOnPrimaryContainer</item>
+        <item name="tabTextAppearance">@style/TextAppearance.Material3.TitleSmall</item>
+        <item name="tabRippleColor">?attr/colorPrimary</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <!-- Shared dialog surfaces and fields. -->
+
+
+
+
+    <style name="Widget.PlayStation.Dialog.Content" parent="">
+        <item name="android:paddingStart">@dimen/spacing_large</item>
+        <item name="android:paddingEnd">@dimen/spacing_large</item>
+        <item name="android:paddingTop">@dimen/spacing_medium</item>
+        <item name="android:paddingBottom">@dimen/spacing_medium</item>
+    </style>
+
+    <style name="Widget.PlayStation.Dialog.Field" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+        <item name="android:minHeight">56dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.Dialog.Field.Dropdown" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxStrokeColor">?attr/colorPrimary</item>
+        <item name="hintTextColor">?attr/colorPrimary</item>
+        <item name="android:minHeight">56dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.Dialog.Field.Compact" parent="Widget.PlayStation.Dialog.Field">
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="TextAppearance.PlayStation.DialogLabel" parent="TextAppearance.PlayStation.Body.Small">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="Widget.PlayStation.Dialog.ActionButton" parent="Widget.PlayStation.Button">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+    </style>
+
+    <style name="Widget.PlayStation.Dialog.ActionButton.Outlined" parent="Widget.PlayStation.Button.Outlined">
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+    </style>
+
 </resources>

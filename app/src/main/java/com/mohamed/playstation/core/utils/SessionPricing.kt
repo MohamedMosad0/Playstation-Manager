@@ -78,6 +78,14 @@ object SessionPricing {
         val hourly = pricePerHour(settings, deviceType, isMultiPlayer)
         return hourly * (elapsedMinutes / 60.0)
     }
+
+    /**
+     * Unifies play cost calculation for receipts and active sessions.
+     */
+    fun calculatePlayAmount(durationMinutes: Long, pricePerHour: Double): Double {
+        return (durationMinutes / 60.0) * pricePerHour
+    }
+
     fun previewAmount(
         sessionMode: String,
         settings: PricingSettings,

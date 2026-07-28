@@ -1,526 +1,534 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark"
-    android:fillViewport="true">
+    android:background="?attr/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:descendantFocusability="beforeDescendants">
 
-        <!-- ===== Title ===== -->
-        <TextView
-            android:id="@+id/tvSettingsTitle"
+        <!-- Unified Header -->
+        <LinearLayout
+            style="@style/Widget.PlayStation.ScreenHeader">
+
+            <ImageView
+                style="@style/Widget.PlayStation.ScreenHeader.Logo"
+                android:src="@drawable/ic_settings"
+                android:contentDescription="@null" />
+
+            <TextView
+                style="@style/Widget.PlayStation.ScreenHeader.Title"
+                android:text="@string/nav_settings" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/settings"
-            android:textColor="@color/text_primary"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <!-- ══════════════════════ 1. Appearance ══════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/card_dark"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
+            <!-- General Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="16dp">
 
-                <!-- Section Header -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/appearance"
-                    android:textColor="@color/ps_blue_light"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
-
-                <!-- Dark Mode Toggle -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/dark_mode"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/switchDarkMode"
+                        style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/settings_general" />
+
+                    <!-- Dark Mode -->
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            
+                            <TextView
+                                style="@style/TextAppearance.PlayStation.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_dark_mode" />
+                                
+                            <TextView
+                                style="@style/TextAppearance.PlayStation.Body.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/settings_dark_mode_subtitle" />
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchDarkMode"
+                            style="@style/Widget.PlayStation.Switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:saveEnabled="false" />
+                    </LinearLayout>
+
+                    <!-- Notifications -->
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            
+                            <TextView
+                                style="@style/TextAppearance.PlayStation.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_notifications" />
+                                
+                            <TextView
+                                style="@style/TextAppearance.PlayStation.Body.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/settings_notifications_subtitle" />
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchNotifications"
+                            style="@style/Widget.PlayStation.Switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:saveEnabled="false" />
+                    </LinearLayout>
+
+                    <!-- Language -->
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical">
+
+                        <TextView
+                            style="@style/TextAppearance.PlayStation.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/settings_language" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.PlayStation.TextInputLayout.Dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/actvLanguage"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                android:saveEnabled="false"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <!-- Currency -->
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical"
+                        android:layout_marginBottom="0dp">
+
+                        <TextView
+                            style="@style/TextAppearance.PlayStation.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/settings_currency" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.PlayStation.TextInputLayout.Dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/actvCurrency"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                android:saveEnabled="false"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ══════════════════════ 2. PS4 Pricing ══════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/card_dark"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
+            <!-- PlayStation 4 Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="16dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/ps4_pricing"
-                    android:textColor="@color/ps_blue_light"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <!-- PS4 Hour Price -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPs4HourPrice"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="@string/ps4_hour_price"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:suffixText="@string/per_hour"
-                    app:suffixTextColor="@color/text_secondary">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPs4HourPrice"
-                        android:layout_width="match_parent"
+                    <TextView
+                        style="@style/TextAppearance.PlayStation.Title"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/ps4" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical">
 
-                <!-- PS4 Half-Hour Price -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPs4HalfHourPrice"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="@string/ps4_half_hour_price"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:suffixText="@string/per_half_hour"
-                    app:suffixTextColor="@color/text_secondary">
+                        <TextView
+                            style="@style/TextAppearance.PlayStation.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/settings_hour_price" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPs4HalfHourPrice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilPs4HourPrice"
+                            style="@style/Widget.PlayStation.TextInputLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etPs4HourPrice"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- PS4 Multiplayer Extra -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPs4MultiExtra"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/ps4_multi_extra"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:suffixText="@string/extra_per_player"
-                    app:suffixTextColor="@color/text_secondary">
+                        <TextView
+                            android:id="@+id/tvPs4HourPriceSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </LinearLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPs4MultiExtra"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical"
+                        android:layout_marginBottom="0dp">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <TextView
+                            style="@style/TextAppearance.PlayStation.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/ps4_multi_extra" />
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilPs4MultiExtra"
+                            style="@style/Widget.PlayStation.TextInputLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
 
-        <!-- ══════════════════════ 3. PS5 Pricing ══════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/card_dark"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etPs4MultiExtra"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+                        <TextView
+                            android:id="@+id/tvPs4MultiExtraSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- PlayStation 5 Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="16dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/ps5_pricing"
-                    android:textColor="@color/ps_blue_light"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <!-- PS5 Hour Price -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPs5HourPrice"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="@string/ps5_hour_price"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:suffixText="@string/per_hour"
-                    app:suffixTextColor="@color/text_secondary">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPs5HourPrice"
-                        android:layout_width="match_parent"
+                    <TextView
+                        style="@style/TextAppearance.PlayStation.Title"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/ps5" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical">
 
-                <!-- PS5 Half-Hour Price -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPs5HalfHourPrice"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="@string/ps5_half_hour_price"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:suffixText="@string/per_half_hour"
-                    app:suffixTextColor="@color/text_secondary">
+                        <TextView
+                            style="@style/TextAppearance.PlayStation.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/settings_hour_price" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPs5HalfHourPrice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilPs5HourPrice"
+                            style="@style/Widget.PlayStation.TextInputLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etPs5HourPrice"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- PS5 Multiplayer Extra -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPs5MultiExtra"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/ps5_multi_extra"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:suffixText="@string/extra_per_player"
-                    app:suffixTextColor="@color/text_secondary">
+                        <TextView
+                            android:id="@+id/tvPs5HourPriceSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </LinearLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPs5MultiExtra"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical"
+                        android:layout_marginBottom="0dp">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <TextView
+                            style="@style/TextAppearance.PlayStation.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/ps5_multi_extra" />
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilPs5MultiExtra"
+                            style="@style/Widget.PlayStation.TextInputLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
 
-        <!-- ══════════════════════ 4. Session Defaults ══════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/card_dark"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etPs5MultiExtra"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+                        <TextView
+                            android:id="@+id/tvPs5MultiExtraSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Alerts Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="16dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/session_defaults"
-                    android:textColor="@color/ps_blue_light"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <!-- Session Mode Toggle Group -->
-                <TextView
+                    <TextView
+                        style="@style/TextAppearance.PlayStation.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/settings_alerts" />
+
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical"
+                        android:layout_marginBottom="0dp">
+
+                        <TextView
+                            style="@style/TextAppearance.PlayStation.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="@string/settings_reminder_minutes" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tilReminderMinutes"
+                            style="@style/Widget.PlayStation.TextInputLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:hintEnabled="false">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etReminderMinutes"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="number" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:id="@+id/tvReminderMinutesSaved"
+                            style="@style/TextAppearance.PlayStation.Body.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/settings_saved"
+                            android:textColor="?attr/colorPrimary"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Data Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/session_mode"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/toggleSessionMode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:singleSelection="true"
-                    app:selectionRequired="true">
+                    <TextView
+                        style="@style/TextAppearance.PlayStation.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/settings_data" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnModeOpen"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="0dp"
+                        android:id="@+id/btnBackup"
+                        style="@style/Widget.PlayStation.Button.Outlined"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/session_mode_open"
-                        android:textColor="@color/text_primary" />
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/settings_backup"
+                        app:icon="@drawable/ic_backup" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnModeFixed"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/session_mode_fixed"
-                        android:textColor="@color/text_primary" />
-
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                <!-- Default Fixed Minutes -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilFixedMinutes"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/default_fixed_minutes"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:suffixText="@string/minutes"
-                    app:suffixTextColor="@color/text_secondary">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFixedMinutes"
+                        android:id="@+id/btnRestore"
+                        style="@style/Widget.PlayStation.Button.Outlined"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
+                        android:text="@string/settings_restore"
+                        app:icon="@drawable/ic_restore" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ══════════════════════ 5. Warning Settings ══════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/card_dark"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
+            <!-- About Section -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_marginBottom="16dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/warning_settings"
-                    android:textColor="@color/ps_blue_light"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
-
-                <!-- Enable Warnings -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/warnings_enabled"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/switchWarningsEnabled"
+                        style="@style/TextAppearance.PlayStation.Title"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/settings_about" />
+
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical"
+                        android:layout_marginBottom="8dp">
+                            
+                        <TextView
+                            android:id="@+id/tvAppVersion"
+                            style="@style/TextAppearance.PlayStation.Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            tools:text="1.0.0" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        style="@style/Widget.PlayStation.Preference.Vertical"
+                        android:layout_marginBottom="0dp">
+                            
+                        <TextView
+                            android:id="@+id/tvDeveloper"
+                            style="@style/TextAppearance.PlayStation.Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            tools:text="Mohamed" />
+                    </LinearLayout>
 
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-                <!-- Warning Sound -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/warning_sound"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/switchWarningSound"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
-                <!-- Warning Notification -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/warning_notification"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/switchWarningNotification"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
-                <!-- Warning Minutes -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilWarningMinutes"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/warning_minutes"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:suffixText="@string/minutes"
-                    app:suffixTextColor="@color/text_secondary">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etWarningMinutes"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ══════════════════════ 6. Currency ══════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/card_dark"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
+            <!-- Extra spacing -->
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="32dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/currency"
-                    android:textColor="@color/ps_blue_light"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
-
-                <!-- Currency Dropdown -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilCurrency"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/select_currency"
-                    app:boxStrokeColor="@color/ps_blue_light"
-                    app:hintTextColor="@color/ps_blue_light"
-                    app:endIconTint="@color/text_secondary">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actvCurrency"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp"
-                        android:popupBackground="@color/card_elevated" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
+        </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

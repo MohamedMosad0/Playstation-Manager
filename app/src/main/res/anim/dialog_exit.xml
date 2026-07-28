@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@integer/material_motion_duration_short_2">
+    
+    <translate
+        android:fromYDelta="0dp"
+        android:toYDelta="8dp"
+        android:interpolator="@android:interpolator/accelerate_quint" />
+
+    <alpha
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0"
+        android:interpolator="@android:interpolator/linear" />
+</set>

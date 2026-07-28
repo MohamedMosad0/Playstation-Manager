@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Unified Header -->
+        <LinearLayout
+            style="@style/Widget.PlayStation.ScreenHeader">
+
+            <ImageView
+                style="@style/Widget.PlayStation.ScreenHeader.Logo"
+                android:src="@drawable/ic_reports"
+                android:contentDescription="@null" />
+
+            <TextView
+                style="@style/Widget.PlayStation.ScreenHeader.Title"
+                android:text="@string/reports" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_medium">
+
+            <!-- Date Range Selector -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardDateRange"
+            style="@style/Widget.PlayStation.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_medium"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="@dimen/spacing_medium">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_medium">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/spacing_large"
+                        android:layout_height="@dimen/spacing_large"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="@color/ps_blue_primary"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/tvDateRange"
+                        style="@style/TextAppearance.PlayStation.Title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        tools:text="2026/06/01 - 2026/06/30" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_down"
+                        app:tint="@color/text_secondary"
+                        tools:ignore="ContentDescription" />
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:scrollbars="none">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroupDateFilters"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipToday"
+                            style="@style/Widget.PlayStation.Selection.FilterChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/today" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipLast7Days"
+                            style="@style/Widget.PlayStation.Selection.FilterChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/last_7_days" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipThisMonth"
+                            style="@style/Widget.PlayStation.Selection.FilterChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/this_month" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chipAllTime"
+                            style="@style/Widget.PlayStation.Selection.FilterChip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="@string/all_time" />
+
+                    </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- KPI Grid -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:useDefaultMargins="true"
+            android:layout_marginHorizontal="-4dp">
+
+            <!-- Total Revenue -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvTotalRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorPrimary"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_receipt"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="?attr/colorPrimary"
+                        tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_total_revenue"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Total Expenses -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvTotalExpenses"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/chart_red"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_expenses"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/chart_red"
+                        tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_total_expenses"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Session Revenue -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvSessionRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_gamepad"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/text_primary"
+                        tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_sessions_revenue"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Product Revenue -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvProductRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_package"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/text_primary"
+                        tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_products_revenue"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Total Sessions -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvTotalSessions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_gamepad"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/text_primary"
+                        tools:text="0" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_total_sessions"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Avg Duration -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvAvgDuration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_timer"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/text_primary"
+                        tools:text="0 دقيقة" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_average_duration"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Product Cost -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvProductCost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/chart_red"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_expenses"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/chart_red"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        app:autoSizeMinTextSize="12sp"
+                        app:autoSizeMaxTextSize="20sp"
+                        tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_products_cost"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Product Profit -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tvProductProfit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/chart_green"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        app:drawableStartCompat="@drawable/ic_purchases"
+                        android:drawablePadding="@dimen/spacing_small"
+                        app:drawableTint="@color/chart_green"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        app:autoSizeMinTextSize="12sp"
+                        app:autoSizeMaxTextSize="20sp"
+                        tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/reports_products_profit"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="@color/text_secondary"
+                        android:minLines="2"
+                        android:ellipsize="none" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </GridLayout>
+
+        <!-- Net Profit (full width) -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.PlayStation.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="@dimen/spacing_medium"
+            app:cardBackgroundColor="@color/ps_blue_dark">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_medium"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_wallet"
+                    app:tint="@color/white"
+                    tools:ignore="ContentDescription" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+                    <TextView
+                        android:id="@+id/tvNetProfit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textDirection="firstStrong"
+                        android:textAlignment="viewStart"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        app:autoSizeTextType="uniform"
+                        app:autoSizeMinTextSize="14sp"
+                        app:autoSizeMaxTextSize="22sp"
+                        tools:text="0.0 EGP" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/reports_net_profit"
+                        android:textColor="@color/white"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- BarChart: Revenue Last 7 Days -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.PlayStation.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_medium">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_medium">
+                <TextView
+                    style="@style/TextAppearance.PlayStation.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reports_last_7_days_revenue" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/reports_chart_subtitle_period"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:layout_marginEnd="@dimen/spacing_medium"
+                    android:background="@color/divider"
+                    android:alpha="0.4" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp">
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/barChartRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+                    <LinearLayout
+                        android:id="@+id/layoutEmptyBarChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="visible">
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/ic_reports"
+                            app:tint="?android:attr/textColorTertiary"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/reports_empty_title"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                            android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/reports_empty_subtitle"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- PieChart: Revenue Distribution -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.PlayStation.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_medium">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_medium">
+                <TextView
+                    style="@style/TextAppearance.PlayStation.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reports_revenue_distribution" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/reports_chart_subtitle_distribution"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:layout_marginEnd="@dimen/spacing_medium"
+                    android:background="@color/divider"
+                    android:alpha="0.4" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp">
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+                    <LinearLayout
+                        android:id="@+id/layoutEmptyPieChartRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="visible">
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/ic_reports"
+                            app:tint="?android:attr/textColorTertiary"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/reports_empty_title"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                            android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/reports_empty_subtitle"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- PieChart: Device Distribution -->
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.PlayStation.Card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_medium">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_medium">
+                <TextView
+                    style="@style/TextAppearance.PlayStation.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reports_sessions_distribution" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/reports_chart_subtitle_devices"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:layout_marginEnd="@dimen/spacing_medium"
+                    android:background="@color/divider"
+                    android:alpha="0.4" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp">
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartDevices"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="invisible" />
+                    <LinearLayout
+                        android:id="@+id/layoutEmptyPieChartDevices"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:visibility="visible">
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/ic_gamepad"
+                            app:tint="?android:attr/textColorTertiary"
+                            android:contentDescription="@null" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/reports_empty_title"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                            android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/reports_empty_subtitle"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+            <!-- Top Products -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        style="@style/TextAppearance.PlayStation.Title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/spacing_medium"
+                        android:text="@string/reports_top_products" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="@dimen/spacing_medium"
+                        android:layout_marginEnd="@dimen/spacing_medium"
+                        android:background="@color/divider"
+                        android:alpha="0.4" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTopProducts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:paddingBottom="@dimen/spacing_small"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="5"
+                        tools:listitem="@layout/item_top_product" />
+
+                    <!-- Standardized Empty State -->
+                    <LinearLayout
+                        android:id="@+id/layoutEmpty"
+                        style="@style/Widget.PlayStation.EmptyStateContainer"
+                        android:visibility="gone"
+                        android:padding="@dimen/spacing_large">
+
+                        <ImageView
+                            style="@style/Widget.PlayStation.EmptyStateIcon"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@drawable/ic_reports"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            style="@style/Widget.PlayStation.EmptyStateTitle"
+                            android:text="@string/reports_empty_title" />
+
+                        <TextView
+                            style="@style/Widget.PlayStation.EmptyStateSubtitle"
+                            android:text="@string/reports_empty_subtitle" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        <!-- Extra spacing -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_xlarge" />
+
+    </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

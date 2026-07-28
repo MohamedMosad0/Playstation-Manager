@@ -18,7 +18,7 @@ sealed class UiState<out T> {
     /**
      * حالة الخطأ
      */
-    data class Error(val message: String) : UiState<Nothing>()
+    data class Error(val message: com.mohamed.playstation.core.utils.UiText) : UiState<Nothing>()
 
     /**
      * حالة فارغة

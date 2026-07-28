@@ -1,0 +1,73 @@
+package com.mohamed.playstation.presentation.ui.inventory
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
+import com.mohamed.playstation.databinding.FragmentInventoryBinding
+import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
+
+@AndroidEntryPoint
+class InventoryFragment : Fragment() {
+
+    private var _binding: FragmentInventoryBinding? = null
+    private val binding get() = _binding!!
+    
+    private val viewModel: InventoryViewModel by viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentInventoryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val adapter = object : FragmentStateAdapter(this) {
+            override fun getItemCount(): Int = 2
+            override fun createFragment(position: Int) = when (position) {
+                0 -> ProductsTabFragment()
+                else -> MovementHistoryTabFragment()
+            }
+        }
+
+        binding.viewPager.adapter = adapter
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
+            tab.text = when (pos) {
+                0 -> getString(com.mohamed.playstation.R.string.products)
+                else -> getString(com.mohamed.playstation.R.string.tab_movements)
+            }
+        }.attach()
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addEditUiState.collect { state ->
+                    if (state is UiState.Error) {
+                        android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        binding.viewPager.adapter = null
+        super.onDestroyView()
+        _binding = null
+    }
+}

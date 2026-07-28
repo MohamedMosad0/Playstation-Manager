@@ -5,8 +5,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.utils.SessionPricing
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -41,11 +44,13 @@ class SettingsManager @Inject constructor(
         val PS4_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS4_HOUR_PRICE)
         val PS4_HALF_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS4_HALF_HOUR_PRICE)
         val PS4_MULTI_EXTRA = doublePreferencesKey(AppConstants.KEY_PS4_MULTI_EXTRA)
+        val PS4_MULTI_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS4_MULTI_HOUR_PRICE)
 
         // PS5 Pricing
         val PS5_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS5_HOUR_PRICE)
         val PS5_HALF_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS5_HALF_HOUR_PRICE)
         val PS5_MULTI_EXTRA = doublePreferencesKey(AppConstants.KEY_PS5_MULTI_EXTRA)
+        val PS5_MULTI_HOUR_PRICE = doublePreferencesKey(AppConstants.KEY_PS5_MULTI_HOUR_PRICE)
 
         // Session Defaults
         val SESSION_MODE = stringPreferencesKey(AppConstants.KEY_SESSION_MODE)
@@ -56,13 +61,28 @@ class SettingsManager @Inject constructor(
         val WARNING_SOUND_ENABLED = booleanPreferencesKey(AppConstants.KEY_WARNING_SOUND_ENABLED)
         val WARNING_NOTIFICATION_ENABLED = booleanPreferencesKey(AppConstants.KEY_WARNING_NOTIFICATION_ENABLED)
         val WARNING_MINUTES = intPreferencesKey(AppConstants.KEY_WARNING_MINUTES)
+        
+        // System / App State
+        val EXACT_ALARM_PROMPT_DISMISSED = booleanPreferencesKey(AppConstants.KEY_EXACT_ALARM_PROMPT_DISMISSED)
     }
+
+    // ======================== System / App State ========================
+
+    val exactAlarmPromptDismissedFlow: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.EXACT_ALARM_PROMPT_DISMISSED] ?: false
+    }.distinctUntilChanged()
+
+    suspend fun setExactAlarmPromptDismissed(dismissed: Boolean) {
+        dataStore.edit { it[PreferencesKeys.EXACT_ALARM_PROMPT_DISMISSED] = dismissed }
+    }
+
+
 
     // ======================== Dark Mode ========================
 
     val darkModeFlow: Flow<Boolean> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.DARK_MODE] ?: true
-    }
+    }.distinctUntilChanged()
 
     suspend fun setDarkMode(enabled: Boolean) {
         dataStore.edit { preferences ->
@@ -74,7 +94,7 @@ class SettingsManager @Inject constructor(
 
     val languageFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.LANGUAGE] ?: AppConstants.DEFAULT_LANGUAGE
-    }
+    }.distinctUntilChanged()
 
     suspend fun setLanguage(language: String) {
         dataStore.edit { preferences ->
@@ -82,11 +102,25 @@ class SettingsManager @Inject constructor(
         }
     }
 
+    // ======================== App Config (Combined) ========================
+
+    data class AppConfig(
+        val language: String,
+        val isDark: Boolean
+    )
+
+    val appConfigFlow: Flow<AppConfig> = dataStore.data.map { preferences ->
+        AppConfig(
+            language = preferences[PreferencesKeys.LANGUAGE] ?: AppConstants.DEFAULT_LANGUAGE,
+            isDark = preferences[PreferencesKeys.DARK_MODE] ?: true
+        )
+    }.distinctUntilChanged()
+
     // ======================== Currency ========================
 
     val currencyFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.CURRENCY] ?: AppConstants.DEFAULT_CURRENCY
-    }
+    }.distinctUntilChanged()
 
     suspend fun setCurrency(currencyCode: String) {
         dataStore.edit { preferences ->
@@ -98,7 +132,7 @@ class SettingsManager @Inject constructor(
 
     val singlePriceFlow: Flow<Double> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.SINGLE_PRICE] ?: AppConstants.DEFAULT_SINGLE_PRICE
-    }
+    }.distinctUntilChanged()
 
     suspend fun setSinglePrice(price: Double) {
         dataStore.edit { preferences ->
@@ -110,7 +144,7 @@ class SettingsManager @Inject constructor(
 
     val multiPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.MULTI_PRICE] ?: AppConstants.DEFAULT_MULTI_PRICE
-    }
+    }.distinctUntilChanged()
 
     suspend fun setMultiPrice(price: Double) {
         dataStore.edit { preferences ->
@@ -122,7 +156,7 @@ class SettingsManager @Inject constructor(
 
     val alertTimeFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.ALERT_TIME] ?: AppConstants.DEFAULT_ALERT_TIME
-    }
+    }.distinctUntilChanged()
 
     suspend fun setAlertTime(minutes: Int) {
         dataStore.edit { preferences ->
@@ -134,7 +168,7 @@ class SettingsManager @Inject constructor(
 
     val alertSoundFlow: Flow<String?> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.ALERT_SOUND]
-    }
+    }.distinctUntilChanged()
 
     suspend fun setAlertSound(soundUri: String) {
         dataStore.edit { preferences ->
@@ -145,8 +179,8 @@ class SettingsManager @Inject constructor(
     // ======================== PS4 Pricing ========================
 
     val ps4HourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.PS4_HOUR_PRICE] ?: AppConstants.DEFAULT_PS4_HOUR_PRICE
-    }
+        preferences[PreferencesKeys.PS4_HOUR_PRICE] ?: (preferences[PreferencesKeys.SINGLE_PRICE] ?: AppConstants.DEFAULT_PS4_HOUR_PRICE)
+    }.distinctUntilChanged()
 
     suspend fun setPs4HourPrice(price: Double) {
         dataStore.edit { it[PreferencesKeys.PS4_HOUR_PRICE] = price }
@@ -154,7 +188,7 @@ class SettingsManager @Inject constructor(
 
     val ps4HalfHourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.PS4_HALF_HOUR_PRICE] ?: AppConstants.DEFAULT_PS4_HALF_HOUR_PRICE
-    }
+    }.distinctUntilChanged()
 
     suspend fun setPs4HalfHourPrice(price: Double) {
         dataStore.edit { it[PreferencesKeys.PS4_HALF_HOUR_PRICE] = price }
@@ -162,17 +196,25 @@ class SettingsManager @Inject constructor(
 
     val ps4MultiExtraFlow: Flow<Double> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.PS4_MULTI_EXTRA] ?: AppConstants.DEFAULT_PS4_MULTI_EXTRA
-    }
+    }.distinctUntilChanged()
 
     suspend fun setPs4MultiExtra(price: Double) {
         dataStore.edit { it[PreferencesKeys.PS4_MULTI_EXTRA] = price }
     }
 
+    val ps4MultiHourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.PS4_MULTI_HOUR_PRICE] ?: (preferences[PreferencesKeys.MULTI_PRICE] ?: AppConstants.DEFAULT_PS4_MULTI_HOUR_PRICE)
+    }.distinctUntilChanged()
+
+    suspend fun setPs4MultiHourPrice(price: Double) {
+        dataStore.edit { it[PreferencesKeys.PS4_MULTI_HOUR_PRICE] = price }
+    }
+
     // ======================== PS5 Pricing ========================
 
     val ps5HourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.PS5_HOUR_PRICE] ?: AppConstants.DEFAULT_PS5_HOUR_PRICE
-    }
+        preferences[PreferencesKeys.PS5_HOUR_PRICE] ?: (preferences[PreferencesKeys.SINGLE_PRICE] ?: AppConstants.DEFAULT_PS5_HOUR_PRICE)
+    }.distinctUntilChanged()
 
     suspend fun setPs5HourPrice(price: Double) {
         dataStore.edit { it[PreferencesKeys.PS5_HOUR_PRICE] = price }
@@ -180,7 +222,7 @@ class SettingsManager @Inject constructor(
 
     val ps5HalfHourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.PS5_HALF_HOUR_PRICE] ?: AppConstants.DEFAULT_PS5_HALF_HOUR_PRICE
-    }
+    }.distinctUntilChanged()
 
     suspend fun setPs5HalfHourPrice(price: Double) {
         dataStore.edit { it[PreferencesKeys.PS5_HALF_HOUR_PRICE] = price }
@@ -188,17 +230,25 @@ class SettingsManager @Inject constructor(
 
     val ps5MultiExtraFlow: Flow<Double> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.PS5_MULTI_EXTRA] ?: AppConstants.DEFAULT_PS5_MULTI_EXTRA
-    }
+    }.distinctUntilChanged()
 
     suspend fun setPs5MultiExtra(price: Double) {
         dataStore.edit { it[PreferencesKeys.PS5_MULTI_EXTRA] = price }
+    }
+
+    val ps5MultiHourPriceFlow: Flow<Double> = dataStore.data.map { preferences ->
+        preferences[PreferencesKeys.PS5_MULTI_HOUR_PRICE] ?: (preferences[PreferencesKeys.MULTI_PRICE] ?: AppConstants.DEFAULT_PS5_MULTI_HOUR_PRICE)
+    }.distinctUntilChanged()
+
+    suspend fun setPs5MultiHourPrice(price: Double) {
+        dataStore.edit { it[PreferencesKeys.PS5_MULTI_HOUR_PRICE] = price }
     }
 
     // ======================== Session Defaults ========================
 
     val sessionModeFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.SESSION_MODE] ?: AppConstants.DEFAULT_SESSION_MODE
-    }
+    }.distinctUntilChanged()
 
     suspend fun setSessionMode(mode: String) {
         dataStore.edit { it[PreferencesKeys.SESSION_MODE] = mode }
@@ -206,7 +256,7 @@ class SettingsManager @Inject constructor(
 
     val defaultFixedMinutesFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.DEFAULT_FIXED_MINUTES] ?: AppConstants.DEFAULT_FIXED_MINUTES
-    }
+    }.distinctUntilChanged()
 
     suspend fun setDefaultFixedMinutes(minutes: Int) {
         dataStore.edit { it[PreferencesKeys.DEFAULT_FIXED_MINUTES] = minutes }
@@ -216,7 +266,7 @@ class SettingsManager @Inject constructor(
 
     val warningsEnabledFlow: Flow<Boolean> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.WARNINGS_ENABLED] ?: AppConstants.DEFAULT_WARNINGS_ENABLED
-    }
+    }.distinctUntilChanged()
 
     suspend fun setWarningsEnabled(enabled: Boolean) {
         dataStore.edit { it[PreferencesKeys.WARNINGS_ENABLED] = enabled }
@@ -224,7 +274,7 @@ class SettingsManager @Inject constructor(
 
     val warningSoundEnabledFlow: Flow<Boolean> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.WARNING_SOUND_ENABLED] ?: AppConstants.DEFAULT_WARNING_SOUND_ENABLED
-    }
+    }.distinctUntilChanged()
 
     suspend fun setWarningSoundEnabled(enabled: Boolean) {
         dataStore.edit { it[PreferencesKeys.WARNING_SOUND_ENABLED] = enabled }
@@ -232,7 +282,7 @@ class SettingsManager @Inject constructor(
 
     val warningNotificationEnabledFlow: Flow<Boolean> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.WARNING_NOTIFICATION_ENABLED] ?: AppConstants.DEFAULT_WARNING_NOTIFICATION_ENABLED
-    }
+    }.distinctUntilChanged()
 
     suspend fun setWarningNotificationEnabled(enabled: Boolean) {
         dataStore.edit { it[PreferencesKeys.WARNING_NOTIFICATION_ENABLED] = enabled }
@@ -240,17 +290,65 @@ class SettingsManager @Inject constructor(
 
     val warningMinutesFlow: Flow<Int> = dataStore.data.map { preferences ->
         preferences[PreferencesKeys.WARNING_MINUTES] ?: AppConstants.DEFAULT_WARNING_MINUTES
-    }
+    }.distinctUntilChanged()
 
     suspend fun setWarningMinutes(minutes: Int) {
         dataStore.edit { it[PreferencesKeys.WARNING_MINUTES] = minutes }
     }
 
-    // ======================== Clear All ========================
+    suspend fun getWarningNotificationSettings(): WarningNotificationSettings {
+        val preferences = dataStore.data.first()
+        return WarningNotificationSettings(
+            warningsEnabled = preferences[PreferencesKeys.WARNINGS_ENABLED]
+                ?: AppConstants.DEFAULT_WARNINGS_ENABLED,
+            soundEnabled = preferences[PreferencesKeys.WARNING_SOUND_ENABLED]
+                ?: AppConstants.DEFAULT_WARNING_SOUND_ENABLED,
+            notificationEnabled = preferences[PreferencesKeys.WARNING_NOTIFICATION_ENABLED]
+                ?: AppConstants.DEFAULT_WARNING_NOTIFICATION_ENABLED,
+            warningMinutes = preferences[PreferencesKeys.WARNING_MINUTES]
+                ?: AppConstants.DEFAULT_WARNING_MINUTES
+        )
+    }
 
-    suspend fun clearAll() {
-        dataStore.edit { preferences ->
-            preferences.clear()
-        }
+    suspend fun getCurrencyCode(): String {
+        val preferences = dataStore.data.first()
+        return preferences[PreferencesKeys.CURRENCY] ?: AppConstants.DEFAULT_CURRENCY
+    }
+
+    suspend fun getLanguage(): String {
+        val preferences = dataStore.data.first()
+        return preferences[PreferencesKeys.LANGUAGE] ?: AppConstants.DEFAULT_LANGUAGE
+    }
+
+    suspend fun getPricingSettings(): SessionPricing.PricingSettings {
+        val preferences = dataStore.data.first()
+        return SessionPricing.PricingSettings(
+            ps4HourPrice = preferences[PreferencesKeys.PS4_HOUR_PRICE]
+                ?: AppConstants.DEFAULT_PS4_HOUR_PRICE,
+            ps4HalfHourPrice = preferences[PreferencesKeys.PS4_HALF_HOUR_PRICE]
+                ?: AppConstants.DEFAULT_PS4_HALF_HOUR_PRICE,
+            ps4MultiExtra = preferences[PreferencesKeys.PS4_MULTI_EXTRA]
+                ?: AppConstants.DEFAULT_PS4_MULTI_EXTRA,
+            ps5HourPrice = preferences[PreferencesKeys.PS5_HOUR_PRICE]
+                ?: AppConstants.DEFAULT_PS5_HOUR_PRICE,
+            ps5HalfHourPrice = preferences[PreferencesKeys.PS5_HALF_HOUR_PRICE]
+                ?: AppConstants.DEFAULT_PS5_HALF_HOUR_PRICE,
+            ps5MultiExtra = preferences[PreferencesKeys.PS5_MULTI_EXTRA]
+                ?: AppConstants.DEFAULT_PS5_MULTI_EXTRA,
+            legacySinglePrice = preferences[PreferencesKeys.SINGLE_PRICE]
+                ?: AppConstants.DEFAULT_SINGLE_PRICE,
+            legacyMultiPrice = preferences[PreferencesKeys.MULTI_PRICE]
+                ?: AppConstants.DEFAULT_MULTI_PRICE
+        )
+    }
+
+    data class WarningNotificationSettings(
+        val warningsEnabled: Boolean,
+        val soundEnabled: Boolean,
+        val notificationEnabled: Boolean,
+        val warningMinutes: Int
+    ) {
+        fun shouldScheduleWarning(): Boolean =
+            warningsEnabled && notificationEnabled && warningMinutes > 0
     }
 }

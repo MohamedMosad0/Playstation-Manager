@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark">
+    android:background="?attr/colorSurface">
 
     <!-- Progress Bar -->
     <ProgressBar
@@ -15,42 +15,166 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-    <!-- Empty State -->
-    <TextView
-        android:id="@+id/tvEmptyState"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/no_active_sessions"
-        android:textSize="16sp"
-        android:textColor="@color/text_secondary"
-        android:textAlignment="center"
-        android:padding="32dp"
-        android:visibility="gone" />
-
-    <!-- Sessions Grid -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSessions"
+    <!-- Main content wrapper -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:padding="10dp"
-        android:paddingBottom="80dp"
-        tools:listitem="@layout/item_session_card"
-        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:spanCount="2"
-        tools:itemCount="4" />
+        android:orientation="vertical">
+
+        <!-- Unified Header -->
+        <LinearLayout
+            style="@style/Widget.PlayStation.ScreenHeader">
+
+            <ImageView
+                style="@style/Widget.PlayStation.ScreenHeader.Logo"
+                android:src="@drawable/ic_gamepad"
+                android:contentDescription="@null" />
+
+            <TextView
+                style="@style/Widget.PlayStation.ScreenHeader.Title"
+                android:text="@string/sessions" />
+        </LinearLayout>
+
+        <!-- Segmented Control -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/chipGroupTabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:padding="4dp"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:checkedButton="@id/chipRunning">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/chipRunning"
+                style="@style/Widget.PlayStation.Selection.SegmentedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:gravity="center"
+                android:text="@string/tab_running"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/chipCompleted"
+                style="@style/Widget.PlayStation.Selection.SegmentedButton"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:gravity="center"
+                android:text="@string/tab_completed"
+                />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <!-- ===== RUNNING tab content ===== -->
+        <FrameLayout
+            android:id="@+id/layoutRunning"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- Empty state — running -->
+            <LinearLayout
+                android:id="@+id/tvEmptyState"
+                style="@style/Widget.PlayStation.EmptyStateContainer"
+                android:layout_gravity="center"
+                android:layout_marginBottom="64dp"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/Widget.PlayStation.EmptyStateIcon"
+                    android:src="@drawable/ic_gamepad"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    style="@style/Widget.PlayStation.EmptyStateTitle"
+                    android:text="@string/no_active_sessions" />
+
+                <TextView
+                    style="@style/Widget.PlayStation.EmptyStateSubtitle"
+                    android:text="@string/dashboard_no_active_sessions"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!-- Running sessions grid -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSessions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:padding="10dp"
+                android:paddingBottom="80dp"
+                tools:listitem="@layout/item_session_card"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="4" />
+
+        </FrameLayout>
+
+        <!-- ===== COMPLETED tab content ===== -->
+        <FrameLayout
+            android:id="@+id/layoutCompleted"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="gone">
+
+            <!-- Empty state — completed -->
+            <LinearLayout
+                android:id="@+id/layoutEmptyCompleted"
+                style="@style/Widget.PlayStation.EmptyStateContainer"
+                android:layout_gravity="center"
+                android:layout_marginBottom="64dp"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/Widget.PlayStation.EmptyStateIcon"
+                    android:src="@drawable/ic_gamepad"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    style="@style/Widget.PlayStation.EmptyStateTitle"
+                    android:text="@string/no_completed_sessions" />
+
+                <TextView
+                    style="@style/Widget.PlayStation.EmptyStateSubtitle"
+                    android:text="@string/no_completed_sessions_hint" />
+
+            </LinearLayout>
+
+            <!-- Completed sessions list -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCompletedSessions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="8dp"
+                android:paddingBottom="80dp"
+                android:visibility="gone"
+                tools:listitem="@layout/item_completed_session"
+                tools:itemCount="3" />
+
+        </FrameLayout>
+
+    </LinearLayout>
 
     <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabNewSession"
+        style="@style/Widget.PlayStation.FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_margin="24dp"
         android:contentDescription="@string/new_session"
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@color/white"
-        app:backgroundTint="@color/ps_blue_primary" />
+        app:srcCompat="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

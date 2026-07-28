@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Background & Surfaces -->
+    <color name="background_dark">#0A0C10</color>
+    <color name="surface_dark">#12151C</color>
+    <color name="surface_variant">#1C212B</color>
+    <color name="card_dark">#12151C</color>
+
+    <!-- Primary Colors -->
+    <color name="colorPrimary">#60A5FA</color>
+    <color name="colorPrimaryContainer">#1E3A8A</color>
+    <color name="colorSecondary">#94A3B8</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_disabled">#475569</color>
+
+    <!-- Borders & Dividers -->
+    <color name="card_border">#2A3140</color>
+    <color name="divider">#2A3140</color>
+
+    <!-- Status Colors -->
+    <color name="success">#34D399</color>
+    <color name="warning">#FBBF24</color>
+    <color name="error">#F87171</color>
+
+    <!-- Backward Compatibility (Avoid breaking existing hardcoded colors until fully migrated) -->
+    <color name="ps_blue_primary">@color/colorPrimary</color>
+    <color name="ps_blue_dark">@color/colorPrimaryContainer</color>
+    <color name="ps_blue_light">@color/colorPrimary</color>
+    <color name="status_active">@color/success</color>
+    <color name="status_paused">@color/warning</color>
+    <color name="status_ended">#475569</color>
+    <color name="status_error">@color/error</color>
+
+    <!-- System Colors -->
+    <color name="white">#FFFFFF</color>
+
+
+    <!-- Chart Colors -->
+    <color name="chart_blue">@color/colorPrimary</color>
+    <color name="chart_green">@color/success</color>
+    <color name="chart_yellow">@color/warning</color>
+    <color name="chart_red">@color/error</color>
+    <color name="chart_purple">@color/colorSecondary</color>
+
+    <!-- Switch Premium States -->
+    <color name="switch_off_track">#334155</color>
+    <color name="switch_off_thumb">#94A3B8</color>
+</resources>

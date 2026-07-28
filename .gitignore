@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Android Studio local files
+.idea/kotlinc.xml
+.artifacts/
+.kotlin/

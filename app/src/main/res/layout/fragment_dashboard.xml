@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Unified Header -->
+        <LinearLayout
+            android:id="@+id/headerLayout"
+            style="@style/Widget.PlayStation.ScreenHeader"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                style="@style/Widget.PlayStation.ScreenHeader.Logo"
+                android:src="@drawable/ic_dashboard"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/tvDashboardTitle"
+                style="@style/Widget.PlayStation.ScreenHeader.Title"
+                android:text="@string/dashboard" />
+        </LinearLayout>
+
+        <!-- KPI Cards Grid -->
+        <GridLayout
+            android:id="@+id/gridKpi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:columnCount="2"
+            android:rowCount="3"
+            android:alignmentMode="alignMargins"
+            android:useDefaultMargins="true"
+            android:alpha="0.0"
+            android:paddingHorizontal="@dimen/spacing_small"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+            <!-- Revenue Card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/revenue"
+                        app:drawableStartCompat="@drawable/ic_receipt"
+                        app:drawableTint="@color/ps_blue_primary"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
+                        android:textColor="?android:textColorSecondary"/>
+                    <TextView
+                        android:id="@+id/tvRevenue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/ps_blue_primary"
+                        tools:text="1,905.83 ج.م"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/today"
+                        android:layout_marginTop="4dp"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Expenses Card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/expenses"
+                        app:drawableStartCompat="@drawable/ic_expenses"
+                        app:drawableTint="@color/chart_red"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
+                        android:textColor="?android:textColorSecondary"/>
+                    <TextView
+                        android:id="@+id/tvExpenses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/chart_red"
+                        tools:text="300 EGP"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dashboard_expense"
+                        android:layout_marginTop="4dp"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Net Profit Card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/net_profit"
+                        app:drawableStartCompat="@drawable/ic_purchases"
+                        app:drawableTint="@color/chart_green"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
+                        android:textColor="?android:textColorSecondary"/>
+                    <TextView
+                        android:id="@+id/tvNetProfit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/chart_green"
+                        tools:text="1200 EGP"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/today"
+                        android:layout_marginTop="4dp"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Sessions Card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sessions"
+                        app:drawableStartCompat="@drawable/ic_gamepad"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
+                        android:textColor="?android:textColorSecondary"/>
+                    <TextView
+                        android:id="@+id/tvSessions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        tools:text="12"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dashboard_active"
+                        android:layout_marginTop="4dp"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Total Products Card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/inventory"
+                        app:drawableStartCompat="@drawable/ic_package"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
+                        android:textColor="?android:textColorSecondary"/>
+                    <TextView
+                        android:id="@+id/tvTotalProducts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        tools:text="45"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dashboard_product"
+                        android:layout_marginTop="4dp"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Low Stock Card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                app:contentPadding="@dimen/spacing_medium">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/low_stock"
+                        app:drawableStartCompat="@drawable/ic_warning"
+                        app:drawableTint="@color/status_paused"
+                        android:drawablePadding="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body"
+                        android:textColor="?android:textColorSecondary"/>
+                    <TextView
+                        android:id="@+id/tvLowStock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/status_paused"
+                        tools:text="3"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dashboard_item"
+                        android:layout_marginTop="4dp"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="?attr/colorOnSurfaceVariant"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </GridLayout>
+
+        <!-- Charts Section -->
+        <LinearLayout
+            android:id="@+id/layoutCharts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            android:orientation="vertical"
+            android:alpha="0.0"
+            app:layout_constraintTop_toBottomOf="@id/gridKpi"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/revenue"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/revenueChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/expenses"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                app:contentPadding="@dimen/spacing_medium">
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/expensePieChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <LinearLayout
+                    android:id="@+id/layoutEmptyExpenseChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_reports"
+                        app:tint="?android:attr/textColorTertiary"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/dashboard_empty_expense_chart_title"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/dashboard_empty_expense_chart_subtitle"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <!-- Quick Actions -->
+        <TextView
+            android:id="@+id/tvQuickActionsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/quick_actions"
+            android:textAppearance="@style/TextAppearance.PlayStation.Title"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/spacing_xlarge"
+            app:layout_constraintTop_toBottomOf="@id/layoutCharts"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <HorizontalScrollView
+            android:id="@+id/scrollQuickActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/tvQuickActionsTitle">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingEnd="@dimen/spacing_medium"
+                tools:ignore="RtlSymmetry">
+                
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNewSession"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_session"
+                    app:icon="@drawable/ic_gamepad"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <GridLayout
+            android:id="@+id/layoutPremiumCards"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="1"
+            android:alignmentMode="alignMargins"
+            android:useDefaultMargins="true"
+            android:layout_marginHorizontal="-4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/scrollQuickActions"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Expenses Action Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardExpensesAction"
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_margin="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:contentPadding="@dimen/spacing_medium">
+                
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    
+                    <ImageView
+                        android:id="@+id/ivExpenseIcon"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_expenses"
+                        android:contentDescription="@null"
+                        app:tint="@color/chart_red"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+                        
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_chevron_right"
+                        android:contentDescription="@null"
+                        app:tint="?android:textColorPrimary"
+                        android:alpha="0.6"
+                        app:layout_constraintTop_toTopOf="@id/ivExpenseIcon"
+                        app:layout_constraintBottom_toBottomOf="@id/ivExpenseIcon"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tvExpenseActionTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/expenses"
+                        android:layout_marginTop="8dp"
+                        android:textStyle="bold"
+                        android:textColor="?android:textColorPrimary"
+                        app:layout_constraintTop_toBottomOf="@id/ivExpenseIcon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                        
+                    <TextView
+                        android:id="@+id/tvExpenseActionSub"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/expense_history"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="?android:textColorSecondary"
+                        android:layout_marginTop="2dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvExpenseActionTitle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tvExpenseCardDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="11sp"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginTop="6dp"
+                        tools:text="Today"
+                        app:layout_constraintTop_toBottomOf="@id/tvExpenseActionSub"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Receipts Action Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardReceiptsAction"
+                style="@style/Widget.PlayStation.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
+                android:layout_margin="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:contentPadding="@dimen/spacing_medium">
+                
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    
+                    <ImageView
+                        android:id="@+id/ivReceiptIcon"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_receipt"
+                        android:contentDescription="@null"
+                        app:tint="@color/chart_green"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+                        
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_chevron_right"
+                        android:contentDescription="@null"
+                        app:tint="?android:textColorPrimary"
+                        android:alpha="0.6"
+                        app:layout_constraintTop_toTopOf="@id/ivReceiptIcon"
+                        app:layout_constraintBottom_toBottomOf="@id/ivReceiptIcon"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tvReceiptActionTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/receipts"
+                        android:layout_marginTop="8dp"
+                        android:textStyle="bold"
+                        android:textColor="?android:textColorPrimary"
+                        app:layout_constraintTop_toBottomOf="@id/ivReceiptIcon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                        
+                    <TextView
+                        android:id="@+id/tvReceiptActionSub"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/receipt_history"
+                        android:textAppearance="@style/TextAppearance.PlayStation.Body.Small"
+                        android:textColor="?android:textColorSecondary"
+                        android:layout_marginTop="2dp"
+                        app:layout_constraintTop_toBottomOf="@id/tvReceiptActionTitle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tvReceiptCardDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="11sp"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        android:layout_marginTop="6dp"
+                        tools:text="Today"
+                        app:layout_constraintTop_toBottomOf="@id/tvReceiptActionSub"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </GridLayout>
+
+        <!-- Recent Sections Wrapper for Animation -->
+        <LinearLayout
+            android:id="@+id/layoutRecent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:alpha="0.0"
+            app:layout_constraintTop_toBottomOf="@id/layoutPremiumCards">
+
+            <!-- Recent Sessions -->
+            <TextView
+                android:id="@+id/tvRecentSessionsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recent_sessions"
+                android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/spacing_xlarge"/>
+                
+            <LinearLayout
+                android:id="@+id/tvEmptySessions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="@dimen/spacing_xlarge"
+                android:visibility="gone">
+                
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_gamepad"
+                    android:contentDescription="@null"
+                    app:tint="?android:textColorSecondary"
+                    android:alpha="0.7" />
+                    
+                <TextView
+                    android:id="@+id/tvEmptySessionsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:text="@string/dashboard_no_active_sessions"
+                    android:textColor="?android:textColorSecondary"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRecentSessions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_session_card"
+                tools:itemCount="2"/>
+
+            <!-- Recent Expenses -->
+            <TextView
+                android:id="@+id/tvRecentExpensesTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recent_expenses"
+                android:textAppearance="@style/TextAppearance.PlayStation.Title"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/spacing_xlarge"/>
+                
+            <LinearLayout
+                android:id="@+id/tvEmptyExpenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="@dimen/spacing_xlarge"
+                android:visibility="gone">
+                
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_expenses"
+                    android:contentDescription="@null"
+                    app:tint="?android:textColorSecondary"
+                    android:alpha="0.7" />
+                    
+                <TextView
+                    android:id="@+id/tvEmptyExpensesText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:text="@string/dashboard_no_expenses_today"
+                    android:textColor="?android:textColorSecondary"
+                    android:textAppearance="@style/TextAppearance.PlayStation.Body"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvRecentExpenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_expense"
+                tools:itemCount="2"/>
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
