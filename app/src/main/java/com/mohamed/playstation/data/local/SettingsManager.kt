@@ -6,12 +6,12 @@ import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.core.utils.SessionPricing
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 /**
  * Extension property لإنشاء DataStore
@@ -75,8 +75,6 @@ class SettingsManager @Inject constructor(
     suspend fun setExactAlarmPromptDismissed(dismissed: Boolean) {
         dataStore.edit { it[PreferencesKeys.EXACT_ALARM_PROMPT_DISMISSED] = dismissed }
     }
-
-
 
     // ======================== Dark Mode ========================
 

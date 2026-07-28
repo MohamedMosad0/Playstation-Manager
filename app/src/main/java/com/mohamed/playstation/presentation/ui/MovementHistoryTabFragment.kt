@@ -1,4 +1,5 @@
 package com.mohamed.playstation.presentation.ui.inventory
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,11 +19,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.FragmentInventoryHistoryBinding
-import com.mohamed.playstation.domain.model.StockMovement
+import com.mohamed.playstation.domain.model.MovementType
 import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class MovementHistoryTabFragment : Fragment() {
@@ -85,15 +85,11 @@ class MovementHistoryTabFragment : Fragment() {
     }
 }
 
-
-
-
-
-class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView, MovementsAdapter.VH>(DIFF) {
+class MovementsAdapter : ListAdapter<InventoryViewModel.StockMovementView, MovementsAdapter.VH>(DIFF) {
     companion object {
-        val DIFF = object : DiffUtil.ItemCallback<com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView>() {
-            override fun areItemsTheSame(oldItem: com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView, newItem: com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView): Boolean = oldItem.id == newItem.id
-            override fun areContentsTheSame(oldItem: com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView, newItem: com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView): Boolean = oldItem == newItem
+        val DIFF = object : DiffUtil.ItemCallback<InventoryViewModel.StockMovementView>() {
+            override fun areItemsTheSame(oldItem: InventoryViewModel.StockMovementView, newItem: InventoryViewModel.StockMovementView): Boolean = oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: InventoryViewModel.StockMovementView, newItem: InventoryViewModel.StockMovementView): Boolean = oldItem == newItem
         }
     }
 
@@ -102,32 +98,28 @@ class MovementsAdapter : ListAdapter<com.mohamed.playstation.presentation.viewmo
         private val tvMovementDetail: TextView = view.findViewById(R.id.tvMovementDetail)
         private val tvTime: TextView = view.findViewById(R.id.tvTimestamp)
 
-        fun bind(item: com.mohamed.playstation.presentation.viewmodel.InventoryViewModel.StockMovementView) {
+        fun bind(item: InventoryViewModel.StockMovementView) {
             val sign = if (item.quantityChange > 0) "+" else ""
             
             // Movement Types
             val typeText: String
             val colorRes: Int
             when (item.movementType) {
-                com.mohamed.playstation.domain.model.MovementType.SALE,
-                com.mohamed.playstation.domain.model.MovementType.SALE_REVERT -> {
+                MovementType.SALE,
+                MovementType.SALE_REVERT -> {
                     typeText = itemView.context.getString(R.string.movement_sales)
                     colorRes = R.color.status_paused
                 }
-                com.mohamed.playstation.domain.model.MovementType.MANUAL_ADD,
-                com.mohamed.playstation.domain.model.MovementType.STOCK_IN,
-                com.mohamed.playstation.domain.model.MovementType.INITIAL -> {
+                MovementType.MANUAL_ADD,
+                MovementType.STOCK_IN,
+                MovementType.INITIAL -> {
                     typeText = itemView.context.getString(R.string.movement_add)
                     colorRes = R.color.status_active
                 }
-                com.mohamed.playstation.domain.model.MovementType.MANUAL_DEDUCT,
-                com.mohamed.playstation.domain.model.MovementType.STOCK_OUT -> {
+                MovementType.MANUAL_DEDUCT,
+                MovementType.STOCK_OUT -> {
                     typeText = itemView.context.getString(R.string.movement_withdraw_sale)
                     colorRes = R.color.status_error
-                }
-                else -> {
-                    typeText = itemView.context.getString(R.string.movement_adjustment)
-                    colorRes = R.color.ps_blue_primary
                 }
             }
 

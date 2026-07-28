@@ -12,7 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mohamed.playstation.R
 import com.mohamed.playstation.databinding.FragmentSessionsBinding
+import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.presentation.ui.UiState
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -67,9 +69,9 @@ class SessionsFragment : Fragment() {
                     putLong("sessionId", session.id)
                 }
                 val navController = findNavController()
-                if (navController.currentDestination?.id == com.mohamed.playstation.R.id.sessionsFragment) {
+                if (navController.currentDestination?.id == R.id.sessionsFragment) {
                     navController.navigate(
-                        com.mohamed.playstation.R.id.action_sessionsFragment_to_sessionDetailsFragment,
+                        R.id.action_sessionsFragment_to_sessionDetailsFragment,
                         bundle
                     )
                 }
@@ -100,7 +102,7 @@ class SessionsFragment : Fragment() {
     private fun setupTabs() {
         binding.chipGroupTabs.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
-                val showCompleted = checkedId == com.mohamed.playstation.R.id.chipCompleted
+                val showCompleted = checkedId == R.id.chipCompleted
                 binding.layoutRunning.isVisible = !showCompleted
                 binding.layoutCompleted.isVisible = showCompleted
                 
@@ -130,12 +132,12 @@ class SessionsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
                 // --- Running sessions (existing logic, unchanged) ---
-                var cachedSessions: List<com.mohamed.playstation.domain.model.Session> = emptyList()
+                var cachedSessions: List<Session> = emptyList()
                 // Track previous inner list references to skip redundant submitList on tick-only updates.
                 // The combine creates a new concatenated list every emission via `+`, so we must
                 // track the source lists whose identity only changes when Room emits new data.
-                var lastActiveRef: List<com.mohamed.playstation.domain.model.Session>? = null
-                var lastPausedRef: List<com.mohamed.playstation.domain.model.Session>? = null
+                var lastActiveRef: List<Session>? = null
+                var lastPausedRef: List<Session>? = null
                 
                 launch {
                     combine(
@@ -175,10 +177,10 @@ class SessionsFragment : Fragment() {
                         // Return inner list references alongside combined result for identity tracking
                         data class SessionTick(
                             val isLoading: Boolean,
-                            val sessions: List<com.mohamed.playstation.domain.model.Session>,
+                            val sessions: List<Session>,
                             val tick: Long,
-                            val activeRef: List<com.mohamed.playstation.domain.model.Session>,
-                            val pausedRef: List<com.mohamed.playstation.domain.model.Session>
+                            val activeRef: List<Session>,
+                            val pausedRef: List<Session>
                         )
                         SessionTick(isLoading, allSessions, activeTick, newActive, newPaused)
                     }.collect { result ->
@@ -205,7 +207,7 @@ class SessionsFragment : Fragment() {
                                 sessionAdapter.submitList(result.sessions)
                                 lastActiveRef = result.activeRef
                                 lastPausedRef = result.pausedRef
-                                binding.chipRunning.text = getString(com.mohamed.playstation.R.string.tab_running) + " (${result.sessions.size})"
+                                binding.chipRunning.text = getString(R.string.tab_running) + " (${result.sessions.size})"
                             }
                             sessionAdapter.updateTick(result.tick)
                         }
@@ -226,9 +228,9 @@ class SessionsFragment : Fragment() {
                         binding.rvCompletedSessions.isVisible = !isEmpty
                         if (!isEmpty) {
                             completedAdapter.submitList(sessions)
-                            binding.chipCompleted.text = getString(com.mohamed.playstation.R.string.tab_completed) + " (${sessions.size})"
+                            binding.chipCompleted.text = getString(R.string.tab_completed) + " (${sessions.size})"
                         } else {
-                            binding.chipCompleted.text = getString(com.mohamed.playstation.R.string.tab_completed)
+                            binding.chipCompleted.text = getString(R.string.tab_completed)
                         }
                     }
                 }

@@ -1,12 +1,13 @@
 package com.mohamed.playstation.data.repository
 
+import com.mohamed.playstation.core.utils.DateUtils
 import com.mohamed.playstation.data.local.dao.ReceiptDao
 import com.mohamed.playstation.data.mapper.ReceiptMapper
 import com.mohamed.playstation.domain.model.Receipt
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * Repository للتعامل مع بيانات الفواتير
@@ -79,7 +80,7 @@ class ReceiptRepository @Inject constructor(
      * الحصول على فواتير اليوم
      */
     fun getTodayReceipts(): Flow<List<Receipt>> {
-        val (start, end) = com.mohamed.playstation.core.utils.DateUtils.todayRange()
+        val (start, end) = DateUtils.todayRange()
         return receiptDao.getTodayReceipts(start, end).map { entities ->
             ReceiptMapper.toModelList(entities)
         }
@@ -98,7 +99,7 @@ class ReceiptRepository @Inject constructor(
      * الحصول على إجمالي الإيرادات اليوم
      */
     fun getTodayTotalRevenue(): Flow<Double> {
-        val (start, end) = com.mohamed.playstation.core.utils.DateUtils.todayRange()
+        val (start, end) = DateUtils.todayRange()
         return receiptDao.getTodayTotalRevenue(start, end).map { it ?: 0.0 }
     }
 

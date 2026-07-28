@@ -1,6 +1,5 @@
 package com.mohamed.playstation.data.mapper
 
-import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.data.local.entity.SessionEntity
 import com.mohamed.playstation.domain.model.Session
 

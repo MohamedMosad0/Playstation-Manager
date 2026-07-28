@@ -1,15 +1,15 @@
 package com.mohamed.playstation.presentation.ui.sessions
 
+import android.text.BidiFormatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.core.utils.AppFormatters
+import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.ItemCompletedSessionBinding
 import com.mohamed.playstation.domain.model.Session
-import android.text.BidiFormatter
 
 /**
  * Adapter for completed (ended) sessions.

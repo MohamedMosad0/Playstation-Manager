@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.mohamed.playstation.R
 import com.mohamed.playstation.databinding.FragmentInventoryBinding
-import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.state.UiState
 import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -49,8 +50,8 @@ class InventoryFragment : Fragment() {
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, pos ->
             tab.text = when (pos) {
-                0 -> getString(com.mohamed.playstation.R.string.products)
-                else -> getString(com.mohamed.playstation.R.string.tab_movements)
+                0 -> getString(R.string.products)
+                else -> getString(R.string.tab_movements)
             }
         }.attach()
         

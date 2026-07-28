@@ -10,8 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -21,6 +21,7 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.FragmentDashboardBinding
 import com.mohamed.playstation.domain.model.dashboard.DashboardData
@@ -175,9 +176,9 @@ class DashboardFragment : Fragment() {
         binding.tvNetProfit.text = CurrencyUtils.formatAmount(requireContext(), data.netProfit, currencyStr)
         val profitColor = if (data.netProfit >= 0) R.color.chart_green else R.color.chart_red
         binding.tvNetProfit.setTextColor(requireContext().getColor(profitColor))
-        binding.tvSessions.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), data.sessionsToday)
-        binding.tvTotalProducts.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), data.totalProducts)
-        binding.tvLowStock.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), data.lowStockProducts)
+        binding.tvSessions.text = AppFormatters.formatInteger(requireContext(), data.sessionsToday)
+        binding.tvTotalProducts.text = AppFormatters.formatInteger(requireContext(), data.totalProducts)
+        binding.tvLowStock.text = AppFormatters.formatInteger(requireContext(), data.lowStockProducts)
 
         sessionAdapter.submitList(data.recentSessions)
         binding.tvEmptySessions.isVisible = data.recentSessions.isEmpty()
@@ -190,7 +191,7 @@ class DashboardFragment : Fragment() {
 
         // Premium cards date label — reuses Reports filter_today string
         val todayLabel = getString(R.string.filter_today)
-        val formattedDate = com.mohamed.playstation.core.utils.AppFormatters.formatLongDate(requireContext(), java.util.Date())
+        val formattedDate = AppFormatters.formatLongDate(requireContext(), java.util.Date())
         val dateText = "$todayLabel · $formattedDate"
         binding.tvExpenseCardDate.text = dateText
         binding.tvReceiptCardDate.text = dateText

@@ -7,13 +7,13 @@ import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.data.local.AppDatabase
 import com.mohamed.playstation.data.repository.SessionRepository
 import com.mohamed.playstation.domain.model.Session
+import java.util.Date
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
-import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class SessionUseCases @Inject constructor(

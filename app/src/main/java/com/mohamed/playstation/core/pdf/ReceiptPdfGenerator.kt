@@ -23,7 +23,7 @@ import javax.inject.Singleton
  * Redesigned for professional POS layout, supporting true RTL/LTR alignment.
  */
 @Singleton
-class ReceiptPdfGenerator @Inject constructor(@ApplicationContext private val context: Context) {
+class ReceiptPdfGenerator @Inject constructor(@param:ApplicationContext private val context: Context) {
 
     private val pageWidth = 576
     private val margin = 32f

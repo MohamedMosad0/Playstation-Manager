@@ -1,8 +1,8 @@
 package com.mohamed.playstation.domain.usecase.settings
 
 import com.mohamed.playstation.data.repository.settings.SettingsRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class GetSettingsFlowsUseCase @Inject constructor(
     private val repository: SettingsRepository
@@ -15,6 +15,7 @@ class GetSettingsFlowsUseCase @Inject constructor(
     val ps4HourPriceFlow: Flow<Double> = repository.ps4HourPriceFlow
     
     @Deprecated("Legacy migration only")
+    @Suppress("DEPRECATION") // Intentionally accessing deprecated SettingsRepository member for migration
     val ps4MultiplayerPriceFlow: Flow<Double> = repository.ps4MultiplayerPriceFlow
     
     val ps4MultiExtraFlow: Flow<Double> = repository.ps4MultiExtraFlow
@@ -22,6 +23,7 @@ class GetSettingsFlowsUseCase @Inject constructor(
     val ps5HourPriceFlow: Flow<Double> = repository.ps5HourPriceFlow
     
     @Deprecated("Legacy migration only")
+    @Suppress("DEPRECATION") // Intentionally accessing deprecated SettingsRepository member for migration
     val ps5MultiplayerPriceFlow: Flow<Double> = repository.ps5MultiplayerPriceFlow
 
     val ps5MultiExtraFlow: Flow<Double> = repository.ps5MultiExtraFlow
@@ -38,6 +40,7 @@ class UpdateSettingsUseCase @Inject constructor(
     suspend fun setPs4HourPrice(price: Double) = repository.setPs4HourPrice(price)
     
     @Deprecated("Legacy migration only")
+    @Suppress("DEPRECATION") // Intentionally accessing deprecated SettingsRepository member for migration
     suspend fun setPs4MultiplayerPrice(price: Double) = repository.setPs4MultiplayerPrice(price)
     
     suspend fun setPs4MultiExtra(price: Double) = repository.setPs4MultiExtra(price)
@@ -45,6 +48,7 @@ class UpdateSettingsUseCase @Inject constructor(
     suspend fun setPs5HourPrice(price: Double) = repository.setPs5HourPrice(price)
     
     @Deprecated("Legacy migration only")
+    @Suppress("DEPRECATION") // Intentionally accessing deprecated SettingsRepository member for migration
     suspend fun setPs5MultiplayerPrice(price: Double) = repository.setPs5MultiplayerPrice(price)
     
     suspend fun setPs5MultiExtra(price: Double) = repository.setPs5MultiExtra(price)

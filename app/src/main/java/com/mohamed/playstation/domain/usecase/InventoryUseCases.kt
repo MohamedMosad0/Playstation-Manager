@@ -2,8 +2,8 @@ package com.mohamed.playstation.domain.usecase
 
 import com.mohamed.playstation.data.repository.InventoryRepository
 import com.mohamed.playstation.domain.model.InventoryItem
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class InventoryUseCases @Inject constructor(
     private val inventoryRepository: InventoryRepository

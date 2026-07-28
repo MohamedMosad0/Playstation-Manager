@@ -13,10 +13,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.core.utils.SessionPricing
-import com.mohamed.playstation.domain.usecase.DuplicateDeviceSessionException
+import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.databinding.DialogNewSessionBinding
+import com.mohamed.playstation.domain.usecase.DuplicateDeviceSessionException
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
@@ -32,7 +34,7 @@ class NewSessionDialog : DialogFragment() {
     private val viewModel: SessionViewModel by viewModels({ requireParentFragment() })
 
     @javax.inject.Inject
-    lateinit var settingsManager: com.mohamed.playstation.data.local.SettingsManager
+    lateinit var settingsManager: SettingsManager
 
     private var isModeUpdating = false
     private var isConsoleUpdating = false
@@ -89,7 +91,8 @@ class NewSessionDialog : DialogFragment() {
         }
         return dialog
     }
-    private fun checkExactAlarmAndDismiss() {
+
+    private fun checkExactAlarmAndDismiss() {
         val sessionMode = getSelectedSessionMode()
         if (sessionMode != AppConstants.SESSION_MODE_FIXED || android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
             dismissAllowingStateLoss()
@@ -102,16 +105,16 @@ class NewSessionDialog : DialogFragment() {
 
             if (!isDismissed && !alarmManager.canScheduleExactAlarms()) {
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(getString(com.mohamed.playstation.R.string.exact_alarm_permission_title))
-                    .setMessage(getString(com.mohamed.playstation.R.string.exact_alarm_permission_message))
-                    .setPositiveButton(getString(com.mohamed.playstation.R.string.action_confirm)) { _, _ ->
+                    .setTitle(getString(R.string.exact_alarm_permission_title))
+                    .setMessage(getString(R.string.exact_alarm_permission_message))
+                    .setPositiveButton(getString(R.string.action_confirm)) { _, _ ->
                         val intent = android.content.Intent(
                             android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
                         )
                         startActivity(intent)
                         dismissAllowingStateLoss()
                     }
-                    .setNegativeButton(getString(com.mohamed.playstation.R.string.action_cancel)) { _, _ ->
+                    .setNegativeButton(getString(R.string.action_cancel)) { _, _ ->
                         lifecycleScope.launch {
                             settingsManager.setExactAlarmPromptDismissed(true)
                             dismissAllowingStateLoss()
@@ -147,7 +150,7 @@ class NewSessionDialog : DialogFragment() {
                 binding.tilFixedDuration.isVisible = isFixed
                 if (isFixed && binding.etFixedDuration.text.isNullOrBlank()) {
                     binding.etFixedDuration.setText(
-                        com.mohamed.playstation.core.utils.AppFormatters.formatInteger(
+                        AppFormatters.formatInteger(
                             requireContext(),
                             viewModel.defaultFixedMinutes.value
                         )
@@ -191,7 +194,7 @@ class NewSessionDialog : DialogFragment() {
             binding.tilFixedDuration.isVisible = true
             if (binding.etFixedDuration.text.isNullOrBlank()) {
                 binding.etFixedDuration.setText(
-                    com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), defaultMinutes)
+                    AppFormatters.formatInteger(requireContext(), defaultMinutes)
                 )
             }
         } else {
@@ -212,7 +215,7 @@ class NewSessionDialog : DialogFragment() {
         val sessionMode = getSelectedSessionMode()
         val deviceType = getSelectedDeviceType()
         val isMultiPlayer = binding.switchMultiPlayer.isChecked
-        val fixedMinutes = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(binding.etFixedDuration.text)
+        val fixedMinutes = AppFormatters.parseInteger(binding.etFixedDuration.text)
 
         val previewText = if (sessionMode == AppConstants.SESSION_MODE_FIXED) {
             val minutes = fixedMinutes ?: viewModel.defaultFixedMinutes.value
@@ -256,7 +259,7 @@ class NewSessionDialog : DialogFragment() {
 
         var fixedDurationMinutes: Int? = null
         if (sessionMode == AppConstants.SESSION_MODE_FIXED) {
-            fixedDurationMinutes = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(binding.etFixedDuration.text)
+            fixedDurationMinutes = AppFormatters.parseInteger(binding.etFixedDuration.text)
             if (fixedDurationMinutes == null || fixedDurationMinutes <= 0) {
                 binding.tilFixedDuration.error = getString(R.string.invalid_duration)
                 return false

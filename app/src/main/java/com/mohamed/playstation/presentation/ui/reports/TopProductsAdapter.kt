@@ -5,7 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
+import com.mohamed.playstation.core.utils.UnitFormatUtils
 import com.mohamed.playstation.databinding.ItemTopProductBinding
 
 class TopProductsAdapter(
@@ -39,9 +42,9 @@ class TopProductsAdapter(
             
             val isPrepared = item.isPrepared
             val unitName = item.unitLabel
-            val pluralUnit = binding.root.context.getString(com.mohamed.playstation.core.utils.UnitFormatUtils.getPluralUnitRes(unitName))
+            val pluralUnit = binding.root.context.getString(UnitFormatUtils.getPluralUnitRes(unitName))
             
-            binding.tvQuantitySold.text = "${binding.root.context.getString(com.mohamed.playstation.R.string.quantity_sold_label)} ${com.mohamed.playstation.core.utils.AppFormatters.formatInteger(binding.root.context, item.quantitySold)} $pluralUnit"
+            binding.tvQuantitySold.text = "${binding.root.context.getString(R.string.quantity_sold_label)} ${AppFormatters.formatInteger(binding.root.context, item.quantitySold)} $pluralUnit"
             
             val formattedRevenue = CurrencyUtils.formatAmount(binding.root.context, item.revenue, currency)
             binding.tvProductRevenue.text = formattedRevenue

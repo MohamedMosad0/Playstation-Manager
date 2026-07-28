@@ -1,15 +1,16 @@
 package com.mohamed.playstation.data.repository
 
 import androidx.room.withTransaction
+import com.mohamed.playstation.core.utils.DateUtils
 import com.mohamed.playstation.data.local.AppDatabase
 import com.mohamed.playstation.data.local.dao.SessionDao
 import com.mohamed.playstation.data.mapper.SessionMapper
 import com.mohamed.playstation.domain.model.Session
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Singleton
 class SessionRepository @Inject constructor(
@@ -105,7 +106,7 @@ class SessionRepository @Inject constructor(
     }
 
     fun getTodaySessions(): Flow<List<Session>> {
-        val (start, end) = com.mohamed.playstation.core.utils.DateUtils.todayRange()
+        val (start, end) = DateUtils.todayRange()
         return sessionDao.getTodaySessions(start, end).map { entities ->
             SessionMapper.toModelList(entities)
         }

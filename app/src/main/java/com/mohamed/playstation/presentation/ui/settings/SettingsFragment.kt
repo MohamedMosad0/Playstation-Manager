@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.BuildConfig
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.FragmentSettingsBinding
 import com.mohamed.playstation.domain.model.CurrencyList
 import com.mohamed.playstation.presentation.viewmodel.SettingsViewModel
@@ -25,7 +27,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.activity.result.contract.ActivityResultContracts
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -125,7 +126,7 @@ class SettingsFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 if (!isUpdatingUi) {
                     hideSavedIndicator()
-                    val value = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(s)
+                    val value = AppFormatters.parseInteger(s)
                     viewModel.setReminderMinutes(value ?: 0)
                 }
             }
@@ -150,7 +151,7 @@ class SettingsFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 if (!isUpdatingUi) {
                     hideSavedIndicator()
-                    val value = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(s)
+                    val value = AppFormatters.parseDecimal(s)
                     onSave(value)
                 }
             }
@@ -241,7 +242,7 @@ class SettingsFragment : Fragment() {
                 // Reminder
                 launch {
                     viewModel.reminderMinutes.collect { minutes ->
-                        val formattedMinutes = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), minutes)
+                        val formattedMinutes = AppFormatters.formatInteger(requireContext(), minutes)
                         if (binding.etReminderMinutes.text.toString() != formattedMinutes && !binding.etReminderMinutes.hasFocus()) {
                             isUpdatingUi = true
                             binding.etReminderMinutes.setText(formattedMinutes)
@@ -303,7 +304,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun updatePriceEditText(editText: com.google.android.material.textfield.TextInputEditText, price: Double) {
-        val priceStr = com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), price)
+        val priceStr = AppFormatters.formatEditableAmount(requireContext(), price)
         if (editText.text.toString() != priceStr && !editText.hasFocus()) {
             isUpdatingUi = true
             editText.setText(priceStr)

@@ -7,9 +7,9 @@ import com.mohamed.playstation.core.notifications.SessionNotificationHelper
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.data.repository.settings.SettingsRepository
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltAndroidApp
 class PlayStationApplication : Application() {

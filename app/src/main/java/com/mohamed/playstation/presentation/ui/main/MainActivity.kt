@@ -15,8 +15,8 @@ import com.mohamed.playstation.core.notifications.NotificationPermissionHelper
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

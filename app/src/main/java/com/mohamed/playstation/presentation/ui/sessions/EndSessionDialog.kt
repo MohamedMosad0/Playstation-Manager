@@ -10,7 +10,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.R
 import com.mohamed.playstation.presentation.ui.receipts.ReceiptDetailDialog
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
-
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

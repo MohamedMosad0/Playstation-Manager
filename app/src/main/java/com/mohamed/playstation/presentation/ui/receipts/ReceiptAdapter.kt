@@ -1,5 +1,6 @@
 package com.mohamed.playstation.presentation.ui.receipts
 
+import android.text.BidiFormatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -8,7 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mohamed.playstation.databinding.ItemReceiptBinding
 import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptListItemUiModel
-import android.text.BidiFormatter
 
 /**
  * Adapter for displaying a list of receipts.

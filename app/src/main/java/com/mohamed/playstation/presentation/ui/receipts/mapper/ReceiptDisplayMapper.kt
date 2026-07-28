@@ -4,7 +4,6 @@ import android.content.Context
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
-import com.mohamed.playstation.core.utils.SessionPricing
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
@@ -14,6 +13,7 @@ import com.mohamed.playstation.presentation.ui.receipts.model.ProductUiModel
 import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptListItemUiModel
 import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptUiModel
 import java.util.Date
+
 /**
  * Single source of truth for mapping domain Receipt data into display-ready UI models.
  * Consolidates all formatting, calculations, and string construction.

@@ -2,17 +2,19 @@ package com.mohamed.playstation.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.UiText
 import com.mohamed.playstation.data.repository.StockMovementRepository
-import com.mohamed.playstation.domain.model.MovementType
 import com.mohamed.playstation.domain.model.InventoryItem
+import com.mohamed.playstation.domain.model.MovementType
 import com.mohamed.playstation.domain.usecase.InventoryUseCases
 import com.mohamed.playstation.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class InventoryViewModel @Inject constructor(
@@ -79,13 +81,13 @@ class InventoryViewModel @Inject constructor(
     fun setMovementSearchQuery(query: String) { _movementSearchQuery.value = query }
     fun toggleShowArchived() { _showArchived.value = !_showArchived.value }
 
-    private fun mapExceptionToUiText(e: Exception): com.mohamed.playstation.core.utils.UiText {
+    private fun mapExceptionToUiText(e: Exception): UiText {
         return when (e.message) {
-            "DUPLICATE_PRODUCT_NAME" -> com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_duplicate_product_name)
-            "INSUFFICIENT_STOCK" -> com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.insufficient_stock)
-            "PRODUCT_NOT_FOUND" -> com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.product_not_found)
-            "INVALID_QUANTITY" -> com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.invalid_quantity)
-            else -> e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred)
+            "DUPLICATE_PRODUCT_NAME" -> UiText.StringResource(R.string.error_duplicate_product_name)
+            "INSUFFICIENT_STOCK" -> UiText.StringResource(R.string.insufficient_stock)
+            "PRODUCT_NOT_FOUND" -> UiText.StringResource(R.string.product_not_found)
+            "INVALID_QUANTITY" -> UiText.StringResource(R.string.invalid_quantity)
+            else -> e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred)
         }
     }
 

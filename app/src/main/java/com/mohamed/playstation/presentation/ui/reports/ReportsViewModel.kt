@@ -2,15 +2,21 @@ package com.mohamed.playstation.presentation.ui.reports
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mohamed.playstation.domain.model.filter.DateRangeFilter
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
+import com.mohamed.playstation.core.utils.DateUtils
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.data.repository.ExpenseRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionProductRepository
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.SessionProduct
+import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Calendar
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,9 +25,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import java.util.Calendar
-import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ReportsViewModel @Inject constructor(
     private val receiptRepository: ReceiptRepository,
@@ -63,7 +68,6 @@ class ReportsViewModel @Inject constructor(
 
     // Product filtering based on Phase 5.1 approval: 
     // Filtered by DB instead of in-memory to improve performance.
-    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     private val productsFlow = receiptsFlow.flatMapLatest { receipts ->
         val sessionIds = receipts.map { it.sessionId }
         if (sessionIds.isEmpty()) {
@@ -100,7 +104,7 @@ class ReportsViewModel @Inject constructor(
             durationSum += receipt.durationMinutes
 
             // Chart data (was a separate forEach loop)
-            val dayLabel = com.mohamed.playstation.core.utils.AppFormatters.formatChartDay(receipt.createdAt)
+            val dayLabel = AppFormatters.formatChartDay(receipt.createdAt)
             revenueLast7DaysMap[dayLabel] =
                 (revenueLast7DaysMap[dayLabel] ?: 0.0) + receipt.totalAmount
 
@@ -146,15 +150,15 @@ class ReportsViewModel @Inject constructor(
             .map { Pair(it.key, it.value) }
 
         val rangeLabel = when (dateRange) {
-            DateRangeFilter.TODAY -> com.mohamed.playstation.R.string.filter_today
-            DateRangeFilter.THIS_WEEK -> com.mohamed.playstation.R.string.filter_this_week
-            DateRangeFilter.LAST_7_DAYS -> com.mohamed.playstation.R.string.filter_last_7_days
-            DateRangeFilter.THIS_MONTH -> com.mohamed.playstation.R.string.filter_this_month
-            DateRangeFilter.LAST_MONTH -> com.mohamed.playstation.R.string.filter_last_month
-            DateRangeFilter.LAST_30_DAYS -> com.mohamed.playstation.R.string.filter_last_30_days
-            DateRangeFilter.LAST_3_MONTHS -> com.mohamed.playstation.R.string.filter_last_3_months
-            DateRangeFilter.ALL_TIME -> com.mohamed.playstation.R.string.filter_all
-            DateRangeFilter.CUSTOM -> com.mohamed.playstation.R.string.filter_custom
+            DateRangeFilter.TODAY -> R.string.filter_today
+            DateRangeFilter.THIS_WEEK -> R.string.filter_this_week
+            DateRangeFilter.LAST_7_DAYS -> R.string.filter_last_7_days
+            DateRangeFilter.THIS_MONTH -> R.string.filter_this_month
+            DateRangeFilter.LAST_MONTH -> R.string.filter_last_month
+            DateRangeFilter.LAST_30_DAYS -> R.string.filter_last_30_days
+            DateRangeFilter.LAST_3_MONTHS -> R.string.filter_last_3_months
+            DateRangeFilter.ALL_TIME -> R.string.filter_all
+            DateRangeFilter.CUSTOM -> R.string.filter_custom
         }
 
         ReportsUiState(
@@ -202,13 +206,13 @@ class ReportsViewModel @Inject constructor(
         customEnd: Long
     ): Pair<Long, Long> {
         return when (range) {
-            DateRangeFilter.TODAY -> com.mohamed.playstation.core.utils.DateUtils.todayRange()
-            DateRangeFilter.THIS_WEEK -> com.mohamed.playstation.core.utils.DateUtils.thisWeekRange()
-            DateRangeFilter.LAST_7_DAYS -> com.mohamed.playstation.core.utils.DateUtils.last7DaysRange()
-            DateRangeFilter.THIS_MONTH -> com.mohamed.playstation.core.utils.DateUtils.thisMonthRange()
-            DateRangeFilter.LAST_MONTH -> com.mohamed.playstation.core.utils.DateUtils.lastMonthRange()
-            DateRangeFilter.LAST_30_DAYS -> com.mohamed.playstation.core.utils.DateUtils.last30DaysRange()
-            DateRangeFilter.LAST_3_MONTHS -> com.mohamed.playstation.core.utils.DateUtils.last3MonthsRange()
+            DateRangeFilter.TODAY -> DateUtils.todayRange()
+            DateRangeFilter.THIS_WEEK -> DateUtils.thisWeekRange()
+            DateRangeFilter.LAST_7_DAYS -> DateUtils.last7DaysRange()
+            DateRangeFilter.THIS_MONTH -> DateUtils.thisMonthRange()
+            DateRangeFilter.LAST_MONTH -> DateUtils.lastMonthRange()
+            DateRangeFilter.LAST_30_DAYS -> DateUtils.last30DaysRange()
+            DateRangeFilter.LAST_3_MONTHS -> DateUtils.last3MonthsRange()
             DateRangeFilter.ALL_TIME -> Pair(0L, Long.MAX_VALUE)
             DateRangeFilter.CUSTOM -> {
                 // For custom, ensure end is start of next day for exclusive bound
@@ -225,4 +229,3 @@ class ReportsViewModel @Inject constructor(
         }
     }
 }
-

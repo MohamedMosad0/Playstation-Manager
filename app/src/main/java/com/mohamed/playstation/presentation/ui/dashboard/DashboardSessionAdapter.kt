@@ -1,6 +1,7 @@
 package com.mohamed.playstation.presentation.ui.dashboard
 
 import android.content.res.ColorStateList
+import android.text.BidiFormatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,6 @@ import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.ItemSessionCardBinding
 import com.mohamed.playstation.domain.model.Session
-import android.text.BidiFormatter
 
 class DashboardSessionAdapter(
     private val onItemClick: (Session) -> Unit
@@ -34,7 +34,6 @@ class DashboardSessionAdapter(
     private var strMultiplayer: String = ""
     private var strSinglePlayer: String = ""
     
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         if (!isInitialized) {
             val context = parent.context

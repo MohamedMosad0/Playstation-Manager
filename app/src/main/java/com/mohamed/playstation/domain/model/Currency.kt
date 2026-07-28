@@ -9,8 +9,8 @@ import com.mohamed.playstation.core.constants.AppConstants
  */
 enum class Currency(
     val code: String,
-    @StringRes val displayNameRes: Int,
-    @StringRes val symbolRes: Int
+    @param:StringRes val displayNameRes: Int,
+    @param:StringRes val symbolRes: Int
 ) {
     EGP(AppConstants.CURRENCY_EGP, R.string.currency_egp, R.string.symbol_egp),
     SAR(AppConstants.CURRENCY_SAR, R.string.currency_sar, R.string.symbol_sar),

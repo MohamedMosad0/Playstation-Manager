@@ -12,10 +12,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.DialogAddSessionProductBinding
 import com.mohamed.playstation.domain.model.InventoryItem
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
-
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -105,8 +105,8 @@ class AddProductDialog : DialogFragment() {
         if (updateName) {
             binding.actInventoryProduct.setText(product.name, false)
         }
-        binding.etProductPrice.setText(com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), product.sellPrice))
-        binding.etAvailableQuantity.setText(com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), product.quantity))
+        binding.etProductPrice.setText(AppFormatters.formatEditableAmount(requireContext(), product.sellPrice))
+        binding.etAvailableQuantity.setText(AppFormatters.formatInteger(requireContext(), product.quantity))
         binding.tilInventoryProduct.error = null
         binding.tilRequestedQuantity.error = null
     }
@@ -133,7 +133,7 @@ class AddProductDialog : DialogFragment() {
     private fun submitProduct(dialog: AlertDialog) {
 
         val product = selectedProduct
-        val quantity = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(binding.etRequestedQuantity.text)
+        val quantity = AppFormatters.parseInteger(binding.etRequestedQuantity.text)
 
         var isValid = true
 

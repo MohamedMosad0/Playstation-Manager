@@ -1,12 +1,13 @@
 package com.mohamed.playstation.domain.usecase
 
+import com.mohamed.playstation.core.utils.SessionPricing
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
-import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Use Cases للفواتير
@@ -31,7 +32,7 @@ class ReceiptUseCases @Inject constructor(
 
         // حساب المدة والإجمالي بالسعر الحالي
         val durationMinutes = session.getDurationMinutes()
-        val playAmount = com.mohamed.playstation.core.utils.SessionPricing.calculatePlayAmount(durationMinutes, pricePerHour)
+        val playAmount = SessionPricing.calculatePlayAmount(durationMinutes, pricePerHour)
         val productsAmount = SessionProduct.calculateTotalAmount(
             sessionProductUseCases.getProductsBySessionIdOnce(session.id)
         )

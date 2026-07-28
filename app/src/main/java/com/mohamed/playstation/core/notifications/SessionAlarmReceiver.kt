@@ -8,12 +8,12 @@ import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.usecase.SessionUseCases
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SessionAlarmReceiver : BroadcastReceiver() {

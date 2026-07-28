@@ -1,23 +1,23 @@
 package com.mohamed.playstation.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.backup.BackupManager
+import com.mohamed.playstation.core.backup.BackupResult
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.utils.UiText
+import com.mohamed.playstation.domain.usecase.SessionUseCases
 import com.mohamed.playstation.domain.usecase.settings.GetSettingsFlowsUseCase
 import com.mohamed.playstation.domain.usecase.settings.UpdateSettingsUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import javax.inject.Inject
-import kotlinx.coroutines.flow.first
-
-import com.mohamed.playstation.core.backup.BackupManager
 import com.mohamed.playstation.presentation.ui.settings.BackupUiState
-import android.net.Uri
-import com.mohamed.playstation.R
-import com.mohamed.playstation.core.utils.UiText
-import com.mohamed.playstation.core.backup.BackupResult
-import com.mohamed.playstation.domain.usecase.SessionUseCases
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val getSettingsFlowsUseCase: GetSettingsFlowsUseCase,
@@ -57,6 +57,7 @@ class SettingsViewModel @Inject constructor(
         migrateLegacyPricing()
     }
 
+    @Suppress("DEPRECATION") // Intentionally accesses deprecated legacy pricing for one-time migration
     private fun migrateLegacyPricing() {
         viewModelScope.launch {
             // PS4 Migration
@@ -143,9 +144,9 @@ class SettingsViewModel @Inject constructor(
 
     data class LanguageItem(val code: String, val nameResId: Int)
     val languageList = listOf(
-        LanguageItem("system", com.mohamed.playstation.R.string.language_system),
-        LanguageItem("ar", com.mohamed.playstation.R.string.language_arabic),
-        LanguageItem("en", com.mohamed.playstation.R.string.language_english)
+        LanguageItem("system", R.string.language_system),
+        LanguageItem("ar", R.string.language_arabic),
+        LanguageItem("en", R.string.language_english)
     )
 
     fun setDarkMode(enabled: Boolean) {
@@ -167,7 +168,7 @@ class SettingsViewModel @Inject constructor(
     fun setReminderMinutes(minutes: Int) {
         val version = nextEditableSettingVersion(EditableSetting.REMINDER_MINUTES)
         if (minutes <= 0) {
-            _validationErrors.update { it.copy(reminderError = com.mohamed.playstation.R.string.error_invalid_price) }
+            _validationErrors.update { it.copy(reminderError = R.string.error_invalid_price) }
         } else {
             _validationErrors.update { it.copy(reminderError = null) }
             saveEditableSetting(EditableSetting.REMINDER_MINUTES, version) {
@@ -234,10 +235,10 @@ class SettingsViewModel @Inject constructor(
     private fun validateAndSavePrice(price: Double?, allowZero: Boolean, errorSetter: (Int?) -> Unit, onSave: (Double) -> Unit) {
         when {
             price == null -> {
-                errorSetter(com.mohamed.playstation.R.string.error_empty_price)
+                errorSetter(R.string.error_empty_price)
             }
             (!allowZero && price <= 0) || (allowZero && price < 0) -> {
-                errorSetter(com.mohamed.playstation.R.string.error_invalid_price)
+                errorSetter(R.string.error_invalid_price)
             }
             else -> {
                 errorSetter(null)

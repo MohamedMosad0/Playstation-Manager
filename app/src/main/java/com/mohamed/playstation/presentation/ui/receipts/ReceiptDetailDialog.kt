@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
+import android.text.BidiFormatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,6 @@ import com.mohamed.playstation.presentation.viewmodel.ReceiptViewModel
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import android.text.BidiFormatter
 
 @AndroidEntryPoint
 class ReceiptDetailDialog : DialogFragment() {
