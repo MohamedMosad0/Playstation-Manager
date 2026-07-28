@@ -5,10 +5,10 @@ import com.mohamed.playstation.R
 
 enum class UnitType(
     val rawDbValue: String,
-    @StringRes val singularRes: Int,
-    @StringRes val pluralRes: Int,
-    @StringRes val defPluralRes: Int,
-    @StringRes val defSingularRes: Int
+    @param:StringRes val singularRes: Int,
+    @param:StringRes val pluralRes: Int,
+    @param:StringRes val defPluralRes: Int,
+    @param:StringRes val defSingularRes: Int
 ) {
     CUP("كوب", R.string.unit_cup, R.string.unit_cup_plural, R.string.unit_cup_def_plural, R.string.unit_cup_def_sing),
     BOX("علبة", R.string.unit_box, R.string.unit_box_plural, R.string.unit_box_def_plural, R.string.unit_box_def_sing),

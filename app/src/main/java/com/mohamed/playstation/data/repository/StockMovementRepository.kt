@@ -3,10 +3,10 @@ package com.mohamed.playstation.data.repository
 import com.mohamed.playstation.data.local.dao.StockMovementDao
 import com.mohamed.playstation.data.mapper.StockMovementMapper
 import com.mohamed.playstation.domain.model.StockMovement
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Singleton
 class StockMovementRepository @Inject constructor(

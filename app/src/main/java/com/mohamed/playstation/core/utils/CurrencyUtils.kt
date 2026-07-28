@@ -1,6 +1,7 @@
 package com.mohamed.playstation.core.utils
 
 import android.content.Context
+import com.mohamed.playstation.core.utils.SessionPricing
 import com.mohamed.playstation.domain.model.CurrencyList
 
 /**
@@ -52,7 +53,7 @@ object CurrencyUtils {
      * @return الإجمالي
      */
     fun calculateTotal(durationMinutes: Long, pricePerHour: Double): Double {
-        return com.mohamed.playstation.core.utils.SessionPricing.calculatePlayAmount(durationMinutes, pricePerHour)
+        return SessionPricing.calculatePlayAmount(durationMinutes, pricePerHour)
     }
 
     /**

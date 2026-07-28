@@ -2,9 +2,10 @@ package com.mohamed.playstation.domain.usecase
 
 import com.mohamed.playstation.data.repository.SessionProductRepository
 import com.mohamed.playstation.domain.model.SessionProduct
+import com.mohamed.playstation.domain.model.SessionProductSummary
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 class SessionProductUseCases @Inject constructor(
     private val sessionProductRepository: SessionProductRepository
@@ -21,10 +22,10 @@ class SessionProductUseCases @Inject constructor(
         return sessionProductRepository.getAllSessionProducts()
     }
 
-    fun getAllSessionProductSummaries(): Flow<List<com.mohamed.playstation.domain.model.SessionProductSummary>> {
+    fun getAllSessionProductSummaries(): Flow<List<SessionProductSummary>> {
         return sessionProductRepository.getAllSessionProducts().map { products ->
             products.groupBy { it.sessionId }.map { (sessionId, sessionProducts) ->
-                com.mohamed.playstation.domain.model.SessionProductSummary(
+                SessionProductSummary(
                     sessionId = sessionId,
                     totalQuantity = sessionProducts.sumOf { it.quantitySold },
                     totalAmount = SessionProduct.calculateTotalAmount(sessionProducts)

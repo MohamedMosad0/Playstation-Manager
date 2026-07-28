@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.presentation.ui.main.MainActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,7 +21,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class SessionNotificationHelper @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
 
     private val notificationManager: NotificationManager
@@ -56,7 +57,7 @@ class SessionNotificationHelper @Inject constructor(
     ) {
         if (!canPostNotifications()) return
 
-        val title = "${session.deviceType} #${com.mohamed.playstation.core.utils.AppFormatters.formatInteger(context, session.deviceNumber)}"
+        val title = "${session.deviceType} #${AppFormatters.formatInteger(context, session.deviceNumber)}"
         val text = context.getString(R.string.notification_session_ending_warning, warningMinutes)
 
         val notification = buildNotification(
@@ -78,7 +79,7 @@ class SessionNotificationHelper @Inject constructor(
     ) {
         if (!canPostNotifications()) return
 
-        val title = "${session.deviceType} #${com.mohamed.playstation.core.utils.AppFormatters.formatInteger(context, session.deviceNumber)}"
+        val title = "${session.deviceType} #${AppFormatters.formatInteger(context, session.deviceNumber)}"
         val text = context.getString(R.string.notification_session_ended_receipt)
 
         val notification = buildNotification(

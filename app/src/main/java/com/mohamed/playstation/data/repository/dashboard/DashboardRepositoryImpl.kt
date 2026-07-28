@@ -7,18 +7,19 @@ import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionRepository
 import com.mohamed.playstation.domain.model.Expense
 import com.mohamed.playstation.domain.model.Receipt
+import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.dashboard.ChartPoint
 import com.mohamed.playstation.domain.model.dashboard.DashboardData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 
 @Singleton
 class DashboardRepositoryImpl @Inject constructor(
@@ -77,9 +78,8 @@ class DashboardRepositoryImpl @Inject constructor(
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, -6)
         for (i in 0..6) {
-            @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
             last7DaysMap[
-                dateFormatter.get().format(calendar.time)
+                dateFormatter.get()!!.format(calendar.time)
             ] = 0f
 
             calendar.add(Calendar.DAY_OF_YEAR, 1)
@@ -107,7 +107,7 @@ class DashboardRepositoryImpl @Inject constructor(
     private data class DailyMetrics(
         val todayRevenue: Double,
         val todayExpenses: Double,
-        val todaySessions: List<com.mohamed.playstation.domain.model.Session>,
+        val todaySessions: List<Session>,
         val totalProducts: Int,
         val lowStockProducts: Int
     )

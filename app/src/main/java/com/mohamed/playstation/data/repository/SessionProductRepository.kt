@@ -11,10 +11,10 @@ import com.mohamed.playstation.data.local.entity.SessionProductEntity
 import com.mohamed.playstation.data.local.entity.StockMovementEntity
 import com.mohamed.playstation.data.mapper.toDomainModel
 import com.mohamed.playstation.domain.model.SessionProduct
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Singleton
 class SessionProductRepository @Inject constructor(

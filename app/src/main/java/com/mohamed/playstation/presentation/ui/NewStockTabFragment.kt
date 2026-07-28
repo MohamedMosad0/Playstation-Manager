@@ -5,15 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
+import com.mohamed.playstation.core.utils.UnitFormatUtils
+import com.mohamed.playstation.core.utils.UnitType
 import com.mohamed.playstation.databinding.FragmentInventoryNewStockBinding
 import com.mohamed.playstation.presentation.viewmodel.InventoryViewModel
-import com.mohamed.playstation.core.utils.UnitFormatUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -62,8 +64,8 @@ class NewStockTabFragment : Fragment() {
             val match = viewModel.products.value.firstOrNull { it.name == name }
             selectedProductId = match?.id
             if (match != null) {
-                binding.etPrice.setText(com.mohamed.playstation.core.utils.AppFormatters.formatEditableAmount(requireContext(), match.sellPrice))
-                binding.etMinQty.setText(com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), match.minimumQuantity))
+                binding.etPrice.setText(AppFormatters.formatEditableAmount(requireContext(), match.sellPrice))
+                binding.etMinQty.setText(AppFormatters.formatInteger(requireContext(), match.minimumQuantity))
                 
                 binding.tvCurrentAvailable.visibility = View.VISIBLE
                 val unitName = match.unitLabel
@@ -71,21 +73,21 @@ class NewStockTabFragment : Fragment() {
                 val definitePlural = requireContext().getString(UnitFormatUtils.getDefinitePluralUnitRes(unitName))
                 
                 if (match.isPrepared) {
-                    val icon = if (unitName == com.mohamed.playstation.core.utils.UnitType.PACK.rawDbValue) "🍜" else "☕"
-                binding.tvCurrentAvailable.text = "$icon ${getString(com.mohamed.playstation.R.string.currently_available_format, com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), match.quantity), pluralUnit)}"
-                    binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.new_quantity_hint, definitePlural)
-                    binding.btnSave.text = getString(com.mohamed.playstation.R.string.action_add)
+                    val icon = if (unitName == UnitType.PACK.rawDbValue) "🍜" else "☕"
+                binding.tvCurrentAvailable.text = "$icon ${getString(R.string.currently_available_format, AppFormatters.formatInteger(requireContext(), match.quantity), pluralUnit)}"
+                    binding.etInitialQty.hint = getString(R.string.new_quantity_hint, definitePlural)
+                    binding.btnSave.text = getString(R.string.action_add)
                     binding.etMinQty.visibility = View.GONE
                 } else {
-                binding.tvCurrentAvailable.text = "📦 ${getString(com.mohamed.playstation.R.string.currently_available_format, com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), match.quantity), pluralUnit)}"
-                    binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.new_quantity_hint, definitePlural)
-                    binding.btnSave.text = getString(com.mohamed.playstation.R.string.action_add)
+                binding.tvCurrentAvailable.text = "📦 ${getString(R.string.currently_available_format, AppFormatters.formatInteger(requireContext(), match.quantity), pluralUnit)}"
+                    binding.etInitialQty.hint = getString(R.string.new_quantity_hint, definitePlural)
+                    binding.btnSave.text = getString(R.string.action_add)
                     binding.etMinQty.visibility = View.VISIBLE
                 }
             } else {
                 binding.tvCurrentAvailable.visibility = View.GONE
-                binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.inventory_quantity_to_add)
-                binding.btnSave.text = getString(com.mohamed.playstation.R.string.inventory_save)
+                binding.etInitialQty.hint = getString(R.string.inventory_quantity_to_add)
+                binding.btnSave.text = getString(R.string.inventory_save)
                 binding.etMinQty.visibility = View.VISIBLE
             }
         }
@@ -93,15 +95,15 @@ class NewStockTabFragment : Fragment() {
         binding.btnSave.setOnClickListener {
             val rawName = binding.actProductSearch.text.toString()
             val name = rawName.trim()
-            val price = com.mohamed.playstation.core.utils.AppFormatters.parseDecimal(binding.etPrice.text) ?: 0.0
-            val minQty = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(binding.etMinQty.text) ?: 0
-            val qty = com.mohamed.playstation.core.utils.AppFormatters.parseInteger(binding.etInitialQty.text) ?: 0
+            val price = AppFormatters.parseDecimal(binding.etPrice.text) ?: 0.0
+            val minQty = AppFormatters.parseInteger(binding.etMinQty.text) ?: 0
+            val qty = AppFormatters.parseInteger(binding.etInitialQty.text) ?: 0
             if (selectedProductId == null) {
                 // creating new product: validate name, price, minQty, qty
                 if (name.isBlank()) {
                     android.widget.Toast.makeText(
                         requireContext(),
-                        getString(com.mohamed.playstation.R.string.required_field),
+                        getString(R.string.required_field),
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                     return@setOnClickListener
@@ -109,7 +111,7 @@ class NewStockTabFragment : Fragment() {
                 if (price < 0.0) {
                     android.widget.Toast.makeText(
                         requireContext(),
-                        getString(com.mohamed.playstation.R.string.invalid_price),
+                        getString(R.string.invalid_price),
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                     return@setOnClickListener
@@ -117,7 +119,7 @@ class NewStockTabFragment : Fragment() {
                 if (minQty < 0) {
                     android.widget.Toast.makeText(
                         requireContext(),
-                        getString(com.mohamed.playstation.R.string.invalid_quantity),
+                        getString(R.string.invalid_quantity),
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                     return@setOnClickListener
@@ -125,14 +127,14 @@ class NewStockTabFragment : Fragment() {
                 if (qty < 0) {
                     android.widget.Toast.makeText(
                         requireContext(),
-                        getString(com.mohamed.playstation.R.string.invalid_quantity),
+                        getString(R.string.invalid_quantity),
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                     return@setOnClickListener
                 }
 
                 // create new product and add initial stock
-                viewModel.addNewProduct(name, price, 0.0, qty, minQty, false, com.mohamed.playstation.core.utils.UnitType.PIECE.rawDbValue)
+                viewModel.addNewProduct(name, price, 0.0, qty, minQty, false, UnitType.PIECE.rawDbValue)
 
                 // clear fields
                 binding.actProductSearch.setText("")
@@ -140,8 +142,8 @@ class NewStockTabFragment : Fragment() {
                 binding.etMinQty.setText("")
                 binding.etInitialQty.setText("")
                 binding.tvCurrentAvailable.visibility = View.GONE
-                binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.inventory_quantity_to_add)
-                binding.btnSave.text = getString(com.mohamed.playstation.R.string.inventory_save)
+                binding.etInitialQty.hint = getString(R.string.inventory_quantity_to_add)
+                binding.btnSave.text = getString(R.string.inventory_save)
                 binding.etMinQty.visibility = View.VISIBLE
                 selectedProductId = null
 
@@ -150,7 +152,7 @@ class NewStockTabFragment : Fragment() {
                 if (qty < 0) {
                     android.widget.Toast.makeText(
                         requireContext(),
-                        getString(com.mohamed.playstation.R.string.invalid_quantity),
+                        getString(R.string.invalid_quantity),
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                     return@setOnClickListener
@@ -163,8 +165,8 @@ class NewStockTabFragment : Fragment() {
                 binding.etMinQty.setText("")
                 binding.etInitialQty.setText("")
                 binding.tvCurrentAvailable.visibility = View.GONE
-                binding.etInitialQty.hint = getString(com.mohamed.playstation.R.string.inventory_quantity_to_add)
-                binding.btnSave.text = getString(com.mohamed.playstation.R.string.inventory_save)
+                binding.etInitialQty.hint = getString(R.string.inventory_quantity_to_add)
+                binding.btnSave.text = getString(R.string.inventory_save)
                 binding.etMinQty.visibility = View.VISIBLE
                 selectedProductId = null
             }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- App Name -->
-    <string name="app_name">بلايستيشن</string>
+    <string name="app_name">PS Manager</string>
 
     <!-- Splash Screen -->
 
@@ -16,7 +16,6 @@
     <string name="nav_settings">الإعدادات</string>
     <string name="reports">التقارير</string>
     <string name="coming_soon">قريباً</string>
-
 
 
     <!-- Dashboard -->
@@ -60,7 +59,6 @@
     <string name="new_product">منتج جديد</string>
 
 
-
     <string name="select_inventory_product">Select an inventory product</string>
     <string name="available_quantity">الكمية المتاحة</string>
     <string name="requested_quantity">الكمية المطلوبة</string>
@@ -68,9 +66,6 @@
 
 
     <!-- Device Types -->
-
-
-
 
 
     <!-- Session Types -->
@@ -118,21 +113,7 @@
 
 
     <!-- Settings -->
-
-
-
-
-
-
-
-
-
-
-
-
     <string name="restore">استعادة</string>
-
-
     <string name="settings_saved">✓ تم الحفظ</string>
     <string name="settings_general">عام</string>
     <string name="settings_dark_mode">الوضع الداكن</string>
@@ -157,17 +138,12 @@
     <string name="settings_developer">المطور: %1$s</string>
 
 
-
-
-
     <!-- Settings - PS4 Pricing -->
-
 
 
     <string name="ps4_multi_extra">سعر الملتي الإضافي</string>
 
     <!-- Settings - PS5 Pricing -->
-
 
 
     <string name="ps5_multi_extra">سعر الملتي الإضافي</string>
@@ -177,16 +153,6 @@
     <string name="session_mode">نوع الجلسة</string>
     <string name="session_mode_open">مفتوحة</string>
     <string name="session_mode_fixed">محددة</string>
-
-
-    <!-- Settings - Warning Settings -->
-
-
-
-
-
-
-
 
     <!-- Currencies -->
     <string name="currency_egp">جنيه مصري (EGP)</string>
@@ -323,7 +289,6 @@
     <string name="end_session_message">هل أنت متأكد من إنهاء هذه الجلسة؟\nسيتم إنشاء فاتورة تلقائياً.</string>
 
 
-
     <!-- Phase 3 -->
     <string name="product_type_label">نوع المنتج</string>
     <string name="product_type_normal">منتج عادي</string>
@@ -404,9 +369,6 @@
     <string name="action_add">إضافة</string>
 
 
-
-
-
     <!-- Phase 3B Kotlin Strings -->
 
     <string name="normal_product_label">منتج عادي</string>
@@ -446,7 +408,6 @@
     <string name="receipt_item_format">%1$s (%2$s × %3$d = %4$s)</string>
     <string name="receipt_item_format_print">- %1$s: %2$s × %3$d = %4$s</string>
     <string name="product_quantity_format">%1$s × %2$d</string>
-
 
 
     <!-- Backup and Restore -->

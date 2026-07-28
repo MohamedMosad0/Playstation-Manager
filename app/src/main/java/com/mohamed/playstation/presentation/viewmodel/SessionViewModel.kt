@@ -2,11 +2,13 @@ package com.mohamed.playstation.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.core.notifications.SessionAlarmScheduler
 import com.mohamed.playstation.core.notifications.SessionNotificationHelper
 import com.mohamed.playstation.core.utils.SessionPricing
 import com.mohamed.playstation.core.utils.SessionTicker
+import com.mohamed.playstation.core.utils.UiText
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.model.InventoryItem
 import com.mohamed.playstation.domain.model.Session
@@ -17,10 +19,10 @@ import com.mohamed.playstation.domain.usecase.SessionProductUseCases
 import com.mohamed.playstation.domain.usecase.SessionUseCases
 import com.mohamed.playstation.presentation.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class SessionViewModel @Inject constructor(
@@ -138,7 +140,7 @@ class SessionViewModel @Inject constructor(
             }
                 .catch { e ->
                     Timber.e(e, "Error loading active sessions")
-                    _activeSessions.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
+                    _activeSessions.value = UiState.Error(e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred))
                 }
                 .collect { (sessions, tick) ->
                     _activeSessions.value = if (sessions.isEmpty()) {
@@ -160,7 +162,7 @@ class SessionViewModel @Inject constructor(
             }
                 .catch { e ->
                     Timber.e(e, "Error loading paused sessions")
-                    _pausedSessions.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
+                    _pausedSessions.value = UiState.Error(e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred))
                 }
                 .collect { (sessions, tick) ->
                     _pausedSessions.value = if (sessions.isEmpty()) {

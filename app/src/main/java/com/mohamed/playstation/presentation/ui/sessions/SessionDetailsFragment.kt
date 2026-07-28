@@ -14,13 +14,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.CurrencyUtils
+import com.mohamed.playstation.core.utils.SessionPricing
 import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.databinding.FragmentSessionDetailsBinding
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.presentation.ui.UiState
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
-
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -152,7 +152,7 @@ class SessionDetailsFragment : Fragment() {
         val isAutoEnding = session.isActive() && session.isFixed() && remaining <= 0L
 
         if (isAutoEnding) {
-            binding.tvStatus.text = getString(com.mohamed.playstation.R.string.finishing_progress)
+            binding.tvStatus.text = getString(R.string.finishing_progress)
             binding.tvStatus.setTextColor(requireContext().getColor(R.color.status_paused))
             binding.tvStatus.backgroundTintList = android.content.res.ColorStateList.valueOf(
                 androidx.core.graphics.ColorUtils.setAlphaComponent(requireContext().getColor(R.color.status_paused), 38)
@@ -203,7 +203,7 @@ class SessionDetailsFragment : Fragment() {
         updateTimer(session, data.currentTick)
 
         val playCost = viewModel.playCostForSession(session, data.currentTick, data.pricing)
-        val productCost = com.mohamed.playstation.domain.model.SessionProduct.calculateTotalAmount(data.products)
+        val productCost = SessionProduct.calculateTotalAmount(data.products)
         val totalCost = playCost + productCost
 
         productAdapter.updateCurrency(data.currency)
@@ -222,7 +222,7 @@ class SessionDetailsFragment : Fragment() {
 
         if (isAutoEnding) {
             binding.tvLargeTimer.text = "00:00:00"
-            binding.tvTimerLabel.text = getString(com.mohamed.playstation.R.string.finishing_session_progress)
+            binding.tvTimerLabel.text = getString(R.string.finishing_session_progress)
             binding.tvLargeTimer.setTextColor(requireContext().getColor(R.color.status_paused))
         } else {
             binding.tvLargeTimer.text = SessionTimer.formatForSession(requireContext(), session, currentTick)
@@ -260,7 +260,7 @@ class SessionDetailsFragment : Fragment() {
         val session: Session?,
         val currentTick: Long,
         val currency: String,
-        val pricing: com.mohamed.playstation.core.utils.SessionPricing.PricingSettings,
+        val pricing: SessionPricing.PricingSettings,
         val products: List<SessionProduct>
     )
 

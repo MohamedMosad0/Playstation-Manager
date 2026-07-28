@@ -3,7 +3,6 @@ package com.mohamed.playstation.presentation.ui.reports
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -24,8 +23,10 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.FragmentReportsBinding
+import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -78,7 +79,7 @@ class ReportsFragment : Fragment() {
 
     private fun showDateRangePicker() {
         val picker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText(getString(com.mohamed.playstation.R.string.report_date_picker_title))
+            .setTitleText(getString(R.string.report_date_picker_title))
             .build()
             
         picker.addOnPositiveButtonClickListener { selection: Pair<Long, Long> ->
@@ -170,9 +171,9 @@ class ReportsFragment : Fragment() {
         topProductsAdapter.updateCurrency(currency)
 
         // Date Label
-        if (state.dateRangeLabel == com.mohamed.playstation.R.string.filter_custom) {
+        if (state.dateRangeLabel == R.string.filter_custom) {
             // Keep the custom date label format but we might want to format the range
-            binding.tvDateRange.text = getString(com.mohamed.playstation.R.string.custom_period)
+            binding.tvDateRange.text = getString(R.string.custom_period)
         } else {
             binding.tvDateRange.text = getString(state.dateRangeLabel)
         }
@@ -182,8 +183,8 @@ class ReportsFragment : Fragment() {
         binding.tvTotalExpenses.text = CurrencyUtils.formatAmount(requireContext(), state.totalExpenses, currency)
         binding.tvSessionRevenue.text = CurrencyUtils.formatAmount(requireContext(), state.sessionRevenue, currency)
         binding.tvProductRevenue.text = CurrencyUtils.formatAmount(requireContext(), state.productRevenue, currency)
-        binding.tvTotalSessions.text = com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), state.totalSessions)
-        binding.tvAvgDuration.text = "${com.mohamed.playstation.core.utils.AppFormatters.formatInteger(requireContext(), state.avgSessionDurationMinutes)} ${getString(com.mohamed.playstation.R.string.minutes_suffix)}"
+        binding.tvTotalSessions.text = AppFormatters.formatInteger(requireContext(), state.totalSessions)
+        binding.tvAvgDuration.text = "${AppFormatters.formatInteger(requireContext(), state.avgSessionDurationMinutes)} ${getString(R.string.minutes_suffix)}"
         binding.tvProductCost.text = CurrencyUtils.formatAmount(requireContext(), state.productCost, currency)
         binding.tvProductProfit.text = CurrencyUtils.formatAmount(requireContext(), state.productProfit, currency)
         binding.tvNetProfit.text = CurrencyUtils.formatAmount(requireContext(), state.netProfit, currency)
@@ -197,7 +198,6 @@ class ReportsFragment : Fragment() {
         binding.tvNetProfit.setTextColor(netProfitColor)
 
         // Historical cost gap warning
-
 
         // Top Products
         if (state.topProducts.isEmpty()) {
@@ -234,7 +234,7 @@ class ReportsFragment : Fragment() {
             labels.add(pair.first)
         }
 
-        val dataSet = BarDataSet(entries, getString(com.mohamed.playstation.R.string.revenue_chart_label))
+        val dataSet = BarDataSet(entries, getString(R.string.revenue_chart_label))
         dataSet.color = ContextCompat.getColor(requireContext(), R.color.ps_blue_primary)
         dataSet.valueTextColor = ContextCompat.getColor(requireContext(), R.color.text_primary)
         dataSet.valueTextSize = 10f
@@ -259,8 +259,8 @@ class ReportsFragment : Fragment() {
         val entries = ArrayList<PieEntry>()
         for ((label, value) in distribution) {
             val displayLabel = when (label) {
-                "session_revenue" -> getString(com.mohamed.playstation.R.string.session_revenue)
-                "product_revenue" -> getString(com.mohamed.playstation.R.string.product_revenue)
+                "session_revenue" -> getString(R.string.session_revenue)
+                "product_revenue" -> getString(R.string.product_revenue)
                 else -> label
             }
             entries.add(PieEntry(value.toFloat(), displayLabel))

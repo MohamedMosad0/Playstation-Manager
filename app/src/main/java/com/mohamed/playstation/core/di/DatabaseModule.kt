@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.data.local.AppDatabase
-import com.mohamed.playstation.data.local.dao.SessionDao
-import com.mohamed.playstation.data.local.dao.InventoryItemDao
-import com.mohamed.playstation.data.local.dao.SessionProductDao
-import com.mohamed.playstation.data.local.dao.ReceiptDao
-import com.mohamed.playstation.data.local.dao.StockMovementDao
 import com.mohamed.playstation.data.local.dao.ExpenseDao
+import com.mohamed.playstation.data.local.dao.InventoryItemDao
+import com.mohamed.playstation.data.local.dao.ReceiptDao
+import com.mohamed.playstation.data.local.dao.SessionDao
+import com.mohamed.playstation.data.local.dao.SessionProductDao
+import com.mohamed.playstation.data.local.dao.StockMovementDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

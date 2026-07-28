@@ -1,6 +1,6 @@
 package com.mohamed.playstation.presentation.ui.reports
 
-import com.mohamed.playstation.domain.model.SessionProduct
+import com.mohamed.playstation.R
 
 data class ReportsUiState(
     val isLoading: Boolean = false,
@@ -8,7 +8,7 @@ data class ReportsUiState(
     // Date Range (Start and End in milliseconds)
     val dateRangeStart: Long = 0L,
     val dateRangeEnd: Long = System.currentTimeMillis(),
-    @androidx.annotation.StringRes val dateRangeLabel: Int = com.mohamed.playstation.R.string.filter_all,
+    @param:androidx.annotation.StringRes val dateRangeLabel: Int = R.string.filter_all,
     
     // KPI Metrics
     val totalRevenue: Double = 0.0,
@@ -36,7 +36,6 @@ data class ReportsUiState(
     
     // Historical gap warning: some products have costPerUnit == 0
 
-    
     // Currency
     val currency: String = "EGP"
 )

@@ -18,6 +18,7 @@ import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.SessionProductSummary
 import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.ui.receipts.mapper.ReceiptDisplayMapper
 import com.mohamed.playstation.presentation.viewmodel.ReceiptViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine
@@ -152,7 +153,7 @@ class ReceiptsFragment : Fragment() {
                 binding.rvReceipts.isVisible = true
                 
                 val uiModels = state.data.map { receipt ->
-                    com.mohamed.playstation.presentation.ui.receipts.mapper.ReceiptDisplayMapper.mapToListItem(
+                    ReceiptDisplayMapper.mapToListItem(
                         requireContext(),
                         receipt,
                         summaries[receipt.sessionId]

@@ -1,10 +1,12 @@
 package com.mohamed.playstation.presentation.ui.sessions
 
 import android.content.res.ColorStateList
+import android.text.BidiFormatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +14,6 @@ import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.databinding.ItemSessionCardBinding
 import com.mohamed.playstation.domain.model.Session
-import android.text.BidiFormatter
 
 class SessionAdapter(
     private var tick: Long = 0L,
@@ -147,7 +148,7 @@ class SessionAdapter(
                     }
                 }
 
-                if (tvTimer.visibility == View.VISIBLE) {
+                if (tvTimer.isVisible) {
                     val isAutoEnding = session.isActive() && session.isFixed() && remainingMs <= 0L
                     if (isAutoEnding) {
                         tvTimer.text = "00:00:00"
@@ -186,7 +187,7 @@ class SessionAdapter(
                             if (session.isFixed() && remainingMs <= 5 * 60_000) colorStatusPaused else colorPsBluePrimary
                         )
                     }
-                } else if (session.isPaused() && tvTimer.visibility == View.VISIBLE) {
+                } else if (session.isPaused() && tvTimer.isVisible) {
                     // Paused sessions only need timer text update (elapsed time doesn't change while paused,
                     // but keep consistent with bind() which shows timer for paused sessions)
                     tvTimer.text = SessionTimer.formatForSession(itemView.context, session, currentTick)

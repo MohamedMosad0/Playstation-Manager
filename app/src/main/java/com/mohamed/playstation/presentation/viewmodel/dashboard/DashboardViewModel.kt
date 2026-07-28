@@ -2,12 +2,15 @@ package com.mohamed.playstation.presentation.viewmodel.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.utils.UiText
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.model.dashboard.DashboardData
 import com.mohamed.playstation.domain.usecase.dashboard.GetDashboardDataUseCase
 import com.mohamed.playstation.presentation.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +18,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
@@ -37,7 +39,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             getDashboardDataUseCase()
                 .catch { e ->
-                    _uiState.value = UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred))
+                    _uiState.value = UiState.Error(e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred))
                 }
                 .collect { data ->
                     _uiState.value = UiState.Success(data)

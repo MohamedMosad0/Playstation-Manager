@@ -1,5 +1,6 @@
 package com.mohamed.playstation.presentation.ui.expenses
 
+import android.text.BidiFormatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,7 +12,6 @@ import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.ItemExpenseBinding
 import com.mohamed.playstation.domain.model.Expense
 import com.mohamed.playstation.domain.model.ExpenseCategory
-import android.text.BidiFormatter
 
 class ExpenseAdapter(
     private var currency: String,

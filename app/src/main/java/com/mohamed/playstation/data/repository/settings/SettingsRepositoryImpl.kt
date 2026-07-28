@@ -1,9 +1,9 @@
 package com.mohamed.playstation.data.repository.settings
 
 import com.mohamed.playstation.data.local.SettingsManager
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(

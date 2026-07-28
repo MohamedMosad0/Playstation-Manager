@@ -33,7 +33,7 @@ class CategoryGridAdapter(
 
             binding.root.setOnClickListener {
                 val previousSelected = selectedPosition
-                selectedPosition = adapterPosition
+                selectedPosition = bindingAdapterPosition
                 notifyItemChanged(previousSelected)
                 notifyItemChanged(selectedPosition)
                 onCategorySelected(category)

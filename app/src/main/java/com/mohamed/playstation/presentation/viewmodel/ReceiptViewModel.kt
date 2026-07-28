@@ -2,29 +2,35 @@ package com.mohamed.playstation.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.pdf.ReceiptPdfGenerator
+import com.mohamed.playstation.core.pdf.mapper.ReceiptPdfMapper
+import com.mohamed.playstation.core.utils.DateUtils
+import com.mohamed.playstation.core.utils.UiText
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.domain.model.SessionProductSummary
+import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import com.mohamed.playstation.domain.usecase.ReceiptUseCases
 import com.mohamed.playstation.domain.usecase.SessionProductUseCases
 import com.mohamed.playstation.presentation.ui.UiState
-import com.mohamed.playstation.presentation.ui.receipts.state.PdfUiState
 import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptUiModel
-import com.mohamed.playstation.core.pdf.ReceiptPdfGenerator
-import com.mohamed.playstation.core.pdf.mapper.ReceiptPdfMapper
+import com.mohamed.playstation.presentation.ui.receipts.state.PdfUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * ViewModel للفواتير
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ReceiptViewModel @Inject constructor(
     private val receiptUseCases: ReceiptUseCases,
@@ -37,8 +43,8 @@ class ReceiptViewModel @Inject constructor(
     val currency: StateFlow<String> = settingsManager.currencyFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_CURRENCY)
 
-    private val _dateFilterFlow = MutableStateFlow(com.mohamed.playstation.domain.model.filter.DateRangeFilter.TODAY)
-    val dateFilterFlow: StateFlow<com.mohamed.playstation.domain.model.filter.DateRangeFilter> = _dateFilterFlow.asStateFlow()
+    private val _dateFilterFlow = MutableStateFlow(DateRangeFilter.TODAY)
+    val dateFilterFlow: StateFlow<DateRangeFilter> = _dateFilterFlow.asStateFlow()
 
     val productSummaries: StateFlow<Map<Long, SessionProductSummary>> = sessionProductUseCases
         .getAllSessionProductSummaries()
@@ -64,7 +70,7 @@ class ReceiptViewModel @Inject constructor(
             }
             .catch { e ->
                 Timber.e(e, "Error loading receipts")
-                emit(UiState.Error(e.message?.let { com.mohamed.playstation.core.utils.UiText.DynamicString(it) } ?: com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_occurred)))
+                emit(UiState.Error(e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred)))
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState.Loading)
 
@@ -78,31 +84,31 @@ class ReceiptViewModel @Inject constructor(
     private val _pdfUiState = MutableStateFlow<PdfUiState>(PdfUiState.Idle)
     val pdfUiState: StateFlow<PdfUiState> = _pdfUiState.asStateFlow()
 
-    fun setDateFilter(filter: com.mohamed.playstation.domain.model.filter.DateRangeFilter) {
+    fun setDateFilter(filter: DateRangeFilter) {
         _dateFilterFlow.value = filter
     }
 
     fun setCustomDateRange(start: Long, end: Long) {
         _customStart.value = start
         _customEnd.value = end
-        setDateFilter(com.mohamed.playstation.domain.model.filter.DateRangeFilter.CUSTOM)
+        setDateFilter(DateRangeFilter.CUSTOM)
     }
 
     private fun getRangeForFilter(
-        range: com.mohamed.playstation.domain.model.filter.DateRangeFilter,
+        range: DateRangeFilter,
         customStart: Long,
         customEnd: Long
     ): Pair<Long, Long> {
         return when (range) {
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.TODAY -> com.mohamed.playstation.core.utils.DateUtils.todayRange()
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.THIS_WEEK -> com.mohamed.playstation.core.utils.DateUtils.thisWeekRange()
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_7_DAYS -> com.mohamed.playstation.core.utils.DateUtils.last7DaysRange()
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.THIS_MONTH -> com.mohamed.playstation.core.utils.DateUtils.thisMonthRange()
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_MONTH -> com.mohamed.playstation.core.utils.DateUtils.lastMonthRange()
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_30_DAYS -> com.mohamed.playstation.core.utils.DateUtils.last30DaysRange()
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.LAST_3_MONTHS -> com.mohamed.playstation.core.utils.DateUtils.last3MonthsRange()
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.ALL_TIME -> Pair(0L, Long.MAX_VALUE)
-            com.mohamed.playstation.domain.model.filter.DateRangeFilter.CUSTOM -> {
+            DateRangeFilter.TODAY -> DateUtils.todayRange()
+            DateRangeFilter.THIS_WEEK -> DateUtils.thisWeekRange()
+            DateRangeFilter.LAST_7_DAYS -> DateUtils.last7DaysRange()
+            DateRangeFilter.THIS_MONTH -> DateUtils.thisMonthRange()
+            DateRangeFilter.LAST_MONTH -> DateUtils.lastMonthRange()
+            DateRangeFilter.LAST_30_DAYS -> DateUtils.last30DaysRange()
+            DateRangeFilter.LAST_3_MONTHS -> DateUtils.last3MonthsRange()
+            DateRangeFilter.ALL_TIME -> Pair(0L, Long.MAX_VALUE)
+            DateRangeFilter.CUSTOM -> {
                 val endCal = java.util.Calendar.getInstance()
                 endCal.timeInMillis = customEnd
                 if (endCal.get(java.util.Calendar.HOUR_OF_DAY) == 0 && endCal.get(java.util.Calendar.MINUTE) == 0) {
@@ -160,11 +166,11 @@ class ReceiptViewModel @Inject constructor(
                 if (uri != null) {
                     _pdfUiState.value = PdfUiState.Success(uri)
                 } else {
-                    _pdfUiState.value = PdfUiState.Error(com.mohamed.playstation.core.utils.UiText.StringResource(com.mohamed.playstation.R.string.error_generating_pdf))
+                    _pdfUiState.value = PdfUiState.Error(UiText.StringResource(R.string.error_generating_pdf))
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Error generating PDF")
-                _pdfUiState.value = PdfUiState.Error(com.mohamed.playstation.core.utils.UiText.DynamicString(e.message ?: "Unknown error"))
+                _pdfUiState.value = PdfUiState.Error(UiText.DynamicString(e.message ?: "Unknown error"))
             }
         }
     }

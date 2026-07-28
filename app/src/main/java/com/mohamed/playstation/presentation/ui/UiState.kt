@@ -1,5 +1,7 @@
 package com.mohamed.playstation.presentation.ui
 
+import com.mohamed.playstation.core.utils.UiText
+
 /**
  * Sealed Class لإدارة حالات الـ UI
  */
@@ -18,7 +20,7 @@ sealed class UiState<out T> {
     /**
      * حالة الخطأ
      */
-    data class Error(val message: com.mohamed.playstation.core.utils.UiText) : UiState<Nothing>()
+    data class Error(val message: UiText) : UiState<Nothing>()
 
     /**
      * حالة فارغة
