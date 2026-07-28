@@ -43,39 +43,35 @@ The project follows modern Android development practices using MVVM, Clean Archi
 
 ---
 
-# 📱 Screenshots
 
-## Dashboard
 
-![](assets/screenshots/dashboard-overview.png)
+## 📱 Screenshots
 
-## Sessions
+<p align="center">
+  <img src="assets/screenshots/dashboard-overview.png" width="260"/>
+  <img src="assets/screenshots/dashboard-details.png" width="260"/>
+</p>
 
-![](assets/screenshots/sessions.png)
+<p align="center">
+  <img src="assets/screenshots/sessions.png" width="260"/>
+  <img src="assets/screenshots/inventory-products.png" width="260"/>
+</p>
 
-## Inventory
+<p align="center">
+  <img src="assets/screenshots/inventory-movements.png" width="260"/>
+  <img src="assets/screenshots/reports-overview.png" width="260"/>
+</p>
 
-![](assets/screenshots/inventory-products.png)
+<p align="center">
+  <img src="assets/screenshots/reports-charts.png" width="260"/>
+  <img src="assets/screenshots/expenses.png" width="260"/>
+</p>
 
-## Inventory Movements
+<p align="center">
+  <img src="assets/screenshots/receipt.png" width="260"/>
+</p>
 
-![](assets/screenshots/inventory-movements.png)
 
-## Reports
-
-![](assets/screenshots/reports-overview.png)
-
-## Charts
-
-![](assets/screenshots/reports-charts.png)
-
-## Expenses
-
-![](assets/screenshots/expenses.png)
-
-## Receipt
-
-![](assets/screenshots/receipt.png)
 
 ---
 
