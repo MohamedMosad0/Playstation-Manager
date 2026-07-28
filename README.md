@@ -48,27 +48,27 @@ The project follows modern Android development practices using MVVM, Clean Archi
 ## 📱 Screenshots
 
 <p align="center">
-  <img src="assets/screenshots/dashboard-overview.png" width="260"/>
-  <img src="assets/screenshots/dashboard-details.png" width="260"/>
+  <img src="assets/screenshots/dashboard-overview.png" width="230"/>
+  <img src="assets/screenshots/dashboard-details.png" width="230"/>
 </p>
 
 <p align="center">
-  <img src="assets/screenshots/sessions.png" width="260"/>
-  <img src="assets/screenshots/inventory-products.png" width="260"/>
+  <img src="assets/screenshots/sessions.png" width="230"/>
+  <img src="assets/screenshots/inventory-products.png" width="230"/>
 </p>
 
 <p align="center">
-  <img src="assets/screenshots/inventory-movements.png" width="260"/>
-  <img src="assets/screenshots/reports-overview.png" width="260"/>
+  <img src="assets/screenshots/inventory-movements.png" width="230"/>
+  <img src="assets/screenshots/reports-overview.png" width="230"/>
 </p>
 
 <p align="center">
-  <img src="assets/screenshots/reports-charts.png" width="260"/>
-  <img src="assets/screenshots/expenses.png" width="260"/>
+  <img src="assets/screenshots/reports-charts.png" width="230"/>
+  <img src="assets/screenshots/expenses.png" width="230"/>
 </p>
 
 <p align="center">
-  <img src="assets/screenshots/receipt.png" width="260"/>
+  <img src="assets/screenshots/receipt.png" width="230"/>
 </p>
 
 
