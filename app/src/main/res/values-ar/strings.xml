@@ -18,7 +18,6 @@
     <string name="coming_soon">قريباً</string>
 
 
-
     <!-- Dashboard -->
     <string name="revenue">الإيرادات</string>
     <string name="net_profit">صافي الربح</string>
@@ -60,7 +59,6 @@
     <string name="new_product">منتج جديد</string>
 
 
-
     <string name="select_inventory_product">Select an inventory product</string>
     <string name="available_quantity">الكمية المتاحة</string>
     <string name="requested_quantity">الكمية المطلوبة</string>
@@ -68,9 +66,6 @@
 
 
     <!-- Device Types -->
-
-
-
 
 
     <!-- Session Types -->
@@ -120,19 +115,7 @@
     <!-- Settings -->
 
 
-
-
-
-
-
-
-
-
-
-
     <string name="restore">استعادة</string>
-
-
     <string name="settings_saved">✓ تم الحفظ</string>
     <string name="settings_general">عام</string>
     <string name="settings_dark_mode">الوضع الداكن</string>
@@ -157,17 +140,12 @@
     <string name="settings_developer">المطور: %1$s</string>
 
 
-
-
-
     <!-- Settings - PS4 Pricing -->
-
 
 
     <string name="ps4_multi_extra">سعر الملتي الإضافي</string>
 
     <!-- Settings - PS5 Pricing -->
-
 
 
     <string name="ps5_multi_extra">سعر الملتي الإضافي</string>
@@ -180,12 +158,6 @@
 
 
     <!-- Settings - Warning Settings -->
-
-
-
-
-
-
 
 
     <!-- Currencies -->
@@ -323,11 +295,10 @@
     <string name="end_session_message">هل أنت متأكد من إنهاء هذه الجلسة؟\nسيتم إنشاء فاتورة تلقائياً.</string>
 
 
-
     <!-- Phase 3 -->
     <string name="product_type_label">نوع المنتج</string>
     <string name="product_type_normal">منتج عادي</string>
-    <string name="product_type_prepared">منتج مفحضَّر</string>
+    <string name="product_type_prepared">منتج محضَّر</string>
     <string name="unit_cost_label">تكلفة الوحدة</string>
     <string name="preparation_cost_label">تكلفة التحضير</string>
     <string name="resulting_units_label">عدد الوحدات الناتجة</string>
@@ -396,15 +367,12 @@
     <string name="archive_title">أرشفة</string>
     <string name="archive_message">سيتم إخفاء المنتج من القوائم النشطة مع الاحتفاظ بجميع الفواتير والتقارير والحركات السابقة.</string>
     <string name="archive_action">أرشفة</string>
-    <string name="prepared_product_badge">منتج مفحضَّر</string>
+    <string name="prepared_product_badge">منتج محضَّر</string>
 
     <string name="inventory_status_out_of_stock">نفد</string>
     <string name="inventory_status_low_stock">منخفض</string>
     <string name="inventory_status_available">متوفر</string>
     <string name="action_add">إضافة</string>
-
-
-
 
 
     <!-- Phase 3B Kotlin Strings -->
@@ -446,7 +414,6 @@
     <string name="receipt_item_format">%1$s (%2$s × %3$d = %4$s)</string>
     <string name="receipt_item_format_print">- %1$s: %2$s × %3$d = %4$s</string>
     <string name="product_quantity_format">%1$s × %2$d</string>
-
 
 
     <!-- Backup and Restore -->

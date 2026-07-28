@@ -292,7 +292,7 @@
     <!-- Phase 3 -->
     <string name="product_type_label">نوع المنتج</string>
     <string name="product_type_normal">منتج عادي</string>
-    <string name="product_type_prepared">منتج مفحضَّر</string>
+    <string name="product_type_prepared">منتج محضَّر</string>
     <string name="unit_cost_label">تكلفة الوحدة</string>
     <string name="preparation_cost_label">تكلفة التحضير</string>
     <string name="resulting_units_label">عدد الوحدات الناتجة</string>
@@ -361,7 +361,7 @@
     <string name="archive_title">أرشفة</string>
     <string name="archive_message">سيتم إخفاء المنتج من القوائم النشطة مع الاحتفاظ بجميع الفواتير والتقارير والحركات السابقة.</string>
     <string name="archive_action">أرشفة</string>
-    <string name="prepared_product_badge">منتج مفحضَّر</string>
+    <string name="prepared_product_badge">منتج محضَّر</string>
 
     <string name="inventory_status_out_of_stock">نفد</string>
     <string name="inventory_status_low_stock">منخفض</string>
