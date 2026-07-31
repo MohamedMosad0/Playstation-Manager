@@ -18,6 +18,12 @@ constraintlayout = "2.2.1"
 navigation = "2.9.6"
 timber = "5.0.1"
 
+# Testing
+junit = "4.13.2"
+coroutinesTest = "1.9.0"
+turbine = "1.2.0"
+mockitoKotlin = "5.4.0"
+
 [libraries]
 # Core Android & UI
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,6 +62,12 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 # Third-party
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpAndroidChart" }
+
+# Unit Testing
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
