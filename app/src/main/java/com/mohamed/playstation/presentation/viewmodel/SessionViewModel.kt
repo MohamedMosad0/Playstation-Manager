@@ -37,17 +37,77 @@ class SessionViewModel @Inject constructor(
 
     private val tickerFlow: Flow<Long> = sessionTicker.tickerFlow
 
-    private val _activeSessions = MutableStateFlow<UiState<Pair<List<Session>, Long>>>(UiState.Loading)
-    val activeSessions: StateFlow<UiState<Pair<List<Session>, Long>>> = _activeSessions.asStateFlow()
+    val activeSessions: StateFlow<UiState<Pair<List<Session>, Long>>> = combine(
+        sessionUseCases.getActiveSessions(),
+        tickerFlow
+    ) { sessions, tick ->
+        if (sessions.isEmpty()) {
+            UiState.Empty
+        } else {
+            UiState.Success(sessions to tick)
+        }
+    }.catch { e ->
+        Timber.e(e, "Error loading active sessions")
+        emit(
+            UiState.Error(
+                e.message?.let { UiText.DynamicString(it) }
+                    ?: UiText.StringResource(R.string.error_occurred)
+            )
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        UiState.Loading
+    )
 
-    private val _pausedSessions = MutableStateFlow<UiState<Pair<List<Session>, Long>>>(UiState.Loading)
-    val pausedSessions: StateFlow<UiState<Pair<List<Session>, Long>>> = _pausedSessions.asStateFlow()
+    val pausedSessions: StateFlow<UiState<Pair<List<Session>, Long>>> = combine(
+        sessionUseCases.getPausedSessions(),
+        tickerFlow
+    ) { sessions, tick ->
+        if (sessions.isEmpty()) {
+            UiState.Empty
+        } else {
+            UiState.Success(sessions to tick)
+        }
+    }.catch { e ->
+        Timber.e(e, "Error loading paused sessions")
+        emit(
+            UiState.Error(
+                e.message?.let { UiText.DynamicString(it) }
+                    ?: UiText.StringResource(R.string.error_occurred)
+            )
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        UiState.Loading
+    )
 
-    private val _activeSessionsCount = MutableStateFlow(0)
-    val activeSessionsCount: StateFlow<Int> = _activeSessionsCount.asStateFlow()
+    val activeSessionsCount: StateFlow<Int> = sessionUseCases.getActiveSessionsCount()
+        .catch { e -> Timber.e(e, "Error loading active sessions count") }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            0
+        )
 
-    private val _sessionProducts = MutableStateFlow<List<SessionProduct>>(emptyList())
-    val sessionProducts: StateFlow<List<SessionProduct>> = _sessionProducts.asStateFlow()
+    private val _selectedSessionId = MutableStateFlow<Long?>(null)
+
+    val sessionProducts: StateFlow<List<SessionProduct>> = _selectedSessionId
+        .flatMapLatest { sessionId ->
+            if (sessionId == null || sessionId <= 0L) {
+                flowOf(emptyList())
+            } else {
+                sessionProductUseCases.getProductsBySessionId(sessionId)
+                    .distinctUntilChanged()
+                    .map { it.aggregate() }
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            emptyList()
+        )
 
     /** Completed sessions — reuses existing getEndedSessions() flow. No new architecture. */
     val completedSessions: StateFlow<List<Session>> = sessionUseCases.getEndedSessions()
@@ -123,64 +183,6 @@ class SessionViewModel @Inject constructor(
             legacyMultiPrice = AppConstants.DEFAULT_MULTI_PRICE
         )
     )
-
-    init {
-        loadActiveSessions()
-        loadPausedSessions()
-        loadActiveSessionsCount()
-    }
-
-    private fun loadActiveSessions() {
-        viewModelScope.launch {
-            combine(
-                sessionUseCases.getActiveSessions(),
-                tickerFlow
-            ) { sessions, tick ->
-                sessions to tick
-            }
-                .catch { e ->
-                    Timber.e(e, "Error loading active sessions")
-                    _activeSessions.value = UiState.Error(e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred))
-                }
-                .collect { (sessions, tick) ->
-                    _activeSessions.value = if (sessions.isEmpty()) {
-                        UiState.Empty
-                    } else {
-                        UiState.Success(sessions to tick)
-                    }
-                }
-        }
-    }
-
-    private fun loadPausedSessions() {
-        viewModelScope.launch {
-            combine(
-                sessionUseCases.getPausedSessions(),
-                tickerFlow
-            ) { sessions, tick ->
-                sessions to tick
-            }
-                .catch { e ->
-                    Timber.e(e, "Error loading paused sessions")
-                    _pausedSessions.value = UiState.Error(e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred))
-                }
-                .collect { (sessions, tick) ->
-                    _pausedSessions.value = if (sessions.isEmpty()) {
-                        UiState.Empty
-                    } else {
-                        UiState.Success(sessions to tick)
-                    }
-                }
-        }
-    }
-
-    private fun loadActiveSessionsCount() {
-        viewModelScope.launch {
-            sessionUseCases.getActiveSessionsCount()
-                .catch { e -> Timber.e(e, "Error loading active sessions count") }
-                .collect { count -> _activeSessionsCount.value = count }
-        }
-    }
 
     suspend fun startSession(
         deviceType: String,
@@ -285,13 +287,7 @@ class SessionViewModel @Inject constructor(
     }
 
     fun loadProductsForSession(sessionId: Long) {
-        viewModelScope.launch {
-            sessionProductUseCases.getProductsBySessionId(sessionId)
-                .distinctUntilChanged()
-                .collect { products ->
-                    _sessionProducts.value = products.aggregate()
-                }
-        }
+        _selectedSessionId.value = sessionId
     }
 
     fun removeSessionProduct(sessionProductId: Long) {
@@ -321,5 +317,4 @@ class SessionViewModel @Inject constructor(
             )
         }
     }
-
 }
