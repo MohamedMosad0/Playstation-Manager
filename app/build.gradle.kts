@@ -1,15 +1,12 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.dagger.hilt.android")
-
-    kotlin("kapt")
-    kotlin("plugin.serialization")
-
-    id("com.google.devtools.ksp") // لRoom فقط
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
- android {
+android {
     namespace = "com.mohamed.playstation"
     compileSdk = 36
 
@@ -19,7 +16,6 @@ plugins {
         targetSdk = 36
         versionCode = 2
         versionName = "2.0.0"
-
     }
 
     buildTypes {
@@ -39,11 +35,13 @@ plugins {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlin {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
+
     buildFeatures {
         viewBinding = true
         buildConfig = true
@@ -55,7 +53,7 @@ ksp {
 }
 
 dependencies {
-    // Core Android
+    // Core Android & UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -71,28 +69,27 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.56.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.56.1")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     // Room
-    val roomVersion = "2.8.4"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     // DataStore (Preferences)
     implementation(libs.androidx.datastore.preferences)
 
     // Coroutines & Flow
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
 
-    // Timber (Logging)
+    // Logging
     implementation(libs.timber)
 
     // MPAndroidChart
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.mpandroidchart)
 
     // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    implementation(libs.kotlinx.serialization.json)
 }
