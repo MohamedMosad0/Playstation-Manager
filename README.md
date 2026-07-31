@@ -4,148 +4,209 @@
 
 # PS Manager
 
-**Modern Android application for managing PlayStation gaming centers.**
+### Modern Android Management System for PlayStation Gaming Centers
 
-![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
-![Kotlin](https://img.shields.io/badge/Kotlin-2.x-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
-![MVVM](https://img.shields.io/badge/Architecture-MVVM-blue?style=for-the-badge)
-![Material3](https://img.shields.io/badge/UI-Material%203-1976D2?style=for-the-badge)
-![Room](https://img.shields.io/badge/Database-Room-4CAF50?style=for-the-badge)
-![Hilt](https://img.shields.io/badge/DI-Hilt-FF6F00?style=for-the-badge)
+PS Manager is a production-grade Android application designed to simplify the daily management of PlayStation gaming centers. It provides complete session management, inventory tracking, financial reporting, receipt generation, analytics, backup & restore, and business insights using modern Android development practices.
+
+[![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
+[![Kotlin](https://img.shields.io/badge/Language-Kotlin-2.2.10-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean%20%2B%20MVVM-blue?style=flat-square)]()
+[![Material3](https://img.shields.io/badge/UI-Material%203-1976D2?style=flat-square)]()
+[![License](https://img.shields.io/badge/License-MIT-success?style=flat-square)](LICENSE)
 
 </div>
 
 ---
 
-# 📖 Overview
+# 📱 Screenshots
 
-PS Manager is a modern Android application built to simplify the daily management of PlayStation gaming centers.
+<p align="center">
+<img src="assets/screenshots/dashboard-overview.png" width="230"/>
+<img src="assets/screenshots/dashboard-details.png" width="230"/>
+</p>
 
-The application provides session management, inventory tracking, expense management, reports, receipt generation, backup & restore, and business analytics in a clean and modern user experience.
+<p align="center">
+<img src="assets/screenshots/sessions.png" width="230"/>
+<img src="assets/screenshots/inventory-products.png" width="230"/>
+</p>
 
-The project follows modern Android development practices using MVVM, Clean Architecture, Kotlin Coroutines, Flow, Hilt, Room, and Material 3.
+<p align="center">
+<img src="assets/screenshots/inventory-movements.png" width="230"/>
+<img src="assets/screenshots/reports-overview.png" width="230"/>
+</p>
+
+<p align="center">
+<img src="assets/screenshots/reports-charts.png" width="230"/>
+<img src="assets/screenshots/expenses.png" width="230"/>
+</p>
+
+<p align="center">
+<img src="assets/screenshots/receipt.png" width="230"/>
+</p>
 
 ---
 
 # ✨ Features
 
-- 🎮 Gaming session management
-- 📦 Inventory & stock movement tracking
-- 💰 Expense management
+- 🎮 PlayStation session management
+- ⏱ Live session timer
+- ⏸ Pause & Resume sessions
+- 💰 Automatic session pricing
+- 📦 Inventory & stock management
+- 📈 Product movement history
+- 💸 Expense management
 - 🧾 Receipt generation
-- 📊 Reports & analytics
-- 📈 Dashboard statistics
-- 🌙 Dark mode
-- 🌍 Multi-language support
+- 📊 Business reports & analytics
+- 📉 Charts & KPIs Dashboard
+- 🌍 Arabic & English localization
 - 💱 Multi-currency support
+- 🌙 Dark mode
 - 💾 Backup & Restore
-- ⚡ Offline-first architecture
+- ⚡ Offline-first architecture powered by Room
+- 🔔 Session notifications & alarms
 
 ---
 
+# 🏛 Architecture
 
+PS Manager follows Google's recommended **Clean Architecture** with the **MVVM** design pattern, keeping business logic independent from Android framework components.
 
-## 📱 Screenshots
+```mermaid
+graph TD
 
-<p align="center">
-  <img src="assets/screenshots/dashboard-overview.png" width="230"/>
-  <img src="assets/screenshots/dashboard-details.png" width="230"/>
-</p>
+UI[Presentation Layer]
 
-<p align="center">
-  <img src="assets/screenshots/sessions.png" width="230"/>
-  <img src="assets/screenshots/inventory-products.png" width="230"/>
-</p>
+VM[ViewModels]
 
-<p align="center">
-  <img src="assets/screenshots/inventory-movements.png" width="230"/>
-  <img src="assets/screenshots/reports-overview.png" width="230"/>
-</p>
+UC[Use Cases]
 
-<p align="center">
-  <img src="assets/screenshots/reports-charts.png" width="230"/>
-  <img src="assets/screenshots/expenses.png" width="230"/>
-</p>
+Repo[Repository]
 
-<p align="center">
-  <img src="assets/screenshots/receipt.png" width="230"/>
-</p>
+Local[(Room Database)]
 
+DataStore[(DataStore)]
 
-
----
-
-# 🏗 Architecture
-
-The project follows **Clean Architecture** with the **MVVM** design pattern.
-
+UI --> VM
+VM --> UC
+UC --> Repo
+Repo --> Local
+Repo --> DataStore
 ```
-Presentation
-     │
-     ▼
-Domain
-     │
-     ▼
-Data
-```
+
+### Layers
+
+- **Presentation** — Activities, Fragments, ViewModels and UI State.
+- **Domain** — Business models, repository contracts and use cases.
+- **Data** — Repository implementations, Room database, DataStore and local persistence.
 
 ---
 
 # 🛠 Tech Stack
 
-- Kotlin
-- MVVM
-- Clean Architecture
-- Coroutines
-- Flow
-- Hilt
-- Room
-- DataStore
-- Navigation Component
-- Material 3
-- ViewBinding
+| Category | Library / Tool | Purpose |
+|------------|----------------|----------|
+| Language | Kotlin | Main programming language |
+| Architecture | Clean Architecture + MVVM | Separation of concerns |
+| Dependency Injection | Hilt | Dependency management |
+| Database | Room | Offline-first local storage |
+| Preferences | DataStore | User settings |
+| Async | Kotlin Coroutines & Flow | Reactive programming |
+| UI | Material Design 3 + ViewBinding | Modern Android UI |
+| Navigation | Navigation Component | Screen navigation |
+| Charts | MPAndroidChart | Reports visualization |
+| Background | WorkManager & AlarmManager | Notifications & scheduled tasks |
+| Logging | Timber | Debug logging |
 
 ---
 
 # 📂 Project Structure
 
-```
+```text
 app/
+├── core/
+│   ├── constants/
+│   ├── extensions/
+│   ├── helpers/
+│   └── utils/
+│
 ├── data/
+│   ├── local/
+│   ├── repository/
+│   └── datastore/
+│
 ├── domain/
-├── presentation/
+│   ├── model/
+│   ├── repository/
+│   └── usecase/
+│
 ├── di/
-├── utils/
-└── core/
+│
+└── presentation/
+    ├── ui/
+    ├── state/
+    ├── adapter/
+    └── viewmodel/
 ```
 
 ---
 
-# 🚀 Getting Started
+# ⚙️ Getting Started
 
-1. Clone the repository.
+## Clone
 
 ```bash
 git clone https://github.com/MohamedMosad0/Playstation-Manager.git
 ```
 
-2. Open the project in Android Studio.
+## Requirements
 
-3. Sync Gradle.
-
-4. Run the application.
-
----
-
-# 📋 Requirements
-
-- Android Studio
+- Android Studio Narwhal (or newer)
 - JDK 17+
 - Android SDK
 - Gradle
+
+## Build
+
+```bash
+./gradlew assembleDebug
+```
+
+---
+
+# 🧪 Testing
+
+The project includes:
+
+- Unit Tests
+- ViewModel Tests
+- Repository Tests
+- DataStore Tests
+- Fake Repository based testing
+- GitHub Actions Continuous Integration
+
+Run all tests:
+
+```bash
+./gradlew testDebugUnitTest
+```
+
+---
+
+# 🚀 Release
+
+Release builds are verified using:
+
+- R8 Code Shrinking
+- Resource Shrinking
+- ProGuard Rules
+- GitHub Actions CI
+- Lint
+- Unit Tests
 
 ---
 
 # 📄 License
 
 This project is licensed under the MIT License.
+
+See the LICENSE file for more information.
