@@ -17,7 +17,7 @@ import com.mohamed.playstation.databinding.FragmentReceiptsBinding
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.SessionProductSummary
 import com.mohamed.playstation.domain.model.filter.DateRangeFilter
-import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.state.UiState
 import com.mohamed.playstation.presentation.ui.receipts.mapper.ReceiptDisplayMapper
 import com.mohamed.playstation.presentation.viewmodel.ReceiptViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -139,6 +139,10 @@ class ReceiptsFragment : Fragment() {
 
     private fun handleUiState(state: UiState<List<Receipt>>, summaries: Map<Long, SessionProductSummary>) {
         when (state) {
+            is UiState.Idle -> {
+                binding.progressBar.isVisible = false
+                binding.emptyState.isVisible = false
+            }
             is UiState.Loading -> {
                 if (receiptAdapter.itemCount == 0) {
                     binding.progressBar.isVisible = true

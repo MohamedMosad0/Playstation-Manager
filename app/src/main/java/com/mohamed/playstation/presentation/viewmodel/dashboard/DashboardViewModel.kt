@@ -8,7 +8,7 @@ import com.mohamed.playstation.core.utils.UiText
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.model.dashboard.DashboardData
 import com.mohamed.playstation.domain.usecase.dashboard.GetDashboardDataUseCase
-import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

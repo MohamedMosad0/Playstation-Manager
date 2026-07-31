@@ -15,7 +15,7 @@ import com.mohamed.playstation.domain.model.SessionProductSummary
 import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import com.mohamed.playstation.domain.usecase.ReceiptUseCases
 import com.mohamed.playstation.domain.usecase.SessionProductUseCases
-import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.state.UiState
 import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptUiModel
 import com.mohamed.playstation.presentation.ui.receipts.state.PdfUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

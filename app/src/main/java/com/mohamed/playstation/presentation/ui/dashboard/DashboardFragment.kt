@@ -25,7 +25,7 @@ import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.FragmentDashboardBinding
 import com.mohamed.playstation.domain.model.dashboard.DashboardData
-import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.state.UiState
 import com.mohamed.playstation.presentation.ui.sessions.NewSessionDialog
 import com.mohamed.playstation.presentation.viewmodel.dashboard.DashboardViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -152,6 +152,9 @@ class DashboardFragment : Fragment() {
 
     private fun handleUiState(state: UiState<DashboardData>, currency: String) {
         when (state) {
+            is UiState.Idle -> {
+                binding.progressBar.isVisible = false
+            }
             is UiState.Loading -> {
                 binding.progressBar.isVisible = true
             }

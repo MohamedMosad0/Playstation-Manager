@@ -19,7 +19,7 @@ import com.mohamed.playstation.core.utils.SessionTimer
 import com.mohamed.playstation.databinding.FragmentSessionDetailsBinding
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.model.SessionProduct
-import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.state.UiState
 import com.mohamed.playstation.presentation.viewmodel.SessionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.combine

@@ -17,7 +17,7 @@ import com.mohamed.playstation.domain.model.aggregate
 import com.mohamed.playstation.domain.usecase.InventoryUseCases
 import com.mohamed.playstation.domain.usecase.SessionProductUseCases
 import com.mohamed.playstation.domain.usecase.SessionUseCases
-import com.mohamed.playstation.presentation.ui.UiState
+import com.mohamed.playstation.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.*
