@@ -66,14 +66,14 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
-    // Product filtering based on Phase 5.1 approval: 
-    // Filtered by DB instead of in-memory to improve performance.
-    private val productsFlow = receiptsFlow.flatMapLatest { receipts ->
-        val sessionIds = receipts.map { it.sessionId }
-        if (sessionIds.isEmpty()) {
-            kotlinx.coroutines.flow.flowOf(emptyList())
+    private val productsFlow = combine(_dateRange, _customStart, _customEnd) { range, start, end ->
+        Triple(range, start, end)
+    }.flatMapLatest { (range, customStart, customEnd) ->
+        val (start, end) = getTimestampsForRange(range, customStart, customEnd)
+        if (start == 0L && end == Long.MAX_VALUE) {
+            sessionProductRepository.getAllSessionProducts()
         } else {
-            sessionProductRepository.getProductsBySessionIds(sessionIds)
+            sessionProductRepository.getProductsByReceiptDateRange(start, end)
         }
     }
 

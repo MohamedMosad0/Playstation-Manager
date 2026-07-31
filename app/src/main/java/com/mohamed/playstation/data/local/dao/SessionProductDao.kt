@@ -24,6 +24,13 @@ interface SessionProductDao {
     @Query("SELECT * FROM session_products WHERE sessionId IN (:sessionIds)")
     fun getProductsBySessionIds(sessionIds: List<Long>): Flow<List<SessionProductEntity>>
 
+    @Query("""
+        SELECT sp.* FROM session_products sp
+        INNER JOIN receipts r ON sp.sessionId = r.sessionId
+        WHERE r.createdAt >= :startTime AND r.createdAt < :endTime
+    """)
+    fun getProductsByReceiptDateRange(startTime: Long, endTime: Long): Flow<List<SessionProductEntity>>
+
     @Query("SELECT * FROM session_products WHERE sessionId = :sessionId")
     suspend fun getProductsBySessionIdOnce(sessionId: Long): List<SessionProductEntity>
 

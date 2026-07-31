@@ -1,13 +1,20 @@
 package com.mohamed.playstation.data.local.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.Date
 
 /**
  * جدول الجلسات في قاعدة البيانات
  */
-@Entity(tableName = "sessions")
+@Entity(
+    tableName = "sessions",
+    indices = [
+        Index(value = ["status", "startTime"]),
+        Index(value = ["deviceType", "deviceNumber", "status"])
+    ]
+)
 data class SessionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,

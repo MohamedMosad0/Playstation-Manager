@@ -19,7 +19,7 @@ import java.util.Date
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("sessionId")]
+    indices = [Index("sessionId"), Index("createdAt")]
 )
 data class ReceiptEntity(
     @PrimaryKey(autoGenerate = true)

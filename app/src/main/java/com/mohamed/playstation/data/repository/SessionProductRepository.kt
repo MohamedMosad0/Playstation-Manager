@@ -32,6 +32,10 @@ class SessionProductRepository @Inject constructor(
         return sessionProductDao.getProductsBySessionIds(sessionIds).map { list -> list.map { it.toDomainModel() } }
     }
 
+    fun getProductsByReceiptDateRange(startTime: Long, endTime: Long): Flow<List<SessionProduct>> {
+        return sessionProductDao.getProductsByReceiptDateRange(startTime, endTime).map { list -> list.map { it.toDomainModel() } }
+    }
+
     suspend fun getProductsBySessionIdOnce(sessionId: Long): List<SessionProduct> {
         return sessionProductDao.getProductsBySessionIdOnce(sessionId).map { it.toDomainModel() }
     }
