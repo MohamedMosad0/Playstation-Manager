@@ -231,7 +231,7 @@ class ReceiptDetailDialog : DialogFragment() {
         receiptViewModel.generateReceiptPdf(
             uiModel = currentModel,
             appName = getString(R.string.app_name),
-            footerMessage = getString(R.string.coming_soon),
+            footerMessage = getString(R.string.receipt_footer_thank_you),
             labels = labels,
             isRtl = isRtl
         )

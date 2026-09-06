@@ -70,21 +70,24 @@ class AddExpenseDialog : DialogFragment() {
 
     private fun setupDatePicker() {
         binding.etDate.setText(AppFormatters.formatDate(requireContext(), selectedDate))
-        binding.etDate.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            calendar.time = selectedDate
-            DatePickerDialog(
-                requireContext(),
-                { _, year, month, day ->
-                    calendar.set(year, month, day)
-                    selectedDate = calendar.time
-                    binding.etDate.setText(AppFormatters.formatDate(requireContext(), selectedDate))
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
+        binding.etDate.setOnClickListener { showDatePicker() }
+        binding.tilDate.setEndIconOnClickListener { showDatePicker() }
+    }
+
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance()
+        calendar.time = selectedDate
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                calendar.set(year, month, day)
+                selectedDate = calendar.time
+                binding.etDate.setText(AppFormatters.formatDate(requireContext(), selectedDate))
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     private fun saveExpense(dialog: AlertDialog) {

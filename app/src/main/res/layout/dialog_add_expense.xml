@@ -72,14 +72,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
-            android:hint="@string/date">
+            android:hint="@string/date"
+            app:endIconContentDescription="@string/date"
+            app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconMode="custom">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:focusable="true" />
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
