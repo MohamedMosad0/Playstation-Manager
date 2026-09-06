@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.DateUtils
-import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.data.repository.ExpenseRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionProductRepository
+import com.mohamed.playstation.data.repository.settings.SettingsRepository
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.domain.model.filter.DateRangeFilter
@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
@@ -32,7 +33,7 @@ class ReportsViewModel @Inject constructor(
     private val receiptRepository: ReceiptRepository,
     private val expenseRepository: ExpenseRepository,
     private val sessionProductRepository: SessionProductRepository,
-    private val settingsManager: SettingsManager
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     // Filter state
@@ -77,13 +78,20 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
+    private val settingsFlow = combine(
+        settingsRepository.currencyFlow.distinctUntilChanged(),
+        settingsRepository.languageFlow.distinctUntilChanged()
+    ) { currency, language ->
+        currency to language
+    }
+
     val uiState: StateFlow<ReportsUiState> = combine(
         receiptsFlow,
         expensesFlow,
         productsFlow,
         _dateRange,
-        settingsManager.currencyFlow
-    ) { receipts, expenses, products, dateRange, currency ->
+        settingsFlow
+    ) { receipts, expenses, products, dateRange, (currency, language) ->
         // Single-pass aggregation over receipts — replaces 6 separate iterations
         var totalRevenue = 0.0
         var productRevenue = 0.0
@@ -104,7 +112,7 @@ class ReportsViewModel @Inject constructor(
             durationSum += receipt.durationMinutes
 
             // Chart data (was a separate forEach loop)
-            val dayLabel = AppFormatters.formatChartDay(receipt.createdAt)
+            val dayLabel = AppFormatters.formatChartDay(receipt.createdAt, language)
             revenueLast7DaysMap[dayLabel] =
                 (revenueLast7DaysMap[dayLabel] ?: 0.0) + receipt.totalAmount
 

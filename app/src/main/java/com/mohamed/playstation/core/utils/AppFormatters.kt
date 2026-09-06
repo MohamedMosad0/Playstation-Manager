@@ -61,8 +61,8 @@ object AppFormatters {
     fun formatLongDate(context: Context, date: Date): String =
         formatDate(context, date, "dd MMM yyyy")
 
-    fun formatChartDay(date: Date): String {
-        val locale = Locale.getDefault()
+    fun formatChartDay(date: Date, language: String): String {
+        val locale = if (language == "en") Locale.ENGLISH else Locale.forLanguageTag("ar")
         val cached = chartDateFormatter.get()
         val formatter = if (cached?.locale == locale) {
             cached.formatter

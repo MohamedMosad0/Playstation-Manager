@@ -5,6 +5,7 @@ import com.mohamed.playstation.data.repository.ExpenseRepository
 import com.mohamed.playstation.data.repository.InventoryRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionRepository
+import com.mohamed.playstation.data.repository.settings.SettingsRepository
 import com.mohamed.playstation.domain.model.Expense
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.Session
@@ -26,7 +27,8 @@ class DashboardRepositoryImpl @Inject constructor(
     private val receiptRepository: ReceiptRepository,
     private val expenseRepository: ExpenseRepository,
     private val sessionRepository: SessionRepository,
-    private val inventoryRepository: InventoryRepository
+    private val inventoryRepository: InventoryRepository,
+    private val settingsRepository: SettingsRepository
 ) : DashboardRepository {
 
     override fun getDashboardData(): Flow<DashboardData> {
@@ -50,7 +52,9 @@ class DashboardRepositoryImpl @Inject constructor(
             ChartMetrics(recentReceipts, recentExpenses)
         }
 
-        return combine(dailyFlow, chartFlow) { daily, chart ->
+        val languageFlow = settingsRepository.languageFlow.distinctUntilChanged()
+
+        return combine(dailyFlow, chartFlow, languageFlow) { daily, chart, language ->
             val todayExpensesList = chart.recentExpenses.filter { it.expenseDate.time >= startOfDay }
 
             DashboardData(
@@ -60,7 +64,7 @@ class DashboardRepositoryImpl @Inject constructor(
                 netProfit = daily.todayRevenue - daily.todayExpenses,
                 totalProducts = daily.totalProducts,
                 lowStockProducts = daily.lowStockProducts,
-                revenueChartData = buildRevenueChartData(chart.recentReceipts),
+                revenueChartData = buildRevenueChartData(chart.recentReceipts, language),
                 expenseChartData = buildExpenseChartData(chart.recentExpenses),
                 recentSessions = daily.todaySessions.sortedByDescending { it.startTime }.take(5),
                 recentExpenses = todayExpensesList.sortedByDescending { it.expenseDate }.take(5)
@@ -68,25 +72,20 @@ class DashboardRepositoryImpl @Inject constructor(
         }.flowOn(Dispatchers.Default)
     }
 
-    private val dateFormatter = ThreadLocal.withInitial {
-        SimpleDateFormat("dd/MM", Locale.getDefault())
-    }
-
-    private fun buildRevenueChartData(receipts: List<Receipt>): List<ChartPoint> {
+    private fun buildRevenueChartData(receipts: List<Receipt>, language: String): List<ChartPoint> {
+        val locale = if (language == "en") Locale.ENGLISH else Locale.forLanguageTag("ar")
+        val formatter = SimpleDateFormat("dd/MM", locale)
         val last7DaysMap = linkedMapOf<String, Float>()
 
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, -6)
         for (i in 0..6) {
-            last7DaysMap[
-                dateFormatter.get()!!.format(calendar.time)
-            ] = 0f
-
+            last7DaysMap[formatter.format(calendar.time)] = 0f
             calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
 
         for (receipt in receipts) {
-            val dateStr = dateFormatter.get()!!.format(receipt.createdAt)
+            val dateStr = formatter.format(receipt.createdAt)
             if (last7DaysMap.containsKey(dateStr)) {
                 last7DaysMap[dateStr] = last7DaysMap[dateStr]!! + receipt.totalAmount.toFloat()
             }

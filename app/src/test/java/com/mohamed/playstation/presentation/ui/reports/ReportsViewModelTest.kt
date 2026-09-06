@@ -2,10 +2,10 @@ package com.mohamed.playstation.presentation.ui.reports
 
 import app.cash.turbine.test
 import com.mohamed.playstation.core.constants.AppConstants
-import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.data.repository.ExpenseRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionProductRepository
+import com.mohamed.playstation.data.repository.settings.SettingsRepository
 import com.mohamed.playstation.domain.model.Expense
 import com.mohamed.playstation.domain.model.ExpenseCategory
 import com.mohamed.playstation.domain.model.Receipt
@@ -37,7 +37,7 @@ class ReportsViewModelTest {
     private lateinit var mockReceiptRepository: ReceiptRepository
     private lateinit var mockExpenseRepository: ExpenseRepository
     private lateinit var mockSessionProductRepository: SessionProductRepository
-    private lateinit var mockSettingsManager: SettingsManager
+    private lateinit var mockSettingsRepository: SettingsRepository
 
     private lateinit var viewModel: ReportsViewModel
 
@@ -133,14 +133,15 @@ class ReportsViewModelTest {
         whenever(mockSessionProductRepository.getAllSessionProducts()).thenReturn(flowOf(sampleProducts))
         whenever(mockSessionProductRepository.getProductsByReceiptDateRange(any(), any())).thenReturn(flowOf(sampleProducts))
 
-        mockSettingsManager = mock()
-        whenever(mockSettingsManager.currencyFlow).thenReturn(flowOf("EGP"))
+        mockSettingsRepository = mock()
+        whenever(mockSettingsRepository.currencyFlow).thenReturn(flowOf("EGP"))
+        whenever(mockSettingsRepository.languageFlow).thenReturn(flowOf("ar"))
 
         viewModel = ReportsViewModel(
             receiptRepository = mockReceiptRepository,
             expenseRepository = mockExpenseRepository,
             sessionProductRepository = mockSessionProductRepository,
-            settingsManager = mockSettingsManager
+            settingsRepository = mockSettingsRepository
         )
     }
 
@@ -188,7 +189,7 @@ class ReportsViewModelTest {
             receiptRepository = emptyReceiptsRepo,
             expenseRepository = emptyExpensesRepo,
             sessionProductRepository = emptyProductsRepo,
-            settingsManager = mockSettingsManager
+            settingsRepository = mockSettingsRepository
         )
 
         emptyVm.uiState.test {
@@ -218,7 +219,7 @@ class ReportsViewModelTest {
             receiptRepository = mockReceiptRepository,
             expenseRepository = heavyExpensesRepo,
             sessionProductRepository = mockSessionProductRepository,
-            settingsManager = mockSettingsManager
+            settingsRepository = mockSettingsRepository
         )
 
         lossVm.uiState.test {
@@ -240,6 +241,32 @@ class ReportsViewModelTest {
         viewModel.uiState.test {
             val state = awaitItem()
             assertEquals("EGP", state.currency)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun uiState_chartLabelsFollowSelectedLanguage() = runTest {
+        val enSettingsRepo: SettingsRepository = mock()
+        whenever(enSettingsRepo.currencyFlow).thenReturn(flowOf("USD"))
+        whenever(enSettingsRepo.languageFlow).thenReturn(flowOf("en"))
+
+        val enVm = ReportsViewModel(
+            receiptRepository = mockReceiptRepository,
+            expenseRepository = mockExpenseRepository,
+            sessionProductRepository = mockSessionProductRepository,
+            settingsRepository = enSettingsRepo
+        )
+
+        enVm.uiState.test {
+            val initial = awaitItem()
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val state = awaitItem()
+            assertTrue(state.revenueLast7Days.isNotEmpty())
+            // English labels use ASCII digits
+            val label = state.revenueLast7Days.first().first
+            assertTrue(label.matches(Regex("\\d{2}/\\d{2}")))
             cancelAndIgnoreRemainingEvents()
         }
     }
