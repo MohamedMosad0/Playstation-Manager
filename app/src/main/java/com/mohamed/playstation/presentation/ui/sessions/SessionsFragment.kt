@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.FragmentSessionsBinding
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.presentation.state.UiState
@@ -192,6 +193,7 @@ class SessionsFragment : Fragment() {
                             binding.progressBar.isVisible = false
                             binding.rvSessions.isVisible = false
                             binding.tvEmptyState.isVisible = true
+                            binding.chipRunning.text = getString(R.string.tab_running)
                             lastActiveRef = null
                             lastPausedRef = null
                         } else {
@@ -207,7 +209,8 @@ class SessionsFragment : Fragment() {
                                 sessionAdapter.submitList(result.sessions)
                                 lastActiveRef = result.activeRef
                                 lastPausedRef = result.pausedRef
-                                binding.chipRunning.text = getString(R.string.tab_running) + " (${result.sessions.size})"
+                                binding.chipRunning.text = getString(R.string.tab_running) +
+                                    " (${AppFormatters.formatInteger(requireContext(), result.sessions.size)})"
                             }
                             sessionAdapter.updateTick(result.tick)
                         }

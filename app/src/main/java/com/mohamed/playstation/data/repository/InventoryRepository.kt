@@ -32,7 +32,9 @@ class InventoryRepository @Inject constructor(
     }
 
     fun getLowStockInventoryItemsCount(): Flow<Int> {
-        return inventoryItemDao.getLowStockInventoryItemsCount()
+        return inventoryItemDao.getLowStockInventoryItemsCount(
+            InventoryItem.PREPARED_LOW_STOCK_THRESHOLD
+        )
     }
 
     suspend fun insertItem(item: InventoryItem): Long {

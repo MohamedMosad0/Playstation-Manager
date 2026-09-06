@@ -412,19 +412,15 @@ class ProductsAdapter(
             }
 
             // 3 States Status Logic
-            val isOutOfStock = item.quantity == 0
-            val isLowStock = if (isPrepared) {
-                item.quantity <= 10 && !isOutOfStock
-            } else {
-                item.quantity <= item.minimumQuantity && !isOutOfStock
-            }
+            val isOutOfStock = item.isOutOfStock
+            val isLowStock = item.isLowStock
 
             if (item.quantity == 0) {
                 chipStatus.text = itemView.context.getString(R.string.inventory_status_out_of_stock)
                 chipStatus.setChipBackgroundColorResource(R.color.status_error)
                 chipStatus.setTextColor(itemView.context.getColor(R.color.white))
                 tvQuantity.setTextColor(ContextCompat.getColor(itemView.context, R.color.error))
-            } else if (item.quantity <= item.minimumQuantity) {
+            } else if (isLowStock) {
                 chipStatus.text = itemView.context.getString(R.string.inventory_status_low_stock)
                 chipStatus.setChipBackgroundColorResource(R.color.status_paused)
                 chipStatus.setTextColor(itemView.context.getColor(R.color.white))

@@ -16,5 +16,13 @@ data class InventoryItem(
     val updatedAt: Date = Date()
 ) {
     val isOutOfStock: Boolean get() = quantity == 0
-    val isLowStock: Boolean get() = quantity <= minimumQuantity && !isOutOfStock
+    val isLowStock: Boolean
+        get() = quantity in 1..lowStockThreshold
+
+    private val lowStockThreshold: Int
+        get() = if (isPrepared) PREPARED_LOW_STOCK_THRESHOLD else minimumQuantity
+
+    companion object {
+        const val PREPARED_LOW_STOCK_THRESHOLD = 10
+    }
 }
