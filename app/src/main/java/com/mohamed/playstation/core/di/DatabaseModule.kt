@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.data.local.AppDatabase
+import com.mohamed.playstation.data.local.RoomTransactionRunner
+import com.mohamed.playstation.data.local.TransactionRunner
 import com.mohamed.playstation.data.local.dao.ExpenseDao
 import com.mohamed.playstation.data.local.dao.InventoryItemDao
 import com.mohamed.playstation.data.local.dao.ReceiptDao
@@ -43,6 +45,12 @@ object DatabaseModule {
             AppConstants.DATABASE_NAME
         ).addMigrations(AppDatabase.MIGRATION_1_2)
         .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideTransactionRunner(database: AppDatabase): TransactionRunner {
+        return RoomTransactionRunner(database)
     }
 
     /**

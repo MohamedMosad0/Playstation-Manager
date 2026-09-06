@@ -1,10 +1,9 @@
 package com.mohamed.playstation.domain.usecase
 
-import androidx.room.withTransaction
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.core.utils.SessionPricing
 import com.mohamed.playstation.core.utils.SessionTimer
-import com.mohamed.playstation.data.local.AppDatabase
+import com.mohamed.playstation.data.local.TransactionRunner
 import com.mohamed.playstation.data.repository.SessionRepository
 import com.mohamed.playstation.domain.model.Session
 import java.util.Date
@@ -19,7 +18,7 @@ import timber.log.Timber
 class SessionUseCases @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val receiptUseCases: ReceiptUseCases,
-    private val database: AppDatabase
+    private val transactionRunner: TransactionRunner
 ) {
 
     private val endSessionMutex = Mutex()
@@ -104,11 +103,11 @@ class SessionUseCases @Inject constructor(
         pricing: SessionPricing.PricingSettings,
         paymentMethod: String? = null
     ): Long = endSessionMutex.withLock {
-        database.withTransaction {
+        transactionRunner.runInTransaction {
             val currentSession = sessionRepository.getSessionById(session.id) ?: session
             val existingReceipt = receiptUseCases.getReceiptBySessionId(currentSession.id)
             if (existingReceipt != null) {
-                return@withTransaction existingReceipt.id
+                return@runInTransaction existingReceipt.id
             }
 
             val endedSession = if (currentSession.isEnded()) {
@@ -166,7 +165,7 @@ class SessionUseCases @Inject constructor(
                 endedSession.pricePerHour
             }
 
-            return@withTransaction receiptUseCases.createReceiptFromSession(
+            return@runInTransaction receiptUseCases.createReceiptFromSession(
                 session = endedSession,
                 currencyCode = currencyCode,
                 pricePerHour = pricePerHour,

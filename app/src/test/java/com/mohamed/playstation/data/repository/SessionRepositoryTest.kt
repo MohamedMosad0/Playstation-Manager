@@ -2,8 +2,8 @@ package com.mohamed.playstation.data.repository
 
 import app.cash.turbine.test
 import com.mohamed.playstation.core.constants.AppConstants
-import com.mohamed.playstation.data.local.FakeAppDatabase
 import com.mohamed.playstation.data.local.FakeSessionDao
+import com.mohamed.playstation.data.local.ImmediateTransactionRunner
 import com.mohamed.playstation.domain.model.Session
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -19,14 +19,12 @@ import java.util.Date
 class SessionRepositoryTest {
 
     private lateinit var fakeDao: FakeSessionDao
-    private lateinit var fakeDatabase: FakeAppDatabase
     private lateinit var repository: SessionRepository
 
     @Before
     fun setUp() {
         fakeDao = FakeSessionDao()
-        fakeDatabase = FakeAppDatabase()
-        repository = SessionRepository(fakeDao, fakeDatabase)
+        repository = SessionRepository(fakeDao, ImmediateTransactionRunner)
     }
 
     @Test

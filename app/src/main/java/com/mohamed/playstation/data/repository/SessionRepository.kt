@@ -1,9 +1,8 @@
 package com.mohamed.playstation.data.repository
 
-import androidx.room.withTransaction
 import com.mohamed.playstation.core.utils.DateUtils
-import com.mohamed.playstation.data.local.AppDatabase
 import com.mohamed.playstation.data.local.dao.SessionDao
+import com.mohamed.playstation.data.local.TransactionRunner
 import com.mohamed.playstation.data.mapper.SessionMapper
 import com.mohamed.playstation.domain.model.Session
 import java.util.Date
@@ -15,10 +14,10 @@ import kotlinx.coroutines.flow.map
 @Singleton
 class SessionRepository @Inject constructor(
     private val sessionDao: SessionDao,
-    private val database: AppDatabase
+    private val transactionRunner: TransactionRunner
 ) {
 
-    suspend fun insertSessionIfDeviceAvailable(session: Session): Long? = database.withTransaction {
+    suspend fun insertSessionIfDeviceAvailable(session: Session): Long? = transactionRunner.runInTransaction {
         val blockingSession = sessionDao.getBlockingSessionForDevice(
             deviceType = session.deviceType,
             deviceNumber = session.deviceNumber

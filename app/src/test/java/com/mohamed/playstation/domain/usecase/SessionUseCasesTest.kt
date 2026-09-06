@@ -2,8 +2,8 @@ package com.mohamed.playstation.domain.usecase
 
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.core.utils.SessionPricing
-import com.mohamed.playstation.data.local.FakeAppDatabase
 import com.mohamed.playstation.data.local.FakeSessionDao
+import com.mohamed.playstation.data.local.ImmediateTransactionRunner
 import com.mohamed.playstation.data.repository.SessionRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -18,7 +18,6 @@ import org.mockito.kotlin.mock
 class SessionUseCasesTest {
 
     private lateinit var fakeDao: FakeSessionDao
-    private lateinit var fakeDatabase: FakeAppDatabase
     private lateinit var sessionRepository: SessionRepository
     private lateinit var mockReceiptUseCases: ReceiptUseCases
     private lateinit var sessionUseCases: SessionUseCases
@@ -37,15 +36,14 @@ class SessionUseCasesTest {
     @Before
     fun setUp() {
         fakeDao = FakeSessionDao()
-        fakeDatabase = FakeAppDatabase()
         mockReceiptUseCases = mock()
 
-        sessionRepository = SessionRepository(fakeDao, fakeDatabase)
+        sessionRepository = SessionRepository(fakeDao, ImmediateTransactionRunner)
 
         sessionUseCases = SessionUseCases(
             sessionRepository = sessionRepository,
             receiptUseCases = mockReceiptUseCases,
-            database = fakeDatabase
+            transactionRunner = ImmediateTransactionRunner
         )
     }
 
