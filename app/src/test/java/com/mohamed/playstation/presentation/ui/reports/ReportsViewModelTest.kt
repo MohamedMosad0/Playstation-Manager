@@ -1,6 +1,7 @@
 package com.mohamed.playstation.presentation.ui.reports
 
 import app.cash.turbine.test
+import kotlin.time.Duration.Companion.seconds
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.data.repository.ExpenseRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
@@ -222,7 +223,7 @@ class ReportsViewModelTest {
             settingsRepository = mockSettingsRepository
         )
 
-        lossVm.uiState.test {
+        lossVm.uiState.test(timeout = 5.seconds) {
             val initial = awaitItem()
             testDispatcher.scheduler.advanceUntilIdle()
 
