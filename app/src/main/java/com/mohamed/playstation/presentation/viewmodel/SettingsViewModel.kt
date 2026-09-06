@@ -144,7 +144,6 @@ class SettingsViewModel @Inject constructor(
 
     data class LanguageItem(val code: String, val nameResId: Int)
     val languageList = listOf(
-        LanguageItem("system", R.string.language_system),
         LanguageItem("ar", R.string.language_arabic),
         LanguageItem("en", R.string.language_english)
     )

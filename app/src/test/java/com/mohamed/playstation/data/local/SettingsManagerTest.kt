@@ -1,6 +1,9 @@
 package com.mohamed.playstation.data.local
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.PreferencesProto
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -8,7 +11,10 @@ import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mohamed.playstation.core.constants.AppConstants
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.TestScope
@@ -25,6 +31,12 @@ import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsManagerTest {
+
+    private class TestContext(private val testFilesDir: File) : ContextWrapper(null) {
+        override fun getApplicationContext(): Context = this
+
+        override fun getFilesDir(): File = testFilesDir
+    }
 
     @get:Rule
     val tmpFolder = TemporaryFolder()
@@ -54,9 +66,37 @@ class SettingsManagerTest {
         val currency = dataStore.data.map { it[KEY_CURRENCY] ?: AppConstants.DEFAULT_CURRENCY }.first()
         val isDark = dataStore.data.map { it[KEY_DARK_MODE] ?: true }.first()
 
-        assertEquals("system", language)
+        assertEquals("ar", language)
         assertEquals("EGP", currency)
         assertTrue(isDark)
+    }
+
+    @Test
+    fun legacySystemLanguage_isMigratedAndPersistedAsArabic() = testScope.runTest {
+        val migrationFile = File(
+            File(tmpFolder.root, "datastore"),
+            "${AppConstants.PREFERENCES_NAME}.preferences_pb"
+        )
+        val seedScope = CoroutineScope(SupervisorJob() + testDispatcher)
+        val seedDataStore = PreferenceDataStoreFactory.create(
+            scope = seedScope,
+            produceFile = { migrationFile }
+        )
+        seedDataStore.edit { preferences ->
+            preferences[KEY_LANGUAGE] = "system"
+        }
+        seedScope.cancel()
+
+        val testContext = TestContext(tmpFolder.root)
+        val settingsManager = SettingsManager(testContext)
+        val resolvedLanguage = settingsManager.getLanguage()
+        val persistedLanguage = PreferencesProto.PreferenceMap
+            .parseFrom(migrationFile.readBytes())
+            .preferencesMap[AppConstants.KEY_LANGUAGE]
+            ?.string
+
+        assertEquals("ar", resolvedLanguage)
+        assertEquals("ar", persistedLanguage)
     }
 
     @Test

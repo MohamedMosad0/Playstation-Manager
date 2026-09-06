@@ -1,18 +1,11 @@
 package com.mohamed.playstation
 
 import android.app.Application
-import com.mohamed.playstation.core.localization.LocaleManager
 import com.mohamed.playstation.core.notifications.SessionAlarmScheduler
 import com.mohamed.playstation.core.notifications.SessionNotificationHelper
-import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.data.repository.settings.SettingsRepository
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @HiltAndroidApp
@@ -27,22 +20,8 @@ class PlayStationApplication : Application() {
     @Inject
     lateinit var settingsRepository: SettingsRepository
 
-    @Inject
-    lateinit var settingsManager: SettingsManager
-
-    @Inject
-    lateinit var localeManager: LocaleManager
-
-    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
     override fun onCreate() {
         super.onCreate()
-        applicationScope.launch {
-            val language = settingsManager.getLanguage()
-            withContext(Dispatchers.Main) {
-                localeManager.applyLanguage(language)
-            }
-        }
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())

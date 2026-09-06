@@ -14,14 +14,9 @@ class LocaleManager @Inject constructor() {
 
     /**
      * يطبّق اللغة المحددة على التطبيق.
-     * @param languageTag رمز اللغة (مثل "ar", "en") أو "system" لاستخدام لغة النظام.
+     * @param languageTag رمز اللغة المدعوم ("ar" أو "en").
      */
     fun applyLanguage(languageTag: String) {
-        val localeList = if (languageTag == "system") {
-            LocaleListCompat.getEmptyLocaleList()
-        } else {
-            LocaleListCompat.forLanguageTags(languageTag)
-        }
-        AppCompatDelegate.setApplicationLocales(localeList)
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageTag))
     }
 }

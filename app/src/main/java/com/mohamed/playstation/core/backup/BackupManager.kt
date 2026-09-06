@@ -345,9 +345,7 @@ class BackupManager @Inject constructor(
                 )
             }
 
-            BackupResult.Success(
-                restoredLanguage = backupData.settings.language
-            )
+            BackupResult.Success(restoredLanguage = settingsManager.getLanguage())
         } catch (e: Exception) {
             BackupResult.Error(e)
         }

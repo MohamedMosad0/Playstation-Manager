@@ -120,7 +120,6 @@
     <string name="settings_notifications">الإشعارات</string>
     <string name="settings_currency">العملة</string>
     <string name="settings_language">اللغة</string>
-    <string name="language_system">النظام (تلقائي)</string>
     <string name="language_arabic">العربية</string>
     <string name="language_english">English</string>
     <string name="settings_hour_price">سعر الساعة</string>

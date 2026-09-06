@@ -139,7 +139,6 @@
     <string name="settings_notifications">Notifications</string>
     <string name="settings_currency">Currency</string>
     <string name="settings_language">Language</string>
-    <string name="language_system">System Default</string>
     <string name="language_arabic">العربية</string>
     <string name="language_english">English</string>
     <string name="settings_hour_price">Price per Hour</string>

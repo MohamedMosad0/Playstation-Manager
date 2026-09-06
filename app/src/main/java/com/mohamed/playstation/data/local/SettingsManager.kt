@@ -2,6 +2,7 @@ package com.mohamed.playstation.data.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataMigration
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.mohamed.playstation.core.constants.AppConstants
@@ -16,8 +17,30 @@ import kotlinx.coroutines.flow.map
 /**
  * Extension property لإنشاء DataStore
  */
+private val languagePreferenceKey = stringPreferencesKey(AppConstants.KEY_LANGUAGE)
+
+private fun normalizeLanguage(language: String?): String = when (language) {
+    "ar", "en" -> language
+    else -> AppConstants.DEFAULT_LANGUAGE
+}
+
+private object LanguagePreferenceMigration : DataMigration<Preferences> {
+    override suspend fun shouldMigrate(currentData: Preferences): Boolean {
+        val storedLanguage = currentData[languagePreferenceKey] ?: return false
+        return normalizeLanguage(storedLanguage) != storedLanguage
+    }
+
+    override suspend fun migrate(currentData: Preferences): Preferences =
+        currentData.toMutablePreferences().apply {
+            this[languagePreferenceKey] = normalizeLanguage(currentData[languagePreferenceKey])
+        }
+
+    override suspend fun cleanUp() = Unit
+}
+
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = AppConstants.PREFERENCES_NAME
+    name = AppConstants.PREFERENCES_NAME,
+    produceMigrations = { listOf(LanguagePreferenceMigration) }
 )
 
 /**
@@ -25,7 +48,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
  */
 @Singleton
 class SettingsManager @Inject constructor(
-    private val context: Context
+    context: Context
 ) {
 
     private val dataStore = context.dataStore
@@ -91,12 +114,12 @@ class SettingsManager @Inject constructor(
     // ======================== Language ========================
 
     val languageFlow: Flow<String> = dataStore.data.map { preferences ->
-        preferences[PreferencesKeys.LANGUAGE] ?: AppConstants.DEFAULT_LANGUAGE
+        normalizeLanguage(preferences[PreferencesKeys.LANGUAGE])
     }.distinctUntilChanged()
 
     suspend fun setLanguage(language: String) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.LANGUAGE] = language
+            preferences[PreferencesKeys.LANGUAGE] = normalizeLanguage(language)
         }
     }
 
@@ -109,7 +132,7 @@ class SettingsManager @Inject constructor(
 
     val appConfigFlow: Flow<AppConfig> = dataStore.data.map { preferences ->
         AppConfig(
-            language = preferences[PreferencesKeys.LANGUAGE] ?: AppConstants.DEFAULT_LANGUAGE,
+            language = normalizeLanguage(preferences[PreferencesKeys.LANGUAGE]),
             isDark = preferences[PreferencesKeys.DARK_MODE] ?: true
         )
     }.distinctUntilChanged()
@@ -315,7 +338,7 @@ class SettingsManager @Inject constructor(
 
     suspend fun getLanguage(): String {
         val preferences = dataStore.data.first()
-        return preferences[PreferencesKeys.LANGUAGE] ?: AppConstants.DEFAULT_LANGUAGE
+        return normalizeLanguage(preferences[PreferencesKeys.LANGUAGE])
     }
 
     suspend fun getPricingSettings(): SessionPricing.PricingSettings {
