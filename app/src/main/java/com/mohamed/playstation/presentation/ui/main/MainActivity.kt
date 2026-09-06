@@ -3,6 +3,7 @@ package com.mohamed.playstation.presentation.ui.main
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.isVisible
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -93,6 +94,19 @@ class MainActivity : AppCompatActivity() {
             } catch (_: IllegalArgumentException) {
                 false
             }
+        }
+
+        val topLevelDestinations = setOf(
+            R.id.dashboardFragment,
+            R.id.sessionsFragment,
+            R.id.inventoryFragment,
+            R.id.reportsFragment,
+            R.id.settingsFragment
+        )
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val isTopLevelDestination = destination.id in topLevelDestinations
+            binding.bottomNavigationView.isVisible = isTopLevelDestination
+            binding.bottomNavDivider.isVisible = isTopLevelDestination
         }
     }
 

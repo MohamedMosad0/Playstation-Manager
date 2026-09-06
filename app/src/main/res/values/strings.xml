@@ -94,6 +94,7 @@
     <string name="share">مشاركة</string>
     <string name="save">حفظ</string>
     <string name="close">إغلاق</string>
+    <string name="action_navigate_up">رجوع</string>
     <string name="payment_method">طريقة الدفع</string>
     <string name="cash">نقداً</string>
     <string name="card">كارت</string>

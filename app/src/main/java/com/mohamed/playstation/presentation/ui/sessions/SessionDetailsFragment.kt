@@ -65,6 +65,9 @@ class SessionDetailsFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
+        binding.btnNavigateUp.setOnClickListener {
+            findNavController().navigateUp()
+        }
         binding.btnAddProduct.setOnClickListener {
             AddProductDialog.newInstance(sessionId)
                 .show(childFragmentManager, "AddProductDialog")

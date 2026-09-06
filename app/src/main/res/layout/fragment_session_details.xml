@@ -26,6 +26,17 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="@dimen/spacing_large">
 
+                <ImageButton
+                    android:id="@+id/btnNavigateUp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/action_navigate_up"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_arrow_back"
+                    app:tint="@color/text_secondary" />
+
                 <!-- Decorative Device Badge -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardDeviceBadge"

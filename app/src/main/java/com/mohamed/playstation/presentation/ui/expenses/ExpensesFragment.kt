@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -95,6 +96,9 @@ class ExpensesFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        binding.btnNavigateUp.setOnClickListener {
+            findNavController().navigateUp()
+        }
         binding.fabAddExpense.setOnClickListener {
             AddExpenseDialog.newInstance().show(childFragmentManager, "AddExpenseDialog")
         }

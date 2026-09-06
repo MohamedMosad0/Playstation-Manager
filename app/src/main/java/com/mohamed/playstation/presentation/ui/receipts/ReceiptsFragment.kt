@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.utils.CurrencyUtils
@@ -45,6 +46,9 @@ class ReceiptsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        binding.btnNavigateUp.setOnClickListener {
+            findNavController().navigateUp()
+        }
         setupDateFilter()
         observeData()
     }
