@@ -28,6 +28,7 @@ import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import java.util.Calendar
 import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -271,4 +272,71 @@ class ReportsViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
+
+    @Test
+    fun uiState_revenueChartOrdersDatesChronologicallyAcrossNewYear() = runTest {
+        val receipts = listOf(
+            sampleReceipts[0].copy(createdAt = dateAt(2025, Calendar.DECEMBER, 31), totalAmount = 100.0),
+            sampleReceipts[1].copy(createdAt = dateAt(2026, Calendar.JANUARY, 1), totalAmount = 200.0)
+        )
+        val receiptRepository: ReceiptRepository = mock()
+        whenever(receiptRepository.getAllReceipts()).thenReturn(flowOf(receipts))
+        whenever(receiptRepository.getReceiptsInRange(any(), any())).thenReturn(flowOf(receipts))
+
+        val viewModel = ReportsViewModel(
+            receiptRepository = receiptRepository,
+            expenseRepository = mockExpenseRepository,
+            sessionProductRepository = mockSessionProductRepository,
+            settingsRepository = englishSettingsRepository()
+        )
+
+        viewModel.uiState.test {
+            awaitItem()
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val state = awaitItem()
+            assertEquals(listOf("12/31", "01/01"), state.revenueLast7Days.map { it.first })
+            assertEquals(listOf(100.0, 200.0), state.revenueLast7Days.map { it.second })
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun uiState_revenueChartKeepsSameMonthDayFromDifferentYearsSeparate() = runTest {
+        val receipts = listOf(
+            sampleReceipts[0].copy(createdAt = dateAt(2025, Calendar.JANUARY, 1), totalAmount = 100.0),
+            sampleReceipts[1].copy(createdAt = dateAt(2026, Calendar.JANUARY, 1), totalAmount = 200.0)
+        )
+        val receiptRepository: ReceiptRepository = mock()
+        whenever(receiptRepository.getAllReceipts()).thenReturn(flowOf(receipts))
+        whenever(receiptRepository.getReceiptsInRange(any(), any())).thenReturn(flowOf(receipts))
+
+        val viewModel = ReportsViewModel(
+            receiptRepository = receiptRepository,
+            expenseRepository = mockExpenseRepository,
+            sessionProductRepository = mockSessionProductRepository,
+            settingsRepository = englishSettingsRepository()
+        )
+
+        viewModel.uiState.test {
+            awaitItem()
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val state = awaitItem()
+            assertEquals(listOf("01/01", "01/01"), state.revenueLast7Days.map { it.first })
+            assertEquals(listOf(100.0, 200.0), state.revenueLast7Days.map { it.second })
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    private fun englishSettingsRepository(): SettingsRepository = mock<SettingsRepository>().also { repository ->
+        whenever(repository.currencyFlow).thenReturn(flowOf("USD"))
+        whenever(repository.languageFlow).thenReturn(flowOf("en"))
+    }
+
+    private fun dateAt(year: Int, month: Int, dayOfMonth: Int): Date =
+        Calendar.getInstance().apply {
+            clear()
+            set(year, month, dayOfMonth, 12, 0, 0)
+        }.time
 }

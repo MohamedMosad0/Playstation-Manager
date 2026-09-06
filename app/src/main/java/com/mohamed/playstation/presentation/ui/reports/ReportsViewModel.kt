@@ -100,7 +100,7 @@ class ReportsViewModel @Inject constructor(
         var totalTaxes = 0.0
         var durationSum = 0L
 
-        val revenueLast7DaysMap = mutableMapOf<String, Double>()
+        val revenueLast7DaysMap = mutableMapOf<Long, Double>()
         val deviceCountMap = mutableMapOf<String, Int>()
 
         for (receipt in receipts) {
@@ -112,9 +112,9 @@ class ReportsViewModel @Inject constructor(
             durationSum += receipt.durationMinutes
 
             // Chart data (was a separate forEach loop)
-            val dayLabel = AppFormatters.formatChartDay(receipt.createdAt, language)
-            revenueLast7DaysMap[dayLabel] =
-                (revenueLast7DaysMap[dayLabel] ?: 0.0) + receipt.totalAmount
+            val dayStartMillis = startOfDay(receipt.createdAt)
+            revenueLast7DaysMap[dayStartMillis] =
+                (revenueLast7DaysMap[dayStartMillis] ?: 0.0) + receipt.totalAmount
 
             // Device distribution (was a separate groupBy + mapValues)
             deviceCountMap[receipt.deviceType] =
@@ -155,7 +155,9 @@ class ReportsViewModel @Inject constructor(
         val revenueLast7DaysList = revenueLast7DaysMap.entries
             .sortedBy { it.key }
             .takeLast(7)
-            .map { Pair(it.key, it.value) }
+            .map { (dayStartMillis, revenue) ->
+                Pair(AppFormatters.formatChartDay(java.util.Date(dayStartMillis), language), revenue)
+            }
 
         val rangeLabel = when (dateRange) {
             DateRangeFilter.TODAY -> R.string.filter_today
@@ -206,6 +208,15 @@ class ReportsViewModel @Inject constructor(
         _customStart.value = start
         _customEnd.value = end
         _dateRange.value = DateRangeFilter.CUSTOM
+    }
+
+    private fun startOfDay(date: java.util.Date): Long = Calendar.getInstance().run {
+        time = date
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+        timeInMillis
     }
 
     private fun getTimestampsForRange(
