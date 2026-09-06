@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/sessionDetailsFragment"
         android:name="com.mohamed.playstation.presentation.ui.sessions.SessionDetailsFragment"
-        android:label="Session Details">
+        android:label="@string/session_details">
         <argument
             android:name="sessionId"
             app:argType="long" />

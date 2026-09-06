@@ -209,8 +209,11 @@ class SessionsFragment : Fragment() {
                                 sessionAdapter.submitList(result.sessions)
                                 lastActiveRef = result.activeRef
                                 lastPausedRef = result.pausedRef
-                                binding.chipRunning.text = getString(R.string.tab_running) +
-                                    " (${AppFormatters.formatInteger(requireContext(), result.sessions.size)})"
+                                binding.chipRunning.text = getString(
+                                    R.string.tab_count_format,
+                                    getString(R.string.tab_running),
+                                    AppFormatters.formatInteger(requireContext(), result.sessions.size)
+                                )
                             }
                             sessionAdapter.updateTick(result.tick)
                         }
@@ -231,7 +234,11 @@ class SessionsFragment : Fragment() {
                         binding.rvCompletedSessions.isVisible = !isEmpty
                         if (!isEmpty) {
                             completedAdapter.submitList(sessions)
-                            binding.chipCompleted.text = getString(R.string.tab_completed) + " (${sessions.size})"
+                            binding.chipCompleted.text = getString(
+                                R.string.tab_count_format,
+                                getString(R.string.tab_completed),
+                                AppFormatters.formatInteger(requireContext(), sessions.size)
+                            )
                         } else {
                             binding.chipCompleted.text = getString(R.string.tab_completed)
                         }

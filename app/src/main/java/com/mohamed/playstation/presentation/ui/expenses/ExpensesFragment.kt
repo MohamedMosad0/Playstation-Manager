@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.FragmentExpensesBinding
 import com.mohamed.playstation.domain.model.Expense
@@ -137,7 +138,7 @@ class ExpensesFragment : Fragment() {
                 }
                 launch {
                     viewModel.expenseCount.collect { count ->
-                        binding.tvExpenseCount.text = count.toString()
+                        binding.tvExpenseCount.text = AppFormatters.formatInteger(requireContext(), count)
                     }
                 }
                 launch {

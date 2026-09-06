@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.core.utils.CurrencyUtils
 import com.mohamed.playstation.databinding.ItemSessionProductBinding
 import com.mohamed.playstation.domain.model.SessionProduct
@@ -40,7 +42,10 @@ class ProductAdapter(
             binding.tvProductName.text = product.nameSnapshot
             val unitPrice = CurrencyUtils.formatAmount(itemView.context, product.sellPriceSnapshot, currencyCode)
             val lineTotal = CurrencyUtils.formatAmount(itemView.context, product.getLineTotal(), currencyCode)
-            binding.tvProductQuantity.text = "×${product.quantitySold}"
+            binding.tvProductQuantity.text = itemView.context.getString(
+                R.string.product_quantity_multiplier,
+                AppFormatters.formatInteger(itemView.context, product.quantitySold)
+            )
             binding.tvProductUnitPrice.text = unitPrice
             binding.tvProductPrice.text = lineTotal
         }

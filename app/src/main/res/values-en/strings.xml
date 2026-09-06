@@ -36,6 +36,8 @@
     <string name="status_completed">Completed ✓</string>
     <string name="tab_running">Running</string>
     <string name="tab_completed">Completed</string>
+    <string name="tab_count_format">%1$s (%2$s)</string>
+    <string name="session_details">Session Details</string>
     <string name="no_completed_sessions">No Completed Sessions</string>
     <string name="no_completed_sessions_hint">Start and end a session to see history here</string>
 
@@ -419,7 +421,7 @@
     <string name="cost_of_unit">Cost of %1$s:</string>
     <string name="profit_of_unit">Profit of %1$s:</string>
     <string name="available_label">Available:</string>
-    <string name="quantity_sold_label">Sold:</string>
+    <string name="quantity_sold_label">Sold: %1$s %2$s</string>
 
     <string name="report_date_picker_title">Select Report Period</string>
     <string name="custom_period">Custom Period</string>
@@ -448,6 +450,7 @@
     <string name="receipt_item_format">%1$s (%2$s × %3$d = %4$s)</string>
     <string name="receipt_item_format_print">- %1$s: %2$s × %3$d = %4$s</string>
     <string name="product_quantity_format">%1$s × %2$d</string>
+    <string name="product_quantity_multiplier">×%1$s</string>
 
 
 

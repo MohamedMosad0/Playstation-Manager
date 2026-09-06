@@ -37,14 +37,18 @@ class TopProductsAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TopProductItem, rank: Int) {
-            binding.tvRank.text = "$rank"
+            binding.tvRank.text = AppFormatters.formatInteger(binding.root.context, rank)
             binding.tvProductName.text = android.text.BidiFormatter.getInstance().unicodeWrap(item.name)
             
             val isPrepared = item.isPrepared
             val unitName = item.unitLabel
             val pluralUnit = binding.root.context.getString(UnitFormatUtils.getPluralUnitRes(unitName))
             
-            binding.tvQuantitySold.text = "${binding.root.context.getString(R.string.quantity_sold_label)} ${AppFormatters.formatInteger(binding.root.context, item.quantitySold)} $pluralUnit"
+            binding.tvQuantitySold.text = binding.root.context.getString(
+                R.string.quantity_sold_label,
+                AppFormatters.formatInteger(binding.root.context, item.quantitySold),
+                pluralUnit
+            )
             
             val formattedRevenue = CurrencyUtils.formatAmount(binding.root.context, item.revenue, currency)
             binding.tvProductRevenue.text = formattedRevenue

@@ -35,6 +35,8 @@
     <string name="status_completed">مكتملة ✓</string>
     <string name="tab_running">جارية</string>
     <string name="tab_completed">مكتملة</string>
+    <string name="tab_count_format">%1$s (%2$s)</string>
+    <string name="session_details">تفاصيل الجلسة</string>
     <string name="no_completed_sessions">لا توجد جلسات مكتملة</string>
     <string name="no_completed_sessions_hint">ابدأ وأنهِ جلسة لترى سجل الجلسات هنا</string>
 
@@ -380,7 +382,7 @@
     <string name="cost_of_unit">تكلفة %1$s:</string>
     <string name="profit_of_unit">ربح %1$s:</string>
     <string name="available_label">المتاح:</string>
-    <string name="quantity_sold_label">تم بيع:</string>
+    <string name="quantity_sold_label">تم بيع: %1$s %2$s</string>
 
     <string name="report_date_picker_title">اختر فترة التقرير</string>
     <string name="custom_period">فترة مخصصة</string>
@@ -409,6 +411,7 @@
     <string name="receipt_item_format">%1$s (%2$s × %3$d = %4$s)</string>
     <string name="receipt_item_format_print">- %1$s: %2$s × %3$d = %4$s</string>
     <string name="product_quantity_format">%1$s × %2$d</string>
+    <string name="product_quantity_multiplier">×%1$s</string>
 
 
     <!-- Backup and Restore -->
