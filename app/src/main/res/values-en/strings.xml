@@ -99,6 +99,7 @@
     <string name="share">Share</string>
     <string name="save">Save</string>
     <string name="close">Close</string>
+    <string name="action_navigate_up">Navigate up</string>
     <string name="payment_method">Payment Method</string>
     <string name="cash">Cash</string>
     <string name="card">Card</string>
