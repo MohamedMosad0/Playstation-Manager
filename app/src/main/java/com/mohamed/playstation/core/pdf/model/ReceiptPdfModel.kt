@@ -17,5 +17,7 @@ data class ReceiptPdfModel(
     val paymentMethod: String,
     val currencyCode: String,
     val appName: String,
-    val footerMessage: String
+    val footerMessage: String,
+    val labels: ReceiptPdfLabels,
+    val isRtl: Boolean
 )

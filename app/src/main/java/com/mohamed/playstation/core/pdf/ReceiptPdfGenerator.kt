@@ -7,7 +7,6 @@ import android.net.Uri
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
-import android.view.View
 import androidx.core.content.FileProvider
 import androidx.core.graphics.withTranslation
 import com.mohamed.playstation.R
@@ -165,11 +164,11 @@ class ReceiptPdfGenerator @Inject constructor(@param:ApplicationContext private 
         y += 16f
 
         // 4. Details
-        y = drawRow(canvas, context.getString(R.string.device), model.deviceName, y, bodySecondaryPaint, boldPaint)
+        y = drawRow(canvas, model.labels.device, model.deviceName, y, bodySecondaryPaint, boldPaint, model.isRtl)
         y += 8f
-        y = drawRow(canvas, context.getString(R.string.session_type), model.sessionType, y, bodySecondaryPaint, boldPaint)
+        y = drawRow(canvas, model.labels.sessionType, model.sessionType, y, bodySecondaryPaint, boldPaint, model.isRtl)
         y += 8f
-        y = drawRow(canvas, context.getString(R.string.duration), model.duration, y, bodySecondaryPaint, boldPaint)
+        y = drawRow(canvas, model.labels.duration, model.duration, y, bodySecondaryPaint, boldPaint, model.isRtl)
         y += 16f
 
         // 5. Products
@@ -177,7 +176,7 @@ class ReceiptPdfGenerator @Inject constructor(@param:ApplicationContext private 
             y = drawDashedLine(canvas, y)
             y += 16f
 
-            y = drawStartText(canvas, context.getString(R.string.products), y, sectionHeaderPaint)
+            y = drawStartText(canvas, model.labels.products, y, sectionHeaderPaint)
             y += 12f
 
             model.products.forEach { product ->
@@ -187,7 +186,7 @@ class ReceiptPdfGenerator @Inject constructor(@param:ApplicationContext private 
 
                 // Row 2: Qty x Price and Total
                 val qtyStr = "${product.quantity} × ${product.unitPrice}"
-                y = drawRow(canvas, qtyStr, product.totalPrice, y, bodySecondaryPaint, boldPaint)
+                y = drawRow(canvas, qtyStr, product.totalPrice, y, bodySecondaryPaint, boldPaint, model.isRtl)
                 y += 12f
             }
         }
@@ -196,20 +195,20 @@ class ReceiptPdfGenerator @Inject constructor(@param:ApplicationContext private 
         y = drawDashedLine(canvas, y)
         y += 16f
 
-        y = drawRow(canvas, context.getString(R.string.play_cost), model.playCost, y, bodySecondaryPaint, bodyPaint)
+        y = drawRow(canvas, model.labels.playCost, model.playCost, y, bodySecondaryPaint, bodyPaint, model.isRtl)
         y += 8f
-        y = drawRow(canvas, context.getString(R.string.products_cost), model.productsCost, y, bodySecondaryPaint, bodyPaint)
+        y = drawRow(canvas, model.labels.productsCost, model.productsCost, y, bodySecondaryPaint, bodyPaint, model.isRtl)
         y += 16f
 
         y = drawSolidLine(canvas, y)
         y += 16f
 
         // 7. TOTAL
-        y = drawRow(canvas, context.getString(R.string.total), model.totalAmount, y, totalLabelPaint, totalValuePaint)
+        y = drawRow(canvas, model.labels.total, model.totalAmount, y, totalLabelPaint, totalValuePaint, model.isRtl)
         y += 24f
 
         // 8. Payment Method
-        y = drawRow(canvas, context.getString(R.string.receipt_payment_method_label), model.paymentMethod, y, bodySecondaryPaint, boldPaint)
+        y = drawRow(canvas, model.labels.paymentMethod, model.paymentMethod, y, bodySecondaryPaint, boldPaint, model.isRtl)
         y += 32f
 
         // 9. Footer
@@ -264,9 +263,15 @@ class ReceiptPdfGenerator @Inject constructor(@param:ApplicationContext private 
         return y + layout.height
     }
 
-    private fun drawRow(canvas: Canvas?, key: String, value: String, y: Float, keyPaint: TextPaint, valuePaint: TextPaint): Float {
-        val isRtl = context.resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
-
+    private fun drawRow(
+        canvas: Canvas?,
+        key: String,
+        value: String,
+        y: Float,
+        keyPaint: TextPaint,
+        valuePaint: TextPaint,
+        isRtl: Boolean
+    ): Float {
         val halfWidth = (contentWidth * 0.5f).toInt()
 
         val keyAlign = Layout.Alignment.ALIGN_NORMAL // Start

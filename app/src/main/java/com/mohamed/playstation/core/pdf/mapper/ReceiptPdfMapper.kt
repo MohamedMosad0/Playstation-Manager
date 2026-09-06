@@ -1,6 +1,7 @@
 package com.mohamed.playstation.core.pdf.mapper
 
 import com.mohamed.playstation.core.pdf.model.ProductPdfModel
+import com.mohamed.playstation.core.pdf.model.ReceiptPdfLabels
 import com.mohamed.playstation.core.pdf.model.ReceiptPdfModel
 import com.mohamed.playstation.presentation.ui.receipts.model.ReceiptUiModel
 
@@ -13,7 +14,9 @@ object ReceiptPdfMapper {
     fun mapToPdfModel(
         uiModel: ReceiptUiModel,
         appName: String,
-        footerMessage: String
+        footerMessage: String,
+        labels: ReceiptPdfLabels,
+        isRtl: Boolean
     ): ReceiptPdfModel {
         return ReceiptPdfModel(
             receiptNumber = uiModel.receiptNumber,
@@ -35,7 +38,9 @@ object ReceiptPdfMapper {
             paymentMethod = uiModel.paymentMethod ?: "",
             currencyCode = "", // Already formatted in totalAmount/playCost strings
             appName = appName,
-            footerMessage = footerMessage
+            footerMessage = footerMessage,
+            labels = labels,
+            isRtl = isRtl
         )
     }
 }

@@ -6,6 +6,7 @@ import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.core.pdf.ReceiptPdfGenerator
 import com.mohamed.playstation.core.pdf.mapper.ReceiptPdfMapper
+import com.mohamed.playstation.core.pdf.model.ReceiptPdfLabels
 import com.mohamed.playstation.core.utils.DateUtils
 import com.mohamed.playstation.core.utils.UiText
 import com.mohamed.playstation.data.local.SettingsManager
@@ -152,14 +153,26 @@ class ReceiptViewModel @Inject constructor(
     /**
      * Generates a PDF for the given receipt UI model.
      */
-    fun generateReceiptPdf(uiModel: ReceiptUiModel, appName: String, footerMessage: String) {
+    fun generateReceiptPdf(
+        uiModel: ReceiptUiModel,
+        appName: String,
+        footerMessage: String,
+        labels: ReceiptPdfLabels,
+        isRtl: Boolean
+    ) {
         if (_pdfUiState.value is PdfUiState.Loading) return
         
         viewModelScope.launch {
             _pdfUiState.value = PdfUiState.Loading
             try {
                 val uri = withContext(Dispatchers.IO) {
-                    val pdfModel = ReceiptPdfMapper.mapToPdfModel(uiModel, appName, footerMessage)
+                    val pdfModel = ReceiptPdfMapper.mapToPdfModel(
+                        uiModel = uiModel,
+                        appName = appName,
+                        footerMessage = footerMessage,
+                        labels = labels,
+                        isRtl = isRtl
+                    )
                     pdfGenerator.generate(pdfModel)
                 }
                 

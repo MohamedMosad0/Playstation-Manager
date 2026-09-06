@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mohamed.playstation.R
+import com.mohamed.playstation.core.pdf.model.ReceiptPdfLabels
 import com.mohamed.playstation.databinding.DialogReceiptDetailBinding
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.presentation.ui.receipts.mapper.ReceiptDisplayMapper
@@ -186,12 +187,7 @@ class ReceiptDetailDialog : DialogFragment() {
 
             btnPrint.setOnClickListener {
                 pendingAction = PendingAction.PRINT
-                val currentModel = uiModel ?: return@setOnClickListener
-                receiptViewModel.generateReceiptPdf(
-                    currentModel,
-                    getString(R.string.app_name),
-                    getString(R.string.coming_soon)
-                )
+                triggerPdfGeneration()
             }
             btnShare.setOnClickListener {
                 showShareOptions()
@@ -228,6 +224,19 @@ class ReceiptDetailDialog : DialogFragment() {
         }
     }
 
+    private fun triggerPdfGeneration() {
+        val currentModel = uiModel ?: return
+        val labels = ReceiptPdfLabels.fromContext(requireContext())
+        val isRtl = resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+        receiptViewModel.generateReceiptPdf(
+            uiModel = currentModel,
+            appName = getString(R.string.app_name),
+            footerMessage = getString(R.string.coming_soon),
+            labels = labels,
+            isRtl = isRtl
+        )
+    }
+
     private fun showShareOptions() {
         val options = arrayOf(
             getString(R.string.share_text),
@@ -240,12 +249,7 @@ class ReceiptDetailDialog : DialogFragment() {
                     0 -> shareText()
                     1 -> {
                         pendingAction = PendingAction.SHARE_PDF
-                        val currentModel = uiModel ?: return@setItems
-                        receiptViewModel.generateReceiptPdf(
-                            currentModel,
-                            getString(R.string.app_name),
-                            getString(R.string.coming_soon)
-                        )
+                        triggerPdfGeneration()
                     }
                 }
             }
