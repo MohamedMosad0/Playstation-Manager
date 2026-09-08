@@ -457,5 +457,13 @@
     <string name="invalid_expense_amount">أدخل مبلغاً أكبر من صفر</string>
     <string name="select_expense_category">اختر فئة للمصروف</string>
     <string name="end_session_failed">تعذر إنهاء الجلسة. حاول مرة أخرى.</string>
+
+    <!-- Error and Retry UI -->
+    <string name="retry">إعادة المحاولة</string>
+    <string name="error_loading_data">فشل تحميل البيانات</string>
+    <string name="error_loading_receipts">فشل تحميل الفواتير</string>
+    <string name="error_loading_sessions">فشل تحميل الجلسات</string>
+    <string name="error_loading_completed_sessions">فشل تحميل الجلسات المنتهية</string>
+    <string name="retry_hint">يرجى المحاولة مرة أخرى</string>
 </resources>
 

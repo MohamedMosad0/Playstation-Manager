@@ -1,10 +1,12 @@
 package com.mohamed.playstation.presentation.viewmodel
 
 import app.cash.turbine.test
+import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
 import com.mohamed.playstation.core.notifications.SessionAlarmScheduler
 import com.mohamed.playstation.core.notifications.SessionNotificationHelper
 import com.mohamed.playstation.core.utils.SessionTicker
+import com.mohamed.playstation.core.utils.UiText
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.domain.model.Session
 import com.mohamed.playstation.domain.usecase.InventoryUseCases
@@ -13,6 +15,7 @@ import com.mohamed.playstation.domain.usecase.SessionUseCases
 import com.mohamed.playstation.presentation.state.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -98,8 +101,9 @@ class SessionViewModelTest {
     @Test
     fun activeSessions_whenEmpty_emitsEmptyUiState() = runTest {
         viewModel.activeSessions.test {
-            val state = awaitItem()
-            assertTrue(state is UiState.Loading || state is UiState.Empty)
+            assertEquals(UiState.Loading, awaitItem())
+            testDispatcher.scheduler.advanceUntilIdle()
+            assertEquals(UiState.Empty, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -161,5 +165,164 @@ class SessionViewModelTest {
 
         verify(mockSessionUseCases).resumeSession(session)
         verify(mockAlarmScheduler).syncSession(12L, allowImmediateWarning = false)
+    }
+
+    @Test
+    fun activeSessions_whenFailure_emitsErrorWithLocalizedMessage() = runTest {
+        whenever(mockSessionUseCases.getActiveSessions())
+            .thenReturn(flow { throw RuntimeException("DB failure") })
+
+        val errorViewModel = SessionViewModel(
+            sessionUseCases = mockSessionUseCases,
+            sessionProductUseCases = mockSessionProductUseCases,
+            inventoryUseCases = mockInventoryUseCases,
+            settingsManager = mockSettingsManager,
+            sessionNotificationHelper = mockNotificationHelper,
+            sessionAlarmScheduler = mockAlarmScheduler,
+            sessionTicker = mockSessionTicker
+        )
+
+        errorViewModel.activeSessions.test {
+            val initial = awaitItem()
+            assertTrue(initial is UiState.Loading)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val errorState = awaitItem()
+            assertTrue(errorState is UiState.Error)
+            val msg = (errorState as UiState.Error).message
+            assertTrue(msg is UiText.StringResource)
+            assertEquals(R.string.error_loading_sessions, (msg as UiText.StringResource).resId)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun pausedSessions_whenFailure_emitsErrorWithLocalizedMessage() = runTest {
+        whenever(mockSessionUseCases.getPausedSessions())
+            .thenReturn(flow { throw RuntimeException("DB failure") })
+
+        val errorViewModel = SessionViewModel(
+            sessionUseCases = mockSessionUseCases,
+            sessionProductUseCases = mockSessionProductUseCases,
+            inventoryUseCases = mockInventoryUseCases,
+            settingsManager = mockSettingsManager,
+            sessionNotificationHelper = mockNotificationHelper,
+            sessionAlarmScheduler = mockAlarmScheduler,
+            sessionTicker = mockSessionTicker
+        )
+
+        errorViewModel.pausedSessions.test {
+            val initial = awaitItem()
+            assertTrue(initial is UiState.Loading)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val errorState = awaitItem()
+            assertTrue(errorState is UiState.Error)
+            val msg = (errorState as UiState.Error).message
+            assertTrue(msg is UiText.StringResource)
+            assertEquals(R.string.error_loading_sessions, (msg as UiText.StringResource).resId)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun completedSessions_whenEmpty_emitsEmptyUiState() = runTest {
+        whenever(mockSessionUseCases.getEndedSessions()).thenReturn(flowOf(emptyList()))
+
+        viewModel.completedSessions.test {
+            val initial = awaitItem()
+            assertTrue(initial is UiState.Loading)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val state = awaitItem()
+            assertTrue(state is UiState.Empty)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun completedSessions_whenFailure_emitsErrorNeverEmptyAndNeverUncaught() = runTest {
+        whenever(mockSessionUseCases.getEndedSessions())
+            .thenReturn(flow { throw RuntimeException("DB failure") })
+
+        val errorViewModel = SessionViewModel(
+            sessionUseCases = mockSessionUseCases,
+            sessionProductUseCases = mockSessionProductUseCases,
+            inventoryUseCases = mockInventoryUseCases,
+            settingsManager = mockSettingsManager,
+            sessionNotificationHelper = mockNotificationHelper,
+            sessionAlarmScheduler = mockAlarmScheduler,
+            sessionTicker = mockSessionTicker
+        )
+
+        errorViewModel.completedSessions.test {
+            val initial = awaitItem()
+            assertTrue(initial is UiState.Loading)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val errorState = awaitItem()
+            assertTrue(errorState is UiState.Error)
+            val msg = (errorState as UiState.Error).message
+            assertTrue(msg is UiText.StringResource)
+            assertEquals(R.string.error_loading_completed_sessions, (msg as UiText.StringResource).resId)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun sessions_retryAfterFailure_reloadsDataAndEmitsSuccess() = runTest {
+        val dummySession = Session(
+            id = 99L,
+            deviceType = AppConstants.DEVICE_PS4,
+            deviceNumber = 1,
+            sessionType = AppConstants.SESSION_TYPE_SINGLE,
+            sessionMode = AppConstants.SESSION_MODE_OPEN,
+            isMultiPlayer = false,
+            startTime = Date(),
+            status = AppConstants.SESSION_STATUS_ACTIVE,
+            pricePerHour = 30.0
+        )
+
+        var shouldFail = true
+        whenever(mockSessionUseCases.getActiveSessions()).thenAnswer {
+            flow {
+                if (shouldFail) {
+                    throw RuntimeException("DB temporary failure")
+                } else {
+                    emit(listOf(dummySession))
+                }
+            }
+        }
+
+        val retryViewModel = SessionViewModel(
+            sessionUseCases = mockSessionUseCases,
+            sessionProductUseCases = mockSessionProductUseCases,
+            inventoryUseCases = mockInventoryUseCases,
+            settingsManager = mockSettingsManager,
+            sessionNotificationHelper = mockNotificationHelper,
+            sessionAlarmScheduler = mockAlarmScheduler,
+            sessionTicker = mockSessionTicker
+        )
+
+        retryViewModel.activeSessions.test {
+            assertEquals(UiState.Loading, awaitItem())
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val errorState = awaitItem()
+            assertTrue(errorState is UiState.Error)
+
+            shouldFail = false
+            retryViewModel.retry()
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val nextState = awaitItem()
+            val finalState = if (nextState is UiState.Loading) awaitItem() else nextState
+            assertTrue(finalState is UiState.Success)
+            val (sessions, _) = (finalState as UiState.Success).data
+            assertEquals(1, sessions.size)
+            assertEquals(99L, sessions.first().id)
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 }

@@ -11,14 +11,19 @@ import com.mohamed.playstation.domain.usecase.dashboard.GetDashboardDataUseCase
 import com.mohamed.playstation.presentation.state.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
+import timber.log.Timber
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val getDashboardDataUseCase: GetDashboardDataUseCase,
@@ -28,22 +33,19 @@ class DashboardViewModel @Inject constructor(
     val currency: StateFlow<String> = settingsManager.currencyFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppConstants.DEFAULT_CURRENCY)
 
-    private val _uiState = MutableStateFlow<UiState<DashboardData>>(UiState.Loading)
-    val uiState: StateFlow<UiState<DashboardData>> = _uiState.asStateFlow()
+    private val retryTrigger = MutableStateFlow(0)
 
-    init {
-        loadDashboardData()
-    }
+    val uiState: StateFlow<UiState<DashboardData>> = retryTrigger.flatMapLatest {
+        getDashboardDataUseCase()
+            .map<DashboardData, UiState<DashboardData>> { UiState.Success(it) }
+            .catch { e ->
+                Timber.e(e, "Error loading dashboard data")
+                emit(UiState.Error(UiText.StringResource(R.string.error_loading_data)))
+            }
+            .onStart { emit(UiState.Loading) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UiState.Loading)
 
-    private fun loadDashboardData() {
-        viewModelScope.launch {
-            getDashboardDataUseCase()
-                .catch { e ->
-                    _uiState.value = UiState.Error(e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred))
-                }
-                .collect { data ->
-                    _uiState.value = UiState.Success(data)
-                }
-        }
+    fun retry() {
+        retryTrigger.update { it + 1 }
     }
 }

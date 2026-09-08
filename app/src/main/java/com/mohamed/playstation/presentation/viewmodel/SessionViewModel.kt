@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SessionViewModel @Inject constructor(
     private val sessionUseCases: SessionUseCases,
@@ -37,46 +38,46 @@ class SessionViewModel @Inject constructor(
 
     private val tickerFlow: Flow<Long> = sessionTicker.tickerFlow
 
-    val activeSessions: StateFlow<UiState<Pair<List<Session>, Long>>> = combine(
-        sessionUseCases.getActiveSessions(),
-        tickerFlow
-    ) { sessions, tick ->
-        if (sessions.isEmpty()) {
-            UiState.Empty
-        } else {
-            UiState.Success(sessions to tick)
+    private val retryTrigger = MutableStateFlow(0)
+
+    fun retry() {
+        retryTrigger.update { it + 1 }
+    }
+
+    val activeSessions: StateFlow<UiState<Pair<List<Session>, Long>>> = retryTrigger.flatMapLatest {
+        combine(
+            sessionUseCases.getActiveSessions(),
+            tickerFlow
+        ) { sessions, tick ->
+            if (sessions.isEmpty()) {
+                UiState.Empty
+            } else {
+                UiState.Success(sessions to tick)
+            }
+        }.catch { e ->
+            Timber.e(e, "Error loading active sessions")
+            emit(UiState.Error(UiText.StringResource(R.string.error_loading_sessions)))
         }
-    }.catch { e ->
-        Timber.e(e, "Error loading active sessions")
-        emit(
-            UiState.Error(
-                e.message?.let { UiText.DynamicString(it) }
-                    ?: UiText.StringResource(R.string.error_occurred)
-            )
-        )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
         UiState.Loading
     )
 
-    val pausedSessions: StateFlow<UiState<Pair<List<Session>, Long>>> = combine(
-        sessionUseCases.getPausedSessions(),
-        tickerFlow
-    ) { sessions, tick ->
-        if (sessions.isEmpty()) {
-            UiState.Empty
-        } else {
-            UiState.Success(sessions to tick)
+    val pausedSessions: StateFlow<UiState<Pair<List<Session>, Long>>> = retryTrigger.flatMapLatest {
+        combine(
+            sessionUseCases.getPausedSessions(),
+            tickerFlow
+        ) { sessions, tick ->
+            if (sessions.isEmpty()) {
+                UiState.Empty
+            } else {
+                UiState.Success(sessions to tick)
+            }
+        }.catch { e ->
+            Timber.e(e, "Error loading paused sessions")
+            emit(UiState.Error(UiText.StringResource(R.string.error_loading_sessions)))
         }
-    }.catch { e ->
-        Timber.e(e, "Error loading paused sessions")
-        emit(
-            UiState.Error(
-                e.message?.let { UiText.DynamicString(it) }
-                    ?: UiText.StringResource(R.string.error_occurred)
-            )
-        )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
@@ -109,9 +110,21 @@ class SessionViewModel @Inject constructor(
             emptyList()
         )
 
-    /** Completed sessions — reuses existing getEndedSessions() flow. No new architecture. */
-    val completedSessions: StateFlow<List<Session>> = sessionUseCases.getEndedSessions()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    /** Completed sessions wrapped in UiState with error handling and retry. */
+    val completedSessions: StateFlow<UiState<List<Session>>> = retryTrigger.flatMapLatest {
+        sessionUseCases.getEndedSessions()
+            .map { sessions ->
+                if (sessions.isEmpty()) {
+                    UiState.Empty
+                } else {
+                    UiState.Success(sessions)
+                }
+            }
+            .catch { e ->
+                Timber.e(e, "Error loading completed sessions")
+                emit(UiState.Error(UiText.StringResource(R.string.error_loading_completed_sessions)))
+            }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UiState.Loading)
 
     val inventoryProducts: StateFlow<List<InventoryItem>> = inventoryUseCases.getAllActiveItems()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())

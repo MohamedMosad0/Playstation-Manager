@@ -9,10 +9,13 @@ import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import com.mohamed.playstation.domain.usecase.ReceiptUseCases
 import com.mohamed.playstation.domain.usecase.SessionProductUseCases
+import com.mohamed.playstation.R
+import com.mohamed.playstation.core.utils.UiText
 import com.mohamed.playstation.presentation.state.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -208,6 +211,98 @@ class ReceiptViewModelTest {
             val state = awaitItem()
             assertTrue(state is UiState.Success)
             assertEquals(2, (state as UiState.Success).data.size)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun receipts_whenEmpty_emitsEmptyUiState() = runTest {
+        whenever(mockReceiptUseCases.getReceiptsInRange(any(), any())).thenReturn(flowOf(emptyList()))
+        whenever(mockReceiptUseCases.getTotalRevenueInRange(any(), any())).thenReturn(flowOf(0.0))
+
+        val viewModel = ReceiptViewModel(
+            receiptUseCases = mockReceiptUseCases,
+            sessionProductUseCases = mockSessionProductUseCases,
+            settingsManager = mockSettingsManager,
+            pdfGenerator = mockPdfGenerator
+        )
+
+        viewModel.receipts.test {
+            val initial = awaitItem()
+            assertTrue(initial is UiState.Loading)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val state = awaitItem()
+            assertTrue(state is UiState.Empty)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun receipts_whenFailure_emitsErrorWithLocalizedMessage() = runTest {
+        whenever(mockReceiptUseCases.getReceiptsInRange(any(), any()))
+            .thenReturn(flow { throw RuntimeException("Database error") })
+        whenever(mockReceiptUseCases.getTotalRevenueInRange(any(), any())).thenReturn(flowOf(0.0))
+
+        val viewModel = ReceiptViewModel(
+            receiptUseCases = mockReceiptUseCases,
+            sessionProductUseCases = mockSessionProductUseCases,
+            settingsManager = mockSettingsManager,
+            pdfGenerator = mockPdfGenerator
+        )
+
+        viewModel.receipts.test {
+            val initial = awaitItem()
+            assertTrue(initial is UiState.Loading)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val errorState = awaitItem()
+            assertTrue(errorState is UiState.Error)
+            val message = (errorState as UiState.Error).message
+            assertTrue(message is UiText.StringResource)
+            assertEquals(R.string.error_loading_receipts, (message as UiText.StringResource).resId)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun receipts_retryAfterFailure_reloadsDataAndEmitsSuccess() = runTest {
+        var shouldFail = true
+        whenever(mockReceiptUseCases.getReceiptsInRange(any(), any())).thenAnswer {
+            flow {
+                if (shouldFail) {
+                    throw RuntimeException("Temporary failure")
+                } else {
+                    emit(listOf(receiptDay1))
+                }
+            }
+        }
+        whenever(mockReceiptUseCases.getTotalRevenueInRange(any(), any())).thenReturn(flowOf(30.0))
+
+        val viewModel = ReceiptViewModel(
+            receiptUseCases = mockReceiptUseCases,
+            sessionProductUseCases = mockSessionProductUseCases,
+            settingsManager = mockSettingsManager,
+            pdfGenerator = mockPdfGenerator
+        )
+
+        viewModel.receipts.test {
+            assertEquals(UiState.Loading, awaitItem())
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val errorState = awaitItem()
+            assertTrue(errorState is UiState.Error)
+
+            shouldFail = false
+            viewModel.retry()
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            val nextState = awaitItem()
+            val finalState = if (nextState is UiState.Loading) awaitItem() else nextState
+            assertTrue(finalState is UiState.Success)
+            assertEquals(1, (finalState as UiState.Success).data.size)
+            assertEquals(receiptDay1.id, finalState.data.first().id)
+
             cancelAndIgnoreRemainingEvents()
         }
     }

@@ -116,6 +116,9 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        binding.btnRetry.setOnClickListener {
+            viewModel.retry()
+        }
         binding.btnNewSession.setOnClickListener {
             NewSessionDialog().show(childFragmentManager, "NewSessionDialog")
         }
@@ -157,20 +160,38 @@ class DashboardFragment : Fragment() {
             }
             is UiState.Loading -> {
                 binding.progressBar.isVisible = true
+                binding.layoutError.isVisible = false
             }
             is UiState.Success -> {
                 binding.progressBar.isVisible = false
+                binding.layoutError.isVisible = false
+                setContentVisible(true)
                 bindData(state.data, currency)
                 animateUiIn()
             }
             is UiState.Error -> {
                 binding.progressBar.isVisible = false
-                android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_LONG).show()
+                if (binding.gridKpi.alpha == 0f) {
+                    setContentVisible(false)
+                    binding.layoutError.isVisible = true
+                    binding.tvErrorMessage.text = state.message.asString(requireContext())
+                } else {
+                    android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                }
             }
             is UiState.Empty -> {
                 binding.progressBar.isVisible = false
             }
         }
+    }
+
+    private fun setContentVisible(visible: Boolean) {
+        binding.gridKpi.isVisible = visible
+        binding.layoutCharts.isVisible = visible
+        binding.layoutRecent.isVisible = visible
+        binding.scrollQuickActions.isVisible = visible
+        binding.tvQuickActionsTitle.isVisible = visible
+        binding.layoutPremiumCards.isVisible = visible
     }
 
     private fun bindData(data: DashboardData, currencyStr: String) {

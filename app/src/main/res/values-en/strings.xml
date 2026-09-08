@@ -491,4 +491,12 @@
     <string name="invalid_expense_amount">Enter an amount greater than zero</string>
     <string name="select_expense_category">Select an expense category</string>
     <string name="end_session_failed">Unable to end the session. Please try again.</string>
+
+    <!-- Error and Retry UI -->
+    <string name="retry">Retry</string>
+    <string name="error_loading_data">Failed to load data</string>
+    <string name="error_loading_receipts">Failed to load receipts</string>
+    <string name="error_loading_sessions">Failed to load sessions</string>
+    <string name="error_loading_completed_sessions">Failed to load completed sessions</string>
+    <string name="retry_hint">Please try again</string>
 </resources>

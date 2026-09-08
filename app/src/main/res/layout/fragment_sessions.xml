@@ -105,6 +105,39 @@
 
             </LinearLayout>
 
+            <!-- Error state — running -->
+            <LinearLayout
+                android:id="@+id/layoutRunningError"
+                style="@style/Widget.PlayStation.EmptyStateContainer"
+                android:layout_gravity="center"
+                android:layout_marginBottom="64dp"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/Widget.PlayStation.EmptyStateIcon"
+                    android:src="@drawable/ic_warning"
+                    app:tint="@color/chart_red"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    style="@style/Widget.PlayStation.EmptyStateTitle"
+                    android:text="@string/error_loading_sessions" />
+
+                <TextView
+                    android:id="@+id/tvRunningErrorMessage"
+                    style="@style/Widget.PlayStation.EmptyStateSubtitle"
+                    android:text="@string/retry_hint" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRetryRunning"
+                    style="@style/Widget.PlayStation.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:text="@string/retry" />
+
+            </LinearLayout>
+
             <!-- Running sessions grid -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvSessions"
@@ -145,8 +178,42 @@
                     android:text="@string/no_completed_sessions" />
 
                 <TextView
+                    android:id="@+id/tvCompletedSubtitle"
                     style="@style/Widget.PlayStation.EmptyStateSubtitle"
                     android:text="@string/no_completed_sessions_hint" />
+
+            </LinearLayout>
+
+            <!-- Error state — completed -->
+            <LinearLayout
+                android:id="@+id/layoutCompletedError"
+                style="@style/Widget.PlayStation.EmptyStateContainer"
+                android:layout_gravity="center"
+                android:layout_marginBottom="64dp"
+                android:visibility="gone">
+
+                <ImageView
+                    style="@style/Widget.PlayStation.EmptyStateIcon"
+                    android:src="@drawable/ic_warning"
+                    app:tint="@color/chart_red"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    style="@style/Widget.PlayStation.EmptyStateTitle"
+                    android:text="@string/error_loading_completed_sessions" />
+
+                <TextView
+                    android:id="@+id/tvCompletedErrorMessage"
+                    style="@style/Widget.PlayStation.EmptyStateSubtitle"
+                    android:text="@string/retry_hint" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRetryCompleted"
+                    style="@style/Widget.PlayStation.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:text="@string/retry" />
 
             </LinearLayout>
 

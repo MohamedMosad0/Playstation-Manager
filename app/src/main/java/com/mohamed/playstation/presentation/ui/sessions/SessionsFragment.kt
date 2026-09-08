@@ -123,6 +123,12 @@ class SessionsFragment : Fragment() {
         binding.fabNewSession.setOnClickListener {
             showNewSessionDialog()
         }
+        binding.btnRetryRunning.setOnClickListener {
+            viewModel.retry()
+        }
+        binding.btnRetryCompleted.setOnClickListener {
+            viewModel.retry()
+        }
     }
 
     /**
@@ -139,6 +145,7 @@ class SessionsFragment : Fragment() {
                 // track the source lists whose identity only changes when Room emits new data.
                 var lastActiveRef: List<Session>? = null
                 var lastPausedRef: List<Session>? = null
+                var lastShownError: com.mohamed.playstation.core.utils.UiText? = null
                 
                 launch {
                     combine(
@@ -146,7 +153,11 @@ class SessionsFragment : Fragment() {
                         viewModel.pausedSessions
                     ) { activeState, pausedState ->
                         val isLoading =
-                            activeState is UiState.Loading && pausedState is UiState.Loading
+                            (activeState is UiState.Loading || pausedState is UiState.Loading) && cachedSessions.isEmpty()
+
+                        val hasError = activeState is UiState.Error || pausedState is UiState.Error
+                        val errorMessage = (activeState as? UiState.Error)?.message
+                            ?: (pausedState as? UiState.Error)?.message
 
                         val activeSessions = when (activeState) {
                             is UiState.Success -> activeState.data.first
@@ -162,13 +173,6 @@ class SessionsFragment : Fragment() {
                             else -> null
                         }
 
-                        if (activeState is UiState.Error) {
-                            android.widget.Toast.makeText(requireContext(), activeState.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
-                        }
-                        if (pausedState is UiState.Error) {
-                            android.widget.Toast.makeText(requireContext(), pausedState.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
-                        }
-                        
                         val newActive = activeSessions ?: cachedSessions.filter { it.status == "active" }
                         val newPaused = pausedSessions ?: cachedSessions.filter { it.status == "paused" }
                         
@@ -178,20 +182,45 @@ class SessionsFragment : Fragment() {
                         // Return inner list references alongside combined result for identity tracking
                         data class SessionTick(
                             val isLoading: Boolean,
+                            val hasError: Boolean,
+                            val errorMessage: com.mohamed.playstation.core.utils.UiText?,
                             val sessions: List<Session>,
                             val tick: Long,
                             val activeRef: List<Session>,
                             val pausedRef: List<Session>
                         )
-                        SessionTick(isLoading, allSessions, activeTick, newActive, newPaused)
+                        SessionTick(isLoading, hasError, errorMessage, allSessions, activeTick, newActive, newPaused)
                     }.collect { result ->
+                        if (result.hasError) {
+                            if (result.errorMessage != null && result.errorMessage != lastShownError) {
+                                lastShownError = result.errorMessage
+                                if (result.sessions.isNotEmpty()) {
+                                    android.widget.Toast.makeText(requireContext(), result.errorMessage.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            lastShownError = null
+                        }
+
                         if (result.isLoading) {
                             binding.progressBar.isVisible = true
                             binding.rvSessions.isVisible = false
                             binding.tvEmptyState.isVisible = false
+                            binding.layoutRunningError.isVisible = false
+                        } else if (result.hasError && result.sessions.isEmpty()) {
+                            binding.progressBar.isVisible = false
+                            binding.rvSessions.isVisible = false
+                            binding.tvEmptyState.isVisible = false
+                            binding.layoutRunningError.isVisible = true
+                            binding.tvRunningErrorMessage.text = result.errorMessage?.asString(requireContext())
+                                ?: getString(R.string.error_loading_sessions)
+                            binding.chipRunning.text = getString(R.string.tab_running)
+                            lastActiveRef = null
+                            lastPausedRef = null
                         } else if (result.sessions.isEmpty()) {
                             binding.progressBar.isVisible = false
                             binding.rvSessions.isVisible = false
+                            binding.layoutRunningError.isVisible = false
                             binding.tvEmptyState.isVisible = true
                             binding.chipRunning.text = getString(R.string.tab_running)
                             lastActiveRef = null
@@ -199,6 +228,7 @@ class SessionsFragment : Fragment() {
                         } else {
                             binding.progressBar.isVisible = false
                             binding.tvEmptyState.isVisible = false
+                            binding.layoutRunningError.isVisible = false
                             binding.rvSessions.isVisible = true
 
                             // Only run DiffUtil when the session data actually changed.
@@ -220,27 +250,55 @@ class SessionsFragment : Fragment() {
                     }
                 }
 
-                // --- Completed sessions (new — reuses existing flow) ---
+                // --- Completed sessions ---
                 launch {
                     combine(
                         viewModel.completedSessions,
                         viewModel.currency
-                    ) { sessions, currency ->
-                        Pair(sessions, currency)
-                    }.collect { (sessions, currency) ->
+                    ) { state, currency ->
+                        Pair(state, currency)
+                    }.collect { (state, currency) ->
                         completedAdapter.updateCurrency(currency)
-                        val isEmpty = sessions.isEmpty()
-                        binding.layoutEmptyCompleted.isVisible = isEmpty
-                        binding.rvCompletedSessions.isVisible = !isEmpty
-                        if (!isEmpty) {
-                            completedAdapter.submitList(sessions)
-                            binding.chipCompleted.text = getString(
-                                R.string.tab_count_format,
-                                getString(R.string.tab_completed),
-                                AppFormatters.formatInteger(requireContext(), sessions.size)
-                            )
-                        } else {
-                            binding.chipCompleted.text = getString(R.string.tab_completed)
+                        when (state) {
+                            is UiState.Idle -> {
+                                binding.layoutEmptyCompleted.isVisible = false
+                                binding.layoutCompletedError.isVisible = false
+                            }
+                            is UiState.Loading -> {
+                                if (completedAdapter.itemCount == 0) {
+                                    binding.rvCompletedSessions.isVisible = false
+                                }
+                                binding.layoutEmptyCompleted.isVisible = false
+                                binding.layoutCompletedError.isVisible = false
+                            }
+                            is UiState.Empty -> {
+                                binding.layoutEmptyCompleted.isVisible = true
+                                binding.layoutCompletedError.isVisible = false
+                                binding.rvCompletedSessions.isVisible = false
+                                binding.chipCompleted.text = getString(R.string.tab_completed)
+                            }
+                            is UiState.Success -> {
+                                binding.layoutEmptyCompleted.isVisible = false
+                                binding.layoutCompletedError.isVisible = false
+                                binding.rvCompletedSessions.isVisible = true
+                                completedAdapter.submitList(state.data)
+                                binding.chipCompleted.text = getString(
+                                    R.string.tab_count_format,
+                                    getString(R.string.tab_completed),
+                                    AppFormatters.formatInteger(requireContext(), state.data.size)
+                                )
+                            }
+                            is UiState.Error -> {
+                                binding.layoutEmptyCompleted.isVisible = false
+                                if (completedAdapter.itemCount == 0) {
+                                    binding.layoutCompletedError.isVisible = true
+                                    binding.rvCompletedSessions.isVisible = false
+                                    binding.tvCompletedErrorMessage.text = state.message.asString(requireContext())
+                                } else {
+                                    binding.layoutCompletedError.isVisible = false
+                                    android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     }
                 }

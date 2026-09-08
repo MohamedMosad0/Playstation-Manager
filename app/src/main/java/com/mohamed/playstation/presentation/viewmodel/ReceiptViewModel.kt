@@ -54,21 +54,24 @@ class ReceiptViewModel @Inject constructor(
 
     private val _customStart = MutableStateFlow<Long>(0L)
     private val _customEnd = MutableStateFlow<Long>(0L)
+    private val retryTrigger = MutableStateFlow(0)
 
     private data class FilterTrigger(
         val filter: DateRangeFilter,
         val customStart: Long,
         val customEnd: Long,
-        val rolloverTick: Long
+        val rolloverTick: Long,
+        val retryCount: Int
     )
 
     private val filterTrigger = combine(
         dateFilterFlow,
         _customStart,
         _customEnd,
-        DateUtils.dayRolloverFlow()
-    ) { filter, start, end, tick ->
-        FilterTrigger(filter, start, end, tick)
+        DateUtils.dayRolloverFlow(),
+        retryTrigger
+    ) { filter, start, end, tick, retryCount ->
+        FilterTrigger(filter, start, end, tick, retryCount)
     }
 
     val receipts: StateFlow<UiState<List<Receipt>>> = filterTrigger.flatMapLatest { trigger ->
@@ -79,7 +82,7 @@ class ReceiptViewModel @Inject constructor(
             }
             .catch { e ->
                 Timber.e(e, "Error loading receipts")
-                emit(UiState.Error(e.message?.let { UiText.DynamicString(it) } ?: UiText.StringResource(R.string.error_occurred)))
+                emit(UiState.Error(UiText.StringResource(R.string.error_loading_receipts)))
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState.Loading)
 
@@ -92,6 +95,10 @@ class ReceiptViewModel @Inject constructor(
     // PDF UI State
     private val _pdfUiState = MutableStateFlow<PdfUiState>(PdfUiState.Idle)
     val pdfUiState: StateFlow<PdfUiState> = _pdfUiState.asStateFlow()
+
+    fun retry() {
+        retryTrigger.update { it + 1 }
+    }
 
     fun setDateFilter(filter: DateRangeFilter) {
         _dateFilterFlow.value = filter

@@ -49,6 +49,9 @@ class ReceiptsFragment : Fragment() {
         binding.btnNavigateUp.setOnClickListener {
             findNavController().navigateUp()
         }
+        binding.btnRetry.setOnClickListener {
+            viewModel.retry()
+        }
         setupDateFilter()
         observeData()
     }
@@ -146,6 +149,7 @@ class ReceiptsFragment : Fragment() {
             is UiState.Idle -> {
                 binding.progressBar.isVisible = false
                 binding.emptyState.isVisible = false
+                binding.errorState.isVisible = false
             }
             is UiState.Loading -> {
                 if (receiptAdapter.itemCount == 0) {
@@ -153,11 +157,13 @@ class ReceiptsFragment : Fragment() {
                     binding.rvReceipts.isVisible = false
                 }
                 binding.emptyState.isVisible = false
+                binding.errorState.isVisible = false
             }
 
             is UiState.Success -> {
                 binding.progressBar.isVisible = false
                 binding.emptyState.isVisible = false
+                binding.errorState.isVisible = false
                 binding.rvReceipts.isVisible = true
                 
                 val uiModels = state.data.map { receipt ->
@@ -173,14 +179,21 @@ class ReceiptsFragment : Fragment() {
             is UiState.Empty -> {
                 binding.progressBar.isVisible = false
                 binding.emptyState.isVisible = true
+                binding.errorState.isVisible = false
                 binding.rvReceipts.isVisible = false
             }
 
             is UiState.Error -> {
                 binding.progressBar.isVisible = false
-                binding.emptyState.isVisible = true
-                binding.rvReceipts.isVisible = false
-                android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                binding.emptyState.isVisible = false
+                if (receiptAdapter.itemCount == 0) {
+                    binding.errorState.isVisible = true
+                    binding.rvReceipts.isVisible = false
+                    binding.tvErrorMessage.text = state.message.asString(requireContext())
+                } else {
+                    binding.errorState.isVisible = false
+                    android.widget.Toast.makeText(requireContext(), state.message.asString(requireContext()), android.widget.Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
