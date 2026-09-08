@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private var exactAlarmPermissionDialog: androidx.appcompat.app.AlertDialog? = null
 
     @Inject
     lateinit var settingsManager: SettingsManager
@@ -50,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         NotificationPermissionHelper.registerAndRequest(this)
-        checkExactAlarmPermission()
 
         setupNavigation()
 
@@ -108,31 +106,5 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNavigationView.isVisible = isTopLevelDestination
             binding.bottomNavDivider.isVisible = isTopLevelDestination
         }
-    }
-
-    private fun checkExactAlarmPermission() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            val alarmManager = getSystemService(android.app.AlarmManager::class.java)
-            if (!alarmManager.canScheduleExactAlarms()) {
-                exactAlarmPermissionDialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                    .setTitle(getString(R.string.exact_alarm_permission_title))
-                    .setMessage(getString(R.string.exact_alarm_permission_message))
-                    .setPositiveButton(getString(R.string.action_confirm)) { _, _ ->
-                        val intent = android.content.Intent(
-                            android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-                        )
-                        startActivity(intent)
-                    }
-                    .setNegativeButton(getString(R.string.action_cancel), null)
-                    .create()
-                exactAlarmPermissionDialog?.show()
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        exactAlarmPermissionDialog?.dismiss()
-        exactAlarmPermissionDialog = null
-        super.onDestroy()
     }
 }
