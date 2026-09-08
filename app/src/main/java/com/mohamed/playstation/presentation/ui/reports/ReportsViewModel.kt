@@ -9,6 +9,7 @@ import com.mohamed.playstation.data.repository.ExpenseRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionProductRepository
 import com.mohamed.playstation.data.repository.settings.SettingsRepository
+import com.mohamed.playstation.domain.model.Expense
 import com.mohamed.playstation.domain.model.Receipt
 import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.domain.model.filter.DateRangeFilter
@@ -57,36 +58,37 @@ class ReportsViewModel @Inject constructor(
         FilterTrigger(range, start, end, tick)
     }
 
-    // Using flatMapLatest to react to date range changes and fetch receipts and expenses
-    private val receiptsFlow: Flow<List<Receipt>> =
+    private data class ReportRawData(
+        val receipts: List<Receipt>,
+        val expenses: List<Expense>,
+        val products: List<SessionProduct>,
+        val filter: DateRangeFilter
+    )
+
+    private val reportDataFlow: Flow<ReportRawData> =
         filterTrigger.flatMapLatest { trigger ->
             val (start, end) = getTimestampsForRange(trigger.filter, trigger.customStart, trigger.customEnd, trigger.rolloverTick)
-            if (start == 0L && end == Long.MAX_VALUE) {
+            val receipts = if (start == 0L && end == Long.MAX_VALUE) {
                 receiptRepository.getAllReceipts()
             } else {
                 // ReceiptDao uses createdAt
                 receiptRepository.getReceiptsInRange(start, end)
             }
+            val expenses = if (start == 0L && end == Long.MAX_VALUE) {
+                expenseRepository.getAllExpenses()
+            } else {
+                // ExpenseDao uses expenseDate
+                expenseRepository.getExpensesInRange(start, end)
+            }
+            val products = if (start == 0L && end == Long.MAX_VALUE) {
+                sessionProductRepository.getAllSessionProducts()
+            } else {
+                sessionProductRepository.getProductsByReceiptDateRange(start, end)
+            }
+            combine(receipts, expenses, products) { r, e, p ->
+                ReportRawData(r, e, p, trigger.filter)
+            }
         }
-
-    private val expensesFlow = filterTrigger.flatMapLatest { trigger ->
-        val (start, end) = getTimestampsForRange(trigger.filter, trigger.customStart, trigger.customEnd, trigger.rolloverTick)
-        if (start == 0L && end == Long.MAX_VALUE) {
-            expenseRepository.getAllExpenses()
-        } else {
-            // ExpenseDao uses expenseDate
-            expenseRepository.getExpensesInRange(start, end)
-        }
-    }
-
-    private val productsFlow = filterTrigger.flatMapLatest { trigger ->
-        val (start, end) = getTimestampsForRange(trigger.filter, trigger.customStart, trigger.customEnd, trigger.rolloverTick)
-        if (start == 0L && end == Long.MAX_VALUE) {
-            sessionProductRepository.getAllSessionProducts()
-        } else {
-            sessionProductRepository.getProductsByReceiptDateRange(start, end)
-        }
-    }
 
     private val settingsFlow = combine(
         settingsRepository.currencyFlow.distinctUntilChanged(),
@@ -96,12 +98,13 @@ class ReportsViewModel @Inject constructor(
     }
 
     val uiState: StateFlow<ReportsUiState> = combine(
-        receiptsFlow,
-        expensesFlow,
-        productsFlow,
-        _dateRange,
+        reportDataFlow,
         settingsFlow
-    ) { receipts, expenses, products, dateRange, (currency, language) ->
+    ) { rawData, (currency, language) ->
+        val receipts = rawData.receipts
+        val expenses = rawData.expenses
+        val products = rawData.products
+        val dateRange = rawData.filter
         // Single-pass aggregation over receipts — replaces 6 separate iterations
         var totalRevenue = 0.0
         var productRevenue = 0.0
