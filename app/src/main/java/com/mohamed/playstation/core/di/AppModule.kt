@@ -7,6 +7,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -33,4 +36,9 @@ object AppModule {
     fun provideSettingsManager(@ApplicationContext context: Context): SettingsManager {
         return SettingsManager(context)
     }
+
+    @Provides
+    @Singleton
+    @Named("reports_computation_dispatcher")
+    fun provideReportsComputationDispatcher(): CoroutineDispatcher = Dispatchers.Default
 }

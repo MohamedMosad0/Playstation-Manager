@@ -124,6 +124,7 @@ class ReportsViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        DateUtils.dayRolloverFlowOverride = flowOf(System.currentTimeMillis())
 
         mockReceiptRepository = mock()
         whenever(mockReceiptRepository.getAllReceipts()).thenReturn(flowOf(sampleReceipts))
@@ -145,7 +146,8 @@ class ReportsViewModelTest {
             receiptRepository = mockReceiptRepository,
             expenseRepository = mockExpenseRepository,
             sessionProductRepository = mockSessionProductRepository,
-            settingsRepository = mockSettingsRepository
+            settingsRepository = mockSettingsRepository,
+            computationDispatcher = testDispatcher
         )
     }
 
@@ -195,7 +197,8 @@ class ReportsViewModelTest {
             receiptRepository = emptyReceiptsRepo,
             expenseRepository = emptyExpensesRepo,
             sessionProductRepository = emptyProductsRepo,
-            settingsRepository = mockSettingsRepository
+            settingsRepository = mockSettingsRepository,
+            computationDispatcher = testDispatcher
         )
 
         emptyVm.uiState.test {
@@ -225,7 +228,8 @@ class ReportsViewModelTest {
             receiptRepository = mockReceiptRepository,
             expenseRepository = heavyExpensesRepo,
             sessionProductRepository = mockSessionProductRepository,
-            settingsRepository = mockSettingsRepository
+            settingsRepository = mockSettingsRepository,
+            computationDispatcher = testDispatcher
         )
 
         lossVm.uiState.test(timeout = 5.seconds) {
@@ -261,7 +265,8 @@ class ReportsViewModelTest {
             receiptRepository = mockReceiptRepository,
             expenseRepository = mockExpenseRepository,
             sessionProductRepository = mockSessionProductRepository,
-            settingsRepository = enSettingsRepo
+            settingsRepository = enSettingsRepo,
+            computationDispatcher = testDispatcher
         )
 
         enVm.uiState.test {
@@ -291,7 +296,8 @@ class ReportsViewModelTest {
             receiptRepository = receiptRepository,
             expenseRepository = mockExpenseRepository,
             sessionProductRepository = mockSessionProductRepository,
-            settingsRepository = englishSettingsRepository()
+            settingsRepository = englishSettingsRepository(),
+            computationDispatcher = testDispatcher
         )
 
         viewModel.uiState.test {
@@ -319,7 +325,8 @@ class ReportsViewModelTest {
             receiptRepository = receiptRepository,
             expenseRepository = mockExpenseRepository,
             sessionProductRepository = mockSessionProductRepository,
-            settingsRepository = englishSettingsRepository()
+            settingsRepository = englishSettingsRepository(),
+            computationDispatcher = testDispatcher
         )
 
         viewModel.uiState.test {
@@ -371,7 +378,8 @@ class ReportsViewModelTest {
             receiptRepository = mockReceipts,
             expenseRepository = mockExpenses,
             sessionProductRepository = mockProducts,
-            settingsRepository = mockSettingsRepository
+            settingsRepository = mockSettingsRepository,
+            computationDispatcher = testDispatcher
         )
 
         testViewModel.setDateFilter(DateRangeFilter.TODAY)

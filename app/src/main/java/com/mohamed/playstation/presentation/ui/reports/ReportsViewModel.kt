@@ -16,7 +16,8 @@ import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Calendar
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +35,9 @@ class ReportsViewModel @Inject constructor(
     private val receiptRepository: ReceiptRepository,
     private val expenseRepository: ExpenseRepository,
     private val sessionProductRepository: SessionProductRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    @Named("reports_computation_dispatcher")
+    private val computationDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     // Filter state
@@ -206,7 +209,7 @@ class ReportsViewModel @Inject constructor(
 
             currency = currency
         )
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(computationDispatcher)
     .stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
