@@ -17,9 +17,11 @@ import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 
 @Singleton
@@ -31,53 +33,56 @@ class DashboardRepositoryImpl @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : DashboardRepository {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun getDashboardData(): Flow<DashboardData> {
-        val (startOfDay, endOfDay) = DateUtils.todayRange()
-        val (startOf7Days, _) = DateUtils.last7DaysRange()
+        return DateUtils.dayRolloverFlow().flatMapLatest { now ->
+            val (startOfDay, endOfDay) = DateUtils.todayRange(now)
+            val (startOf7Days, _) = DateUtils.last7DaysRange(now)
 
-        val dailyFlow = combine(
-            receiptRepository.getTodayTotalRevenue().distinctUntilChanged(),
-            expenseRepository.getTotalExpensesInRange(startOfDay, endOfDay).distinctUntilChanged(),
-            sessionRepository.getTodaySessions().distinctUntilChanged(),
-            inventoryRepository.getActiveInventoryItemsCount().distinctUntilChanged(),
-            inventoryRepository.getLowStockInventoryItemsCount().distinctUntilChanged()
-        ) { todayRevenue, todayExpenses, todaySessions, totalProducts, lowStockProducts ->
-            DailyMetrics(todayRevenue, todayExpenses, todaySessions, totalProducts, lowStockProducts)
-        }
+            val dailyFlow = combine(
+                receiptRepository.getTodayTotalRevenue().distinctUntilChanged(),
+                expenseRepository.getTotalExpensesInRange(startOfDay, endOfDay).distinctUntilChanged(),
+                sessionRepository.getTodaySessions().distinctUntilChanged(),
+                inventoryRepository.getActiveInventoryItemsCount().distinctUntilChanged(),
+                inventoryRepository.getLowStockInventoryItemsCount().distinctUntilChanged()
+            ) { todayRevenue, todayExpenses, todaySessions, totalProducts, lowStockProducts ->
+                DailyMetrics(todayRevenue, todayExpenses, todaySessions, totalProducts, lowStockProducts)
+            }
 
-        val chartFlow = combine(
-            receiptRepository.getReceiptsInRange(startOf7Days, endOfDay).distinctUntilChanged(),
-            expenseRepository.getExpensesInRange(startOf7Days, endOfDay).distinctUntilChanged()
-        ) { recentReceipts, recentExpenses ->
-            ChartMetrics(recentReceipts, recentExpenses)
-        }
+            val chartFlow = combine(
+                receiptRepository.getReceiptsInRange(startOf7Days, endOfDay).distinctUntilChanged(),
+                expenseRepository.getExpensesInRange(startOf7Days, endOfDay).distinctUntilChanged()
+            ) { recentReceipts, recentExpenses ->
+                ChartMetrics(recentReceipts, recentExpenses)
+            }
 
-        val languageFlow = settingsRepository.languageFlow.distinctUntilChanged()
+            val languageFlow = settingsRepository.languageFlow.distinctUntilChanged()
 
-        return combine(dailyFlow, chartFlow, languageFlow) { daily, chart, language ->
-            val todayExpensesList = chart.recentExpenses.filter { it.expenseDate.time >= startOfDay }
+            combine(dailyFlow, chartFlow, languageFlow) { daily, chart, language ->
+                val todayExpensesList = chart.recentExpenses.filter { it.expenseDate.time >= startOfDay }
 
-            DashboardData(
-                todayRevenue = daily.todayRevenue,
-                todayExpenses = daily.todayExpenses,
-                sessionsToday = daily.todaySessions.size,
-                netProfit = daily.todayRevenue - daily.todayExpenses,
-                totalProducts = daily.totalProducts,
-                lowStockProducts = daily.lowStockProducts,
-                revenueChartData = buildRevenueChartData(chart.recentReceipts, language),
-                expenseChartData = buildExpenseChartData(chart.recentExpenses),
-                recentSessions = daily.todaySessions.sortedByDescending { it.startTime }.take(5),
-                recentExpenses = todayExpensesList.sortedByDescending { it.expenseDate }.take(5)
-            )
+                DashboardData(
+                    todayRevenue = daily.todayRevenue,
+                    todayExpenses = daily.todayExpenses,
+                    sessionsToday = daily.todaySessions.size,
+                    netProfit = daily.todayRevenue - daily.todayExpenses,
+                    totalProducts = daily.totalProducts,
+                    lowStockProducts = daily.lowStockProducts,
+                    revenueChartData = buildRevenueChartData(chart.recentReceipts, language, now),
+                    expenseChartData = buildExpenseChartData(chart.recentExpenses),
+                    recentSessions = daily.todaySessions.sortedByDescending { it.startTime }.take(5),
+                    recentExpenses = todayExpensesList.sortedByDescending { it.expenseDate }.take(5)
+                )
+            }
         }.flowOn(Dispatchers.Default)
     }
 
-    private fun buildRevenueChartData(receipts: List<Receipt>, language: String): List<ChartPoint> {
+    private fun buildRevenueChartData(receipts: List<Receipt>, language: String, now: Long = DateUtils.currentTimeMillis()): List<ChartPoint> {
         val locale = if (language == "en") Locale.ENGLISH else Locale.forLanguageTag("ar")
         val formatter = SimpleDateFormat("dd/MM", locale)
         val last7DaysMap = linkedMapOf<String, Float>()
 
-        val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance().apply { timeInMillis = now }
         calendar.add(Calendar.DAY_OF_YEAR, -6)
         for (i in 0..6) {
             last7DaysMap[formatter.format(calendar.time)] = 0f

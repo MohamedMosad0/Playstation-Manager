@@ -41,12 +41,26 @@ class ReportsViewModel @Inject constructor(
     private val _customStart = MutableStateFlow(0L)
     private val _customEnd = MutableStateFlow(Long.MAX_VALUE)
 
+    private data class FilterTrigger(
+        val filter: DateRangeFilter,
+        val customStart: Long,
+        val customEnd: Long,
+        val rolloverTick: Long
+    )
+
+    private val filterTrigger = combine(
+        _dateRange,
+        _customStart,
+        _customEnd,
+        DateUtils.dayRolloverFlow()
+    ) { range, start, end, tick ->
+        FilterTrigger(range, start, end, tick)
+    }
+
     // Using flatMapLatest to react to date range changes and fetch receipts and expenses
     private val receiptsFlow: Flow<List<Receipt>> =
-        combine(_dateRange, _customStart, _customEnd) { range, start, end ->
-            Triple(range, start, end)
-        }.flatMapLatest { (range, customStart, customEnd) ->
-            val (start, end) = getTimestampsForRange(range, customStart, customEnd)
+        filterTrigger.flatMapLatest { trigger ->
+            val (start, end) = getTimestampsForRange(trigger.filter, trigger.customStart, trigger.customEnd, trigger.rolloverTick)
             if (start == 0L && end == Long.MAX_VALUE) {
                 receiptRepository.getAllReceipts()
             } else {
@@ -55,10 +69,8 @@ class ReportsViewModel @Inject constructor(
             }
         }
 
-    private val expensesFlow = combine(_dateRange, _customStart, _customEnd) { range, start, end ->
-        Triple(range, start, end)
-    }.flatMapLatest { (range, customStart, customEnd) ->
-        val (start, end) = getTimestampsForRange(range, customStart, customEnd)
+    private val expensesFlow = filterTrigger.flatMapLatest { trigger ->
+        val (start, end) = getTimestampsForRange(trigger.filter, trigger.customStart, trigger.customEnd, trigger.rolloverTick)
         if (start == 0L && end == Long.MAX_VALUE) {
             expenseRepository.getAllExpenses()
         } else {
@@ -67,10 +79,8 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
-    private val productsFlow = combine(_dateRange, _customStart, _customEnd) { range, start, end ->
-        Triple(range, start, end)
-    }.flatMapLatest { (range, customStart, customEnd) ->
-        val (start, end) = getTimestampsForRange(range, customStart, customEnd)
+    private val productsFlow = filterTrigger.flatMapLatest { trigger ->
+        val (start, end) = getTimestampsForRange(trigger.filter, trigger.customStart, trigger.customEnd, trigger.rolloverTick)
         if (start == 0L && end == Long.MAX_VALUE) {
             sessionProductRepository.getAllSessionProducts()
         } else {
@@ -222,16 +232,17 @@ class ReportsViewModel @Inject constructor(
     private fun getTimestampsForRange(
         range: DateRangeFilter,
         customStart: Long,
-        customEnd: Long
+        customEnd: Long,
+        now: Long = DateUtils.currentTimeMillis()
     ): Pair<Long, Long> {
         return when (range) {
-            DateRangeFilter.TODAY -> DateUtils.todayRange()
-            DateRangeFilter.THIS_WEEK -> DateUtils.thisWeekRange()
-            DateRangeFilter.LAST_7_DAYS -> DateUtils.last7DaysRange()
-            DateRangeFilter.THIS_MONTH -> DateUtils.thisMonthRange()
-            DateRangeFilter.LAST_MONTH -> DateUtils.lastMonthRange()
-            DateRangeFilter.LAST_30_DAYS -> DateUtils.last30DaysRange()
-            DateRangeFilter.LAST_3_MONTHS -> DateUtils.last3MonthsRange()
+            DateRangeFilter.TODAY -> DateUtils.todayRange(now)
+            DateRangeFilter.THIS_WEEK -> DateUtils.thisWeekRange(now)
+            DateRangeFilter.LAST_7_DAYS -> DateUtils.last7DaysRange(now)
+            DateRangeFilter.THIS_MONTH -> DateUtils.thisMonthRange(now)
+            DateRangeFilter.LAST_MONTH -> DateUtils.lastMonthRange(now)
+            DateRangeFilter.LAST_30_DAYS -> DateUtils.last30DaysRange(now)
+            DateRangeFilter.LAST_3_MONTHS -> DateUtils.last3MonthsRange(now)
             DateRangeFilter.ALL_TIME -> Pair(0L, Long.MAX_VALUE)
             DateRangeFilter.CUSTOM -> {
                 // For custom, ensure end is start of next day for exclusive bound

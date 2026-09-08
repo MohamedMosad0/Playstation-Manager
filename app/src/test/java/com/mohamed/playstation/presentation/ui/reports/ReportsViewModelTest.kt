@@ -3,6 +3,7 @@ package com.mohamed.playstation.presentation.ui.reports
 import app.cash.turbine.test
 import kotlin.time.Duration.Companion.seconds
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.utils.DateUtils
 import com.mohamed.playstation.data.repository.ExpenseRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionProductRepository
@@ -14,6 +15,7 @@ import com.mohamed.playstation.domain.model.SessionProduct
 import com.mohamed.playstation.domain.model.filter.DateRangeFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -150,6 +152,8 @@ class ReportsViewModelTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        DateUtils.dayRolloverFlowOverride = null
+        DateUtils.currentTimeMillisProvider = null
     }
 
     @Test
@@ -325,6 +329,69 @@ class ReportsViewModelTest {
             val state = awaitItem()
             assertEquals(listOf("01/01", "01/01"), state.revenueLast7Days.map { it.first })
             assertEquals(listOf(100.0, 200.0), state.revenueLast7Days.map { it.second })
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun uiState_whenDateFilterIsTodayAndMidnightRolloverOccurs_refreshesQueriesWithNewDayRecords() = runTest {
+        val rolloverTrigger = MutableSharedFlow<Long>(replay = 1)
+        val day1 = Calendar.getInstance().apply {
+            clear()
+            set(2026, Calendar.SEPTEMBER, 8, 14, 0, 0)
+        }.timeInMillis
+        val day2 = Calendar.getInstance().apply {
+            clear()
+            set(2026, Calendar.SEPTEMBER, 9, 0, 0, 50)
+        }.timeInMillis
+
+        rolloverTrigger.emit(day1)
+        DateUtils.dayRolloverFlowOverride = rolloverTrigger
+
+        val (start1, end1) = DateUtils.todayRange(day1)
+        val (start2, end2) = DateUtils.todayRange(day2)
+
+        val receiptDay1 = sampleReceipts[0]
+        val receiptDay2 = sampleReceipts[1]
+
+        val mockReceipts: ReceiptRepository = mock()
+        whenever(mockReceipts.getAllReceipts()).thenReturn(flowOf(sampleReceipts))
+        whenever(mockReceipts.getReceiptsInRange(start1, end1)).thenReturn(flowOf(listOf(receiptDay1)))
+        whenever(mockReceipts.getReceiptsInRange(start2, end2)).thenReturn(flowOf(listOf(receiptDay2)))
+
+        val mockExpenses: ExpenseRepository = mock()
+        whenever(mockExpenses.getAllExpenses()).thenReturn(flowOf(emptyList()))
+        whenever(mockExpenses.getExpensesInRange(any(), any())).thenReturn(flowOf(emptyList()))
+
+        val mockProducts: SessionProductRepository = mock()
+        whenever(mockProducts.getAllSessionProducts()).thenReturn(flowOf(emptyList()))
+        whenever(mockProducts.getProductsByReceiptDateRange(any(), any())).thenReturn(flowOf(emptyList()))
+
+        val testViewModel = ReportsViewModel(
+            receiptRepository = mockReceipts,
+            expenseRepository = mockExpenses,
+            sessionProductRepository = mockProducts,
+            settingsRepository = mockSettingsRepository
+        )
+
+        testViewModel.setDateFilter(DateRangeFilter.TODAY)
+
+        testViewModel.uiState.test(timeout = 5.seconds) {
+            awaitItem() // Loading
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            // Day 1 state
+            val state1 = awaitItem()
+            assertEquals(receiptDay1.totalAmount, state1.totalRevenue, 0.01)
+
+            // Midnight rollover to Day 2!
+            rolloverTrigger.emit(day2)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            // Day 2 state
+            val state2 = awaitItem()
+            assertEquals(receiptDay2.totalAmount, state2.totalRevenue, 0.01)
+
             cancelAndIgnoreRemainingEvents()
         }
     }

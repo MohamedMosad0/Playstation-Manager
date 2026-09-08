@@ -55,16 +55,24 @@ class ReceiptViewModel @Inject constructor(
     private val _customStart = MutableStateFlow<Long>(0L)
     private val _customEnd = MutableStateFlow<Long>(0L)
 
+    private data class FilterTrigger(
+        val filter: DateRangeFilter,
+        val customStart: Long,
+        val customEnd: Long,
+        val rolloverTick: Long
+    )
+
     private val filterTrigger = combine(
         dateFilterFlow,
         _customStart,
-        _customEnd
-    ) { filter, start, end ->
-        Triple(filter, start, end)
+        _customEnd,
+        DateUtils.dayRolloverFlow()
+    ) { filter, start, end, tick ->
+        FilterTrigger(filter, start, end, tick)
     }
 
-    val receipts: StateFlow<UiState<List<Receipt>>> = filterTrigger.flatMapLatest { (filter, customStart, customEnd) ->
-        val (start, end) = getRangeForFilter(filter, customStart, customEnd)
+    val receipts: StateFlow<UiState<List<Receipt>>> = filterTrigger.flatMapLatest { trigger ->
+        val (start, end) = getRangeForFilter(trigger.filter, trigger.customStart, trigger.customEnd, trigger.rolloverTick)
         receiptUseCases.getReceiptsInRange(start, end)
             .map { list ->
                 if (list.isEmpty()) UiState.Empty else UiState.Success(list)
@@ -75,8 +83,8 @@ class ReceiptViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState.Loading)
 
-    val periodRevenue: StateFlow<Double> = filterTrigger.flatMapLatest { (filter, customStart, customEnd) ->
-        val (start, end) = getRangeForFilter(filter, customStart, customEnd)
+    val periodRevenue: StateFlow<Double> = filterTrigger.flatMapLatest { trigger ->
+        val (start, end) = getRangeForFilter(trigger.filter, trigger.customStart, trigger.customEnd, trigger.rolloverTick)
         receiptUseCases.getTotalRevenueInRange(start, end)
             .catch { emit(0.0) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
@@ -98,16 +106,17 @@ class ReceiptViewModel @Inject constructor(
     private fun getRangeForFilter(
         range: DateRangeFilter,
         customStart: Long,
-        customEnd: Long
+        customEnd: Long,
+        now: Long = DateUtils.currentTimeMillis()
     ): Pair<Long, Long> {
         return when (range) {
-            DateRangeFilter.TODAY -> DateUtils.todayRange()
-            DateRangeFilter.THIS_WEEK -> DateUtils.thisWeekRange()
-            DateRangeFilter.LAST_7_DAYS -> DateUtils.last7DaysRange()
-            DateRangeFilter.THIS_MONTH -> DateUtils.thisMonthRange()
-            DateRangeFilter.LAST_MONTH -> DateUtils.lastMonthRange()
-            DateRangeFilter.LAST_30_DAYS -> DateUtils.last30DaysRange()
-            DateRangeFilter.LAST_3_MONTHS -> DateUtils.last3MonthsRange()
+            DateRangeFilter.TODAY -> DateUtils.todayRange(now)
+            DateRangeFilter.THIS_WEEK -> DateUtils.thisWeekRange(now)
+            DateRangeFilter.LAST_7_DAYS -> DateUtils.last7DaysRange(now)
+            DateRangeFilter.THIS_MONTH -> DateUtils.thisMonthRange(now)
+            DateRangeFilter.LAST_MONTH -> DateUtils.lastMonthRange(now)
+            DateRangeFilter.LAST_30_DAYS -> DateUtils.last30DaysRange(now)
+            DateRangeFilter.LAST_3_MONTHS -> DateUtils.last3MonthsRange(now)
             DateRangeFilter.ALL_TIME -> Pair(0L, Long.MAX_VALUE)
             DateRangeFilter.CUSTOM -> {
                 val endCal = java.util.Calendar.getInstance()

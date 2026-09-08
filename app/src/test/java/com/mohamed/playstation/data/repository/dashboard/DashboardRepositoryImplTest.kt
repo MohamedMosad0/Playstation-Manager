@@ -6,8 +6,11 @@ import com.mohamed.playstation.data.repository.InventoryRepository
 import com.mohamed.playstation.data.repository.ReceiptRepository
 import com.mohamed.playstation.data.repository.SessionRepository
 import com.mohamed.playstation.data.repository.settings.SettingsRepository
+import com.mohamed.playstation.core.utils.DateUtils
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -76,6 +79,36 @@ class DashboardRepositoryImplTest {
             assertEquals(7, data.revenueChartData.size)
             val label = data.revenueChartData.first().label
             assertTrue(label.isNotEmpty())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @After
+    fun tearDown() {
+        DateUtils.dayRolloverFlowOverride = null
+        DateUtils.currentTimeMillisProvider = null
+    }
+
+    @Test
+    fun getDashboardData_whenLocalMidnightRolloverOccurs_refreshesWithNewDateBoundaries() = runTest {
+        val rolloverTrigger = MutableSharedFlow<Long>(replay = 1)
+        val day1 = 1773000000000L // arbitrary timestamp
+        val day2 = 1773086450000L // 1 day + 50ms later
+
+        rolloverTrigger.emit(day1)
+        DateUtils.dayRolloverFlowOverride = rolloverTrigger
+
+        repository.getDashboardData().test {
+            val firstData = awaitItem()
+            assertEquals(100.0, firstData.todayRevenue, 0.001)
+
+            // When rollover happens to day2, mock different revenue
+            whenever(mockReceiptRepository.getTodayTotalRevenue()).thenReturn(flowOf(250.0))
+            rolloverTrigger.emit(day2)
+
+            val refreshedData = awaitItem()
+            assertEquals(250.0, refreshedData.todayRevenue, 0.001)
+
             cancelAndIgnoreRemainingEvents()
         }
     }
