@@ -12,7 +12,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.localization.LocaleManager
-import com.mohamed.playstation.core.notifications.NotificationPermissionHelper
 import com.mohamed.playstation.data.local.SettingsManager
 import com.mohamed.playstation.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,8 +46,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        NotificationPermissionHelper.registerAndRequest(this)
 
         setupNavigation()
 

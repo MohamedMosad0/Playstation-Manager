@@ -1,6 +1,11 @@
 package com.mohamed.playstation.presentation.ui.settings
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -16,9 +21,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.mohamed.playstation.BuildConfig
 import com.mohamed.playstation.R
 import com.mohamed.playstation.core.constants.AppConstants
+import com.mohamed.playstation.core.notifications.NotificationPermissionHelper
 import com.mohamed.playstation.core.utils.AppFormatters
 import com.mohamed.playstation.databinding.FragmentSettingsBinding
 import com.mohamed.playstation.domain.model.CurrencyList
@@ -50,6 +57,17 @@ class SettingsFragment : Fragment() {
     private val importLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let {
             showRestoreConfirmation(it)
+        }
+    }
+
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            viewModel.setNotificationsEnabled(true)
+        } else {
+            updateSwitchState(binding.switchNotifications, false)
+            handleNotificationPermissionDenied()
         }
     }
 
@@ -86,7 +104,17 @@ class SettingsFragment : Fragment() {
         // Notifications
         binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
             if (viewModel.notificationsEnabled.value != isChecked) {
-                viewModel.setNotificationsEnabled(isChecked)
+                if (isChecked) {
+                    if (NotificationPermissionHelper.hasNotificationPermission(requireContext())) {
+                        viewModel.setNotificationsEnabled(true)
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        viewModel.setNotificationsEnabled(true)
+                    }
+                } else {
+                    viewModel.setNotificationsEnabled(false)
+                }
             }
         }
 
@@ -367,6 +395,39 @@ class SettingsFragment : Fragment() {
     private fun executeRestore(uri: android.net.Uri) {
         val inputStream = requireContext().contentResolver.openInputStream(uri)
         viewModel.importBackup(uri, inputStream)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            viewModel.notificationsEnabled.value &&
+            !NotificationPermissionHelper.hasNotificationPermission(requireContext())
+        ) {
+            viewModel.setNotificationsEnabled(false)
+        }
+    }
+
+    private fun handleNotificationPermissionDenied() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            !shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)
+        ) {
+            Snackbar.make(
+                binding.root,
+                R.string.notification_permission_required,
+                Snackbar.LENGTH_LONG
+            ).setAction(R.string.settings) {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", requireContext().packageName, null)
+                }
+                startActivity(intent)
+            }.show()
+        } else {
+            Snackbar.make(
+                binding.root,
+                R.string.notification_permission_required,
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
     }
 
     override fun onDestroyView() {

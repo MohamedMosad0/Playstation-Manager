@@ -447,6 +447,7 @@
 
     <string name="exact_alarm_permission_title">Exact Alarm Permission</string>
     <string name="exact_alarm_permission_message">The app requires exact alarm permission to ensure you are alerted when timed sessions expire.</string>
+    <string name="notification_permission_required">Notification permission is required to enable alerts</string>
     <string name="receipt_item_format">%1$s (%2$s × %3$d = %4$s)</string>
     <string name="receipt_item_format_print">- %1$s: %2$s × %3$d = %4$s</string>
     <string name="product_quantity_format">%1$s × %2$d</string>
