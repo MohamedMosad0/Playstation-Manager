@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -29,11 +32,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Verify Debug Build & Run Unit Tests
-        run: ./gradlew assembleDebug testDebugUnitTest --no-daemon
+      - name: Build, Test, Lint & Verify Release
+        run: ./gradlew assembleDebug testDebugUnitTest lintDebug assembleRelease --no-daemon
 
-      - name: Run Android Lint Check
-        run: ./gradlew lintDebug --no-daemon
-
-      - name: Verify Release Build
-        run: ./gradlew assembleRelease --no-daemon
+      - name: Upload Test & Lint Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            app/build/reports/tests/testDebugUnitTest/
+            app/build/test-results/testDebugUnitTest/
+            app/build/reports/lint-results-debug.html
+          retention-days: 14
